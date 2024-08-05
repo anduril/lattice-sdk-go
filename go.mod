@@ -1,4 +1,4 @@
-module github.com/dogun-anduril/anduril-sdk-go
+module github.com/anduril/anduril-go
 
 go 1.22.5
 
