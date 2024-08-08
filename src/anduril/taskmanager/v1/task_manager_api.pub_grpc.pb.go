@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TaskManagerAPI_CreateTask_FullMethodName   = "/anduril.taskmanager.v1.TaskManagerAPI/CreateTask"
-	TaskManagerAPI_GetTask_FullMethodName      = "/anduril.taskmanager.v1.TaskManagerAPI/GetTask"
-	TaskManagerAPI_UpdateTask_FullMethodName   = "/anduril.taskmanager.v1.TaskManagerAPI/UpdateTask"
-	TaskManagerAPI_UpdateStatus_FullMethodName = "/anduril.taskmanager.v1.TaskManagerAPI/UpdateStatus"
-	TaskManagerAPI_StreamTasks_FullMethodName  = "/anduril.taskmanager.v1.TaskManagerAPI/StreamTasks"
+	TaskManagerAPI_CreateTask_FullMethodName    = "/anduril.taskmanager.v1.TaskManagerAPI/CreateTask"
+	TaskManagerAPI_GetTask_FullMethodName       = "/anduril.taskmanager.v1.TaskManagerAPI/GetTask"
+	TaskManagerAPI_UpdateTask_FullMethodName    = "/anduril.taskmanager.v1.TaskManagerAPI/UpdateTask"
+	TaskManagerAPI_UpdateStatus_FullMethodName  = "/anduril.taskmanager.v1.TaskManagerAPI/UpdateStatus"
+	TaskManagerAPI_StreamTasks_FullMethodName   = "/anduril.taskmanager.v1.TaskManagerAPI/StreamTasks"
+	TaskManagerAPI_ListenAsAgent_FullMethodName = "/anduril.taskmanager.v1.TaskManagerAPI/ListenAsAgent"
 )
 
 // TaskManagerAPIClient is the client API for TaskManagerAPI service.
@@ -47,7 +48,11 @@ type TaskManagerAPIClient interface {
 	// Update the status of a Task.
 	UpdateStatus(ctx context.Context, in *UpdateStatusRequest, opts ...grpc.CallOption) (*UpdateStatusResponse, error)
 	// Stream all existing live (not yet done) Tasks and any new updates.
+	// Intended for clients to gain visibility into real time updates for live Tasks.
 	StreamTasks(ctx context.Context, in *StreamTasksRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamTasksResponse], error)
+	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
+	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC (no Flux access)
+	ListenAsAgent(ctx context.Context, in *ListenAsAgentRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ListenAsAgentResponse], error)
 }
 
 type taskManagerAPIClient struct {
@@ -117,6 +122,25 @@ func (c *taskManagerAPIClient) StreamTasks(ctx context.Context, in *StreamTasksR
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type TaskManagerAPI_StreamTasksClient = grpc.ServerStreamingClient[StreamTasksResponse]
 
+func (c *taskManagerAPIClient) ListenAsAgent(ctx context.Context, in *ListenAsAgentRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ListenAsAgentResponse], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &TaskManagerAPI_ServiceDesc.Streams[1], TaskManagerAPI_ListenAsAgent_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[ListenAsAgentRequest, ListenAsAgentResponse]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type TaskManagerAPI_ListenAsAgentClient = grpc.ServerStreamingClient[ListenAsAgentResponse]
+
 // TaskManagerAPIServer is the server API for TaskManagerAPI service.
 // All implementations must embed UnimplementedTaskManagerAPIServer
 // for forward compatibility.
@@ -138,7 +162,11 @@ type TaskManagerAPIServer interface {
 	// Update the status of a Task.
 	UpdateStatus(context.Context, *UpdateStatusRequest) (*UpdateStatusResponse, error)
 	// Stream all existing live (not yet done) Tasks and any new updates.
+	// Intended for clients to gain visibility into real time updates for live Tasks.
 	StreamTasks(*StreamTasksRequest, grpc.ServerStreamingServer[StreamTasksResponse]) error
+	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
+	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC (no Flux access)
+	ListenAsAgent(*ListenAsAgentRequest, grpc.ServerStreamingServer[ListenAsAgentResponse]) error
 	mustEmbedUnimplementedTaskManagerAPIServer()
 }
 
@@ -163,6 +191,9 @@ func (UnimplementedTaskManagerAPIServer) UpdateStatus(context.Context, *UpdateSt
 }
 func (UnimplementedTaskManagerAPIServer) StreamTasks(*StreamTasksRequest, grpc.ServerStreamingServer[StreamTasksResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamTasks not implemented")
+}
+func (UnimplementedTaskManagerAPIServer) ListenAsAgent(*ListenAsAgentRequest, grpc.ServerStreamingServer[ListenAsAgentResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method ListenAsAgent not implemented")
 }
 func (UnimplementedTaskManagerAPIServer) mustEmbedUnimplementedTaskManagerAPIServer() {}
 func (UnimplementedTaskManagerAPIServer) testEmbeddedByValue()                        {}
@@ -268,6 +299,17 @@ func _TaskManagerAPI_StreamTasks_Handler(srv interface{}, stream grpc.ServerStre
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type TaskManagerAPI_StreamTasksServer = grpc.ServerStreamingServer[StreamTasksResponse]
 
+func _TaskManagerAPI_ListenAsAgent_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ListenAsAgentRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TaskManagerAPIServer).ListenAsAgent(m, &grpc.GenericServerStream[ListenAsAgentRequest, ListenAsAgentResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type TaskManagerAPI_ListenAsAgentServer = grpc.ServerStreamingServer[ListenAsAgentResponse]
+
 // TaskManagerAPI_ServiceDesc is the grpc.ServiceDesc for TaskManagerAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -296,6 +338,11 @@ var TaskManagerAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "StreamTasks",
 			Handler:       _TaskManagerAPI_StreamTasks_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "ListenAsAgent",
+			Handler:       _TaskManagerAPI_ListenAsAgent_Handler,
 			ServerStreams: true,
 		},
 	},
