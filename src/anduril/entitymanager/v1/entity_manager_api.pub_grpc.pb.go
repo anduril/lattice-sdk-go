@@ -26,6 +26,8 @@ const (
 	EntityManagerAPI_OverrideEntity_FullMethodName         = "/anduril.entitymanager.v1.EntityManagerAPI/OverrideEntity"
 	EntityManagerAPI_RemoveEntityOverride_FullMethodName   = "/anduril.entitymanager.v1.EntityManagerAPI/RemoveEntityOverride"
 	EntityManagerAPI_DeleteEntity_FullMethodName           = "/anduril.entitymanager.v1.EntityManagerAPI/DeleteEntity"
+	EntityManagerAPI_RelateEntity_FullMethodName           = "/anduril.entitymanager.v1.EntityManagerAPI/RelateEntity"
+	EntityManagerAPI_UnrelateEntity_FullMethodName         = "/anduril.entitymanager.v1.EntityManagerAPI/UnrelateEntity"
 )
 
 // EntityManagerAPIClient is the client API for EntityManagerAPI service.
@@ -58,6 +60,11 @@ type EntityManagerAPIClient interface {
 	RemoveEntityOverride(ctx context.Context, in *RemoveEntityOverrideRequest, opts ...grpc.CallOption) (*RemoveEntityOverrideResponse, error)
 	// Delete an Entity - only works on entities created by PutEntity.
 	DeleteEntity(ctx context.Context, in *DeleteEntityRequest, opts ...grpc.CallOption) (*DeleteEntityResponse, error)
+	// Creates or Updates relationships on an Entity. All relationships that are being added in the request
+	// succeed or fail as a batch (i.e. if any one relationship is invalid, the request will fail).
+	RelateEntity(ctx context.Context, in *RelateEntityRequest, opts ...grpc.CallOption) (*RelateEntityResponse, error)
+	// Deletes relationships on an Entity.
+	UnrelateEntity(ctx context.Context, in *UnrelateEntityRequest, opts ...grpc.CallOption) (*UnrelateEntityResponse, error)
 }
 
 type entityManagerAPIClient struct {
@@ -150,6 +157,26 @@ func (c *entityManagerAPIClient) DeleteEntity(ctx context.Context, in *DeleteEnt
 	return out, nil
 }
 
+func (c *entityManagerAPIClient) RelateEntity(ctx context.Context, in *RelateEntityRequest, opts ...grpc.CallOption) (*RelateEntityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RelateEntityResponse)
+	err := c.cc.Invoke(ctx, EntityManagerAPI_RelateEntity_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *entityManagerAPIClient) UnrelateEntity(ctx context.Context, in *UnrelateEntityRequest, opts ...grpc.CallOption) (*UnrelateEntityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnrelateEntityResponse)
+	err := c.cc.Invoke(ctx, EntityManagerAPI_UnrelateEntity_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EntityManagerAPIServer is the server API for EntityManagerAPI service.
 // All implementations must embed UnimplementedEntityManagerAPIServer
 // for forward compatibility.
@@ -180,6 +207,11 @@ type EntityManagerAPIServer interface {
 	RemoveEntityOverride(context.Context, *RemoveEntityOverrideRequest) (*RemoveEntityOverrideResponse, error)
 	// Delete an Entity - only works on entities created by PutEntity.
 	DeleteEntity(context.Context, *DeleteEntityRequest) (*DeleteEntityResponse, error)
+	// Creates or Updates relationships on an Entity. All relationships that are being added in the request
+	// succeed or fail as a batch (i.e. if any one relationship is invalid, the request will fail).
+	RelateEntity(context.Context, *RelateEntityRequest) (*RelateEntityResponse, error)
+	// Deletes relationships on an Entity.
+	UnrelateEntity(context.Context, *UnrelateEntityRequest) (*UnrelateEntityResponse, error)
 	mustEmbedUnimplementedEntityManagerAPIServer()
 }
 
@@ -210,6 +242,12 @@ func (UnimplementedEntityManagerAPIServer) RemoveEntityOverride(context.Context,
 }
 func (UnimplementedEntityManagerAPIServer) DeleteEntity(context.Context, *DeleteEntityRequest) (*DeleteEntityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEntity not implemented")
+}
+func (UnimplementedEntityManagerAPIServer) RelateEntity(context.Context, *RelateEntityRequest) (*RelateEntityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RelateEntity not implemented")
+}
+func (UnimplementedEntityManagerAPIServer) UnrelateEntity(context.Context, *UnrelateEntityRequest) (*UnrelateEntityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnrelateEntity not implemented")
 }
 func (UnimplementedEntityManagerAPIServer) mustEmbedUnimplementedEntityManagerAPIServer() {}
 func (UnimplementedEntityManagerAPIServer) testEmbeddedByValue()                          {}
@@ -340,6 +378,42 @@ func _EntityManagerAPI_DeleteEntity_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EntityManagerAPI_RelateEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RelateEntityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EntityManagerAPIServer).RelateEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EntityManagerAPI_RelateEntity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EntityManagerAPIServer).RelateEntity(ctx, req.(*RelateEntityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EntityManagerAPI_UnrelateEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnrelateEntityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EntityManagerAPIServer).UnrelateEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EntityManagerAPI_UnrelateEntity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EntityManagerAPIServer).UnrelateEntity(ctx, req.(*UnrelateEntityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EntityManagerAPI_ServiceDesc is the grpc.ServiceDesc for EntityManagerAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -366,6 +440,14 @@ var EntityManagerAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteEntity",
 			Handler:    _EntityManagerAPI_DeleteEntity_Handler,
+		},
+		{
+			MethodName: "RelateEntity",
+			Handler:    _EntityManagerAPI_RelateEntity_Handler,
+		},
+		{
+			MethodName: "UnrelateEntity",
+			Handler:    _EntityManagerAPI_UnrelateEntity_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
