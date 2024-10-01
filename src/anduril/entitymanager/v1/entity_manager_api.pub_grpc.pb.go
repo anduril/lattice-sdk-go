@@ -19,22 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	EntityManagerAPI_GetEntity_FullMethodName              = "/anduril.entitymanager.v1.EntityManagerAPI/GetEntity"
-	EntityManagerAPI_StreamEntityComponents_FullMethodName = "/anduril.entitymanager.v1.EntityManagerAPI/StreamEntityComponents"
-	EntityManagerAPI_PutEntity_FullMethodName              = "/anduril.entitymanager.v1.EntityManagerAPI/PutEntity"
+	EntityManagerAPI_PublishEntity_FullMethodName          = "/anduril.entitymanager.v1.EntityManagerAPI/PublishEntity"
 	EntityManagerAPI_PublishEntities_FullMethodName        = "/anduril.entitymanager.v1.EntityManagerAPI/PublishEntities"
+	EntityManagerAPI_GetEntity_FullMethodName              = "/anduril.entitymanager.v1.EntityManagerAPI/GetEntity"
 	EntityManagerAPI_OverrideEntity_FullMethodName         = "/anduril.entitymanager.v1.EntityManagerAPI/OverrideEntity"
 	EntityManagerAPI_RemoveEntityOverride_FullMethodName   = "/anduril.entitymanager.v1.EntityManagerAPI/RemoveEntityOverride"
-	EntityManagerAPI_DeleteEntity_FullMethodName           = "/anduril.entitymanager.v1.EntityManagerAPI/DeleteEntity"
-	EntityManagerAPI_RelateEntity_FullMethodName           = "/anduril.entitymanager.v1.EntityManagerAPI/RelateEntity"
-	EntityManagerAPI_UnrelateEntity_FullMethodName         = "/anduril.entitymanager.v1.EntityManagerAPI/UnrelateEntity"
+	EntityManagerAPI_StreamEntityComponents_FullMethodName = "/anduril.entitymanager.v1.EntityManagerAPI/StreamEntityComponents"
 )
 
 // EntityManagerAPIClient is the client API for EntityManagerAPI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// The EntityManager provides a UI centric data model for understanding the entities in a battle space.
+// The Entity Manager provides a UI centric data model for understanding the entities in a battle space.
 //
 // Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a life cycle,
 // and a collection of data components. Each data component is a separate protobuf message definition.
@@ -42,29 +39,25 @@ const (
 // EntityManager provides a way to query the currently live set of entities within a set of filter constraints,
 // as well as a limited set of management APIs to change the grouping or relationships between entities.
 type EntityManagerAPIClient interface {
+	// Unary RPC to publish an entity for ingest into Entity Manager. This is the preferred RPC to integrate entities
+	// and should be used by most integrations to publish high- or low-update rate entities. Entities created with this
+	// method are "owned" by the originator: other sources, such as the UI, may not edit or delete these entities.
+	// Entities are validated at RPC call time and an error is returned if the entity is invalid.
+	PublishEntity(ctx context.Context, in *PublishEntityRequest, opts ...grpc.CallOption) (*PublishEntityResponse, error)
+	// Create or Update one or more Entities. Prefer PublishEntity instead. The same caveats of PublishEntity apply.
+	// This RPC does not return error messages for invalid entities or any other feedback from the server.
+	PublishEntities(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[PublishEntitiesRequest, PublishEntitiesResponse], error)
 	// Get a entity based on an entityId.
 	GetEntity(ctx context.Context, in *GetEntityRequest, opts ...grpc.CallOption) (*GetEntityResponse, error)
-	// Returns a stream of entity with specified components populated.
-	StreamEntityComponents(ctx context.Context, in *StreamEntityComponentsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamEntityComponentsResponse], error)
-	// Create or Update an Entity. This should be used by low update rate situations where Entity Manager is
-	// the source of truth, rather than an aggregator. The canonical example is a manually created entity.
-	// Entities created in this fashion are stored as a Base entity, overrides on top are still possible.
-	PutEntity(ctx context.Context, in *PutEntityRequest, opts ...grpc.CallOption) (*PutEntityResponse, error)
-	// Create or Update one or more Entities. This should be used during high update rate situations where the originator
-	// is both the aggregator and source of truth for the published entities, and the originator does not have
-	// the ability to directly publish to Flux.
-	PublishEntities(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[PublishEntitiesRequest, PublishEntitiesResponse], error)
-	// Override an Entity Component. Only fields marked with overridable can be overwritten.
+	// Override an Entity Component. An override is a definitive change to entity data. Any authorized user of service
+	// can override overridable components on any entity. Only fields marked with overridable can be overridden.
+	// When setting an override, the user or service setting the override is asserting that they are certain of the change
+	// and the truth behind it.
 	OverrideEntity(ctx context.Context, in *OverrideEntityRequest, opts ...grpc.CallOption) (*OverrideEntityResponse, error)
 	// Remove an override for an Entity component.
 	RemoveEntityOverride(ctx context.Context, in *RemoveEntityOverrideRequest, opts ...grpc.CallOption) (*RemoveEntityOverrideResponse, error)
-	// Delete an Entity - only works on entities created by PutEntity.
-	DeleteEntity(ctx context.Context, in *DeleteEntityRequest, opts ...grpc.CallOption) (*DeleteEntityResponse, error)
-	// Creates or Updates relationships on an Entity. All relationships that are being added in the request
-	// succeed or fail as a batch (i.e. if any one relationship is invalid, the request will fail).
-	RelateEntity(ctx context.Context, in *RelateEntityRequest, opts ...grpc.CallOption) (*RelateEntityResponse, error)
-	// Deletes relationships on an Entity.
-	UnrelateEntity(ctx context.Context, in *UnrelateEntityRequest, opts ...grpc.CallOption) (*UnrelateEntityResponse, error)
+	// Returns a stream of entity with specified components populated.
+	StreamEntityComponents(ctx context.Context, in *StreamEntityComponentsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamEntityComponentsResponse], error)
 }
 
 type entityManagerAPIClient struct {
@@ -75,39 +68,10 @@ func NewEntityManagerAPIClient(cc grpc.ClientConnInterface) EntityManagerAPIClie
 	return &entityManagerAPIClient{cc}
 }
 
-func (c *entityManagerAPIClient) GetEntity(ctx context.Context, in *GetEntityRequest, opts ...grpc.CallOption) (*GetEntityResponse, error) {
+func (c *entityManagerAPIClient) PublishEntity(ctx context.Context, in *PublishEntityRequest, opts ...grpc.CallOption) (*PublishEntityResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetEntityResponse)
-	err := c.cc.Invoke(ctx, EntityManagerAPI_GetEntity_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *entityManagerAPIClient) StreamEntityComponents(ctx context.Context, in *StreamEntityComponentsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamEntityComponentsResponse], error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &EntityManagerAPI_ServiceDesc.Streams[0], EntityManagerAPI_StreamEntityComponents_FullMethodName, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &grpc.GenericClientStream[StreamEntityComponentsRequest, StreamEntityComponentsResponse]{ClientStream: stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type EntityManagerAPI_StreamEntityComponentsClient = grpc.ServerStreamingClient[StreamEntityComponentsResponse]
-
-func (c *entityManagerAPIClient) PutEntity(ctx context.Context, in *PutEntityRequest, opts ...grpc.CallOption) (*PutEntityResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PutEntityResponse)
-	err := c.cc.Invoke(ctx, EntityManagerAPI_PutEntity_FullMethodName, in, out, cOpts...)
+	out := new(PublishEntityResponse)
+	err := c.cc.Invoke(ctx, EntityManagerAPI_PublishEntity_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +80,7 @@ func (c *entityManagerAPIClient) PutEntity(ctx context.Context, in *PutEntityReq
 
 func (c *entityManagerAPIClient) PublishEntities(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[PublishEntitiesRequest, PublishEntitiesResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &EntityManagerAPI_ServiceDesc.Streams[1], EntityManagerAPI_PublishEntities_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &EntityManagerAPI_ServiceDesc.Streams[0], EntityManagerAPI_PublishEntities_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -126,6 +90,16 @@ func (c *entityManagerAPIClient) PublishEntities(ctx context.Context, opts ...gr
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type EntityManagerAPI_PublishEntitiesClient = grpc.ClientStreamingClient[PublishEntitiesRequest, PublishEntitiesResponse]
+
+func (c *entityManagerAPIClient) GetEntity(ctx context.Context, in *GetEntityRequest, opts ...grpc.CallOption) (*GetEntityResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetEntityResponse)
+	err := c.cc.Invoke(ctx, EntityManagerAPI_GetEntity_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 func (c *entityManagerAPIClient) OverrideEntity(ctx context.Context, in *OverrideEntityRequest, opts ...grpc.CallOption) (*OverrideEntityResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -147,41 +121,30 @@ func (c *entityManagerAPIClient) RemoveEntityOverride(ctx context.Context, in *R
 	return out, nil
 }
 
-func (c *entityManagerAPIClient) DeleteEntity(ctx context.Context, in *DeleteEntityRequest, opts ...grpc.CallOption) (*DeleteEntityResponse, error) {
+func (c *entityManagerAPIClient) StreamEntityComponents(ctx context.Context, in *StreamEntityComponentsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamEntityComponentsResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteEntityResponse)
-	err := c.cc.Invoke(ctx, EntityManagerAPI_DeleteEntity_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &EntityManagerAPI_ServiceDesc.Streams[1], EntityManagerAPI_StreamEntityComponents_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &grpc.GenericClientStream[StreamEntityComponentsRequest, StreamEntityComponentsResponse]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
 }
 
-func (c *entityManagerAPIClient) RelateEntity(ctx context.Context, in *RelateEntityRequest, opts ...grpc.CallOption) (*RelateEntityResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RelateEntityResponse)
-	err := c.cc.Invoke(ctx, EntityManagerAPI_RelateEntity_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *entityManagerAPIClient) UnrelateEntity(ctx context.Context, in *UnrelateEntityRequest, opts ...grpc.CallOption) (*UnrelateEntityResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UnrelateEntityResponse)
-	err := c.cc.Invoke(ctx, EntityManagerAPI_UnrelateEntity_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type EntityManagerAPI_StreamEntityComponentsClient = grpc.ServerStreamingClient[StreamEntityComponentsResponse]
 
 // EntityManagerAPIServer is the server API for EntityManagerAPI service.
 // All implementations must embed UnimplementedEntityManagerAPIServer
 // for forward compatibility.
 //
-// The EntityManager provides a UI centric data model for understanding the entities in a battle space.
+// The Entity Manager provides a UI centric data model for understanding the entities in a battle space.
 //
 // Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a life cycle,
 // and a collection of data components. Each data component is a separate protobuf message definition.
@@ -189,29 +152,25 @@ func (c *entityManagerAPIClient) UnrelateEntity(ctx context.Context, in *Unrelat
 // EntityManager provides a way to query the currently live set of entities within a set of filter constraints,
 // as well as a limited set of management APIs to change the grouping or relationships between entities.
 type EntityManagerAPIServer interface {
+	// Unary RPC to publish an entity for ingest into Entity Manager. This is the preferred RPC to integrate entities
+	// and should be used by most integrations to publish high- or low-update rate entities. Entities created with this
+	// method are "owned" by the originator: other sources, such as the UI, may not edit or delete these entities.
+	// Entities are validated at RPC call time and an error is returned if the entity is invalid.
+	PublishEntity(context.Context, *PublishEntityRequest) (*PublishEntityResponse, error)
+	// Create or Update one or more Entities. Prefer PublishEntity instead. The same caveats of PublishEntity apply.
+	// This RPC does not return error messages for invalid entities or any other feedback from the server.
+	PublishEntities(grpc.ClientStreamingServer[PublishEntitiesRequest, PublishEntitiesResponse]) error
 	// Get a entity based on an entityId.
 	GetEntity(context.Context, *GetEntityRequest) (*GetEntityResponse, error)
-	// Returns a stream of entity with specified components populated.
-	StreamEntityComponents(*StreamEntityComponentsRequest, grpc.ServerStreamingServer[StreamEntityComponentsResponse]) error
-	// Create or Update an Entity. This should be used by low update rate situations where Entity Manager is
-	// the source of truth, rather than an aggregator. The canonical example is a manually created entity.
-	// Entities created in this fashion are stored as a Base entity, overrides on top are still possible.
-	PutEntity(context.Context, *PutEntityRequest) (*PutEntityResponse, error)
-	// Create or Update one or more Entities. This should be used during high update rate situations where the originator
-	// is both the aggregator and source of truth for the published entities, and the originator does not have
-	// the ability to directly publish to Flux.
-	PublishEntities(grpc.ClientStreamingServer[PublishEntitiesRequest, PublishEntitiesResponse]) error
-	// Override an Entity Component. Only fields marked with overridable can be overwritten.
+	// Override an Entity Component. An override is a definitive change to entity data. Any authorized user of service
+	// can override overridable components on any entity. Only fields marked with overridable can be overridden.
+	// When setting an override, the user or service setting the override is asserting that they are certain of the change
+	// and the truth behind it.
 	OverrideEntity(context.Context, *OverrideEntityRequest) (*OverrideEntityResponse, error)
 	// Remove an override for an Entity component.
 	RemoveEntityOverride(context.Context, *RemoveEntityOverrideRequest) (*RemoveEntityOverrideResponse, error)
-	// Delete an Entity - only works on entities created by PutEntity.
-	DeleteEntity(context.Context, *DeleteEntityRequest) (*DeleteEntityResponse, error)
-	// Creates or Updates relationships on an Entity. All relationships that are being added in the request
-	// succeed or fail as a batch (i.e. if any one relationship is invalid, the request will fail).
-	RelateEntity(context.Context, *RelateEntityRequest) (*RelateEntityResponse, error)
-	// Deletes relationships on an Entity.
-	UnrelateEntity(context.Context, *UnrelateEntityRequest) (*UnrelateEntityResponse, error)
+	// Returns a stream of entity with specified components populated.
+	StreamEntityComponents(*StreamEntityComponentsRequest, grpc.ServerStreamingServer[StreamEntityComponentsResponse]) error
 	mustEmbedUnimplementedEntityManagerAPIServer()
 }
 
@@ -222,17 +181,14 @@ type EntityManagerAPIServer interface {
 // pointer dereference when methods are called.
 type UnimplementedEntityManagerAPIServer struct{}
 
-func (UnimplementedEntityManagerAPIServer) GetEntity(context.Context, *GetEntityRequest) (*GetEntityResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetEntity not implemented")
-}
-func (UnimplementedEntityManagerAPIServer) StreamEntityComponents(*StreamEntityComponentsRequest, grpc.ServerStreamingServer[StreamEntityComponentsResponse]) error {
-	return status.Errorf(codes.Unimplemented, "method StreamEntityComponents not implemented")
-}
-func (UnimplementedEntityManagerAPIServer) PutEntity(context.Context, *PutEntityRequest) (*PutEntityResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutEntity not implemented")
+func (UnimplementedEntityManagerAPIServer) PublishEntity(context.Context, *PublishEntityRequest) (*PublishEntityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PublishEntity not implemented")
 }
 func (UnimplementedEntityManagerAPIServer) PublishEntities(grpc.ClientStreamingServer[PublishEntitiesRequest, PublishEntitiesResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method PublishEntities not implemented")
+}
+func (UnimplementedEntityManagerAPIServer) GetEntity(context.Context, *GetEntityRequest) (*GetEntityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEntity not implemented")
 }
 func (UnimplementedEntityManagerAPIServer) OverrideEntity(context.Context, *OverrideEntityRequest) (*OverrideEntityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OverrideEntity not implemented")
@@ -240,14 +196,8 @@ func (UnimplementedEntityManagerAPIServer) OverrideEntity(context.Context, *Over
 func (UnimplementedEntityManagerAPIServer) RemoveEntityOverride(context.Context, *RemoveEntityOverrideRequest) (*RemoveEntityOverrideResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveEntityOverride not implemented")
 }
-func (UnimplementedEntityManagerAPIServer) DeleteEntity(context.Context, *DeleteEntityRequest) (*DeleteEntityResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteEntity not implemented")
-}
-func (UnimplementedEntityManagerAPIServer) RelateEntity(context.Context, *RelateEntityRequest) (*RelateEntityResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RelateEntity not implemented")
-}
-func (UnimplementedEntityManagerAPIServer) UnrelateEntity(context.Context, *UnrelateEntityRequest) (*UnrelateEntityResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnrelateEntity not implemented")
+func (UnimplementedEntityManagerAPIServer) StreamEntityComponents(*StreamEntityComponentsRequest, grpc.ServerStreamingServer[StreamEntityComponentsResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamEntityComponents not implemented")
 }
 func (UnimplementedEntityManagerAPIServer) mustEmbedUnimplementedEntityManagerAPIServer() {}
 func (UnimplementedEntityManagerAPIServer) testEmbeddedByValue()                          {}
@@ -270,6 +220,31 @@ func RegisterEntityManagerAPIServer(s grpc.ServiceRegistrar, srv EntityManagerAP
 	s.RegisterService(&EntityManagerAPI_ServiceDesc, srv)
 }
 
+func _EntityManagerAPI_PublishEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PublishEntityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EntityManagerAPIServer).PublishEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EntityManagerAPI_PublishEntity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EntityManagerAPIServer).PublishEntity(ctx, req.(*PublishEntityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _EntityManagerAPI_PublishEntities_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(EntityManagerAPIServer).PublishEntities(&grpc.GenericServerStream[PublishEntitiesRequest, PublishEntitiesResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type EntityManagerAPI_PublishEntitiesServer = grpc.ClientStreamingServer[PublishEntitiesRequest, PublishEntitiesResponse]
+
 func _EntityManagerAPI_GetEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetEntityRequest)
 	if err := dec(in); err != nil {
@@ -287,42 +262,6 @@ func _EntityManagerAPI_GetEntity_Handler(srv interface{}, ctx context.Context, d
 	}
 	return interceptor(ctx, in, info, handler)
 }
-
-func _EntityManagerAPI_StreamEntityComponents_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(StreamEntityComponentsRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(EntityManagerAPIServer).StreamEntityComponents(m, &grpc.GenericServerStream[StreamEntityComponentsRequest, StreamEntityComponentsResponse]{ServerStream: stream})
-}
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type EntityManagerAPI_StreamEntityComponentsServer = grpc.ServerStreamingServer[StreamEntityComponentsResponse]
-
-func _EntityManagerAPI_PutEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutEntityRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EntityManagerAPIServer).PutEntity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: EntityManagerAPI_PutEntity_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EntityManagerAPIServer).PutEntity(ctx, req.(*PutEntityRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _EntityManagerAPI_PublishEntities_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(EntityManagerAPIServer).PublishEntities(&grpc.GenericServerStream[PublishEntitiesRequest, PublishEntitiesResponse]{ServerStream: stream})
-}
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type EntityManagerAPI_PublishEntitiesServer = grpc.ClientStreamingServer[PublishEntitiesRequest, PublishEntitiesResponse]
 
 func _EntityManagerAPI_OverrideEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(OverrideEntityRequest)
@@ -360,59 +299,16 @@ func _EntityManagerAPI_RemoveEntityOverride_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _EntityManagerAPI_DeleteEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteEntityRequest)
-	if err := dec(in); err != nil {
-		return nil, err
+func _EntityManagerAPI_StreamEntityComponents_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(StreamEntityComponentsRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
 	}
-	if interceptor == nil {
-		return srv.(EntityManagerAPIServer).DeleteEntity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: EntityManagerAPI_DeleteEntity_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EntityManagerAPIServer).DeleteEntity(ctx, req.(*DeleteEntityRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return srv.(EntityManagerAPIServer).StreamEntityComponents(m, &grpc.GenericServerStream[StreamEntityComponentsRequest, StreamEntityComponentsResponse]{ServerStream: stream})
 }
 
-func _EntityManagerAPI_RelateEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RelateEntityRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EntityManagerAPIServer).RelateEntity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: EntityManagerAPI_RelateEntity_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EntityManagerAPIServer).RelateEntity(ctx, req.(*RelateEntityRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _EntityManagerAPI_UnrelateEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UnrelateEntityRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EntityManagerAPIServer).UnrelateEntity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: EntityManagerAPI_UnrelateEntity_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EntityManagerAPIServer).UnrelateEntity(ctx, req.(*UnrelateEntityRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type EntityManagerAPI_StreamEntityComponentsServer = grpc.ServerStreamingServer[StreamEntityComponentsResponse]
 
 // EntityManagerAPI_ServiceDesc is the grpc.ServiceDesc for EntityManagerAPI service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -422,12 +318,12 @@ var EntityManagerAPI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*EntityManagerAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetEntity",
-			Handler:    _EntityManagerAPI_GetEntity_Handler,
+			MethodName: "PublishEntity",
+			Handler:    _EntityManagerAPI_PublishEntity_Handler,
 		},
 		{
-			MethodName: "PutEntity",
-			Handler:    _EntityManagerAPI_PutEntity_Handler,
+			MethodName: "GetEntity",
+			Handler:    _EntityManagerAPI_GetEntity_Handler,
 		},
 		{
 			MethodName: "OverrideEntity",
@@ -437,29 +333,17 @@ var EntityManagerAPI_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "RemoveEntityOverride",
 			Handler:    _EntityManagerAPI_RemoveEntityOverride_Handler,
 		},
-		{
-			MethodName: "DeleteEntity",
-			Handler:    _EntityManagerAPI_DeleteEntity_Handler,
-		},
-		{
-			MethodName: "RelateEntity",
-			Handler:    _EntityManagerAPI_RelateEntity_Handler,
-		},
-		{
-			MethodName: "UnrelateEntity",
-			Handler:    _EntityManagerAPI_UnrelateEntity_Handler,
-		},
 	},
 	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "StreamEntityComponents",
-			Handler:       _EntityManagerAPI_StreamEntityComponents_Handler,
-			ServerStreams: true,
-		},
 		{
 			StreamName:    "PublishEntities",
 			Handler:       _EntityManagerAPI_PublishEntities_Handler,
 			ClientStreams: true,
+		},
+		{
+			StreamName:    "StreamEntityComponents",
+			Handler:       _EntityManagerAPI_StreamEntityComponents_Handler,
+			ServerStreams: true,
 		},
 	},
 	Metadata: "anduril/entitymanager/v1/entity_manager_api.pub.proto",
