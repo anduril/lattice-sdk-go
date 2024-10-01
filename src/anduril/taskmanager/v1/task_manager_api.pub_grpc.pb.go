@@ -21,9 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	TaskManagerAPI_CreateTask_FullMethodName    = "/anduril.taskmanager.v1.TaskManagerAPI/CreateTask"
 	TaskManagerAPI_GetTask_FullMethodName       = "/anduril.taskmanager.v1.TaskManagerAPI/GetTask"
-	TaskManagerAPI_UpdateTask_FullMethodName    = "/anduril.taskmanager.v1.TaskManagerAPI/UpdateTask"
+	TaskManagerAPI_QueryTasks_FullMethodName    = "/anduril.taskmanager.v1.TaskManagerAPI/QueryTasks"
 	TaskManagerAPI_UpdateStatus_FullMethodName  = "/anduril.taskmanager.v1.TaskManagerAPI/UpdateStatus"
-	TaskManagerAPI_StreamTasks_FullMethodName   = "/anduril.taskmanager.v1.TaskManagerAPI/StreamTasks"
 	TaskManagerAPI_ListenAsAgent_FullMethodName = "/anduril.taskmanager.v1.TaskManagerAPI/ListenAsAgent"
 )
 
@@ -32,24 +31,16 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // Task Manager is a service that performs state management associated with Tasks, and also the execution of Tasks
-//
-//	on their designated agents.
+// on their designated agents.
 type TaskManagerAPIClient interface {
 	// Create a new Task.
 	CreateTask(ctx context.Context, in *CreateTaskRequest, opts ...grpc.CallOption) (*CreateTaskResponse, error)
 	// Get an existing Task.
 	GetTask(ctx context.Context, in *GetTaskRequest, opts ...grpc.CallOption) (*GetTaskResponse, error)
-	// Update definition of a Task, only works on Tasks that are not DONE or CANCEL_REQUESTED. Notes:
-	//   - send the current task_version in Task, API will increment definition_version, and reset status_version to 1.
-	//   - previous definition_version will have status set to REPLACED.
-	//   - depending on assignee, replacing the definition will either update if capable on backend,
-	//     or cancel previous and issue new.
-	UpdateTask(ctx context.Context, in *UpdateTaskRequest, opts ...grpc.CallOption) (*UpdateTaskResponse, error)
+	// Find Tasks that match request criteria.
+	QueryTasks(ctx context.Context, in *QueryTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error)
 	// Update the status of a Task.
 	UpdateStatus(ctx context.Context, in *UpdateStatusRequest, opts ...grpc.CallOption) (*UpdateStatusResponse, error)
-	// Stream all existing live (not yet done) Tasks and any new updates.
-	// Intended for clients to gain visibility into real time updates for live Tasks.
-	StreamTasks(ctx context.Context, in *StreamTasksRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamTasksResponse], error)
 	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
 	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC (no Flux access)
 	ListenAsAgent(ctx context.Context, in *ListenAsAgentRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ListenAsAgentResponse], error)
@@ -83,10 +74,10 @@ func (c *taskManagerAPIClient) GetTask(ctx context.Context, in *GetTaskRequest, 
 	return out, nil
 }
 
-func (c *taskManagerAPIClient) UpdateTask(ctx context.Context, in *UpdateTaskRequest, opts ...grpc.CallOption) (*UpdateTaskResponse, error) {
+func (c *taskManagerAPIClient) QueryTasks(ctx context.Context, in *QueryTasksRequest, opts ...grpc.CallOption) (*QueryTasksResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateTaskResponse)
-	err := c.cc.Invoke(ctx, TaskManagerAPI_UpdateTask_FullMethodName, in, out, cOpts...)
+	out := new(QueryTasksResponse)
+	err := c.cc.Invoke(ctx, TaskManagerAPI_QueryTasks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,28 +94,9 @@ func (c *taskManagerAPIClient) UpdateStatus(ctx context.Context, in *UpdateStatu
 	return out, nil
 }
 
-func (c *taskManagerAPIClient) StreamTasks(ctx context.Context, in *StreamTasksRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamTasksResponse], error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &TaskManagerAPI_ServiceDesc.Streams[0], TaskManagerAPI_StreamTasks_FullMethodName, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &grpc.GenericClientStream[StreamTasksRequest, StreamTasksResponse]{ClientStream: stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type TaskManagerAPI_StreamTasksClient = grpc.ServerStreamingClient[StreamTasksResponse]
-
 func (c *taskManagerAPIClient) ListenAsAgent(ctx context.Context, in *ListenAsAgentRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ListenAsAgentResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &TaskManagerAPI_ServiceDesc.Streams[1], TaskManagerAPI_ListenAsAgent_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &TaskManagerAPI_ServiceDesc.Streams[0], TaskManagerAPI_ListenAsAgent_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -146,24 +118,16 @@ type TaskManagerAPI_ListenAsAgentClient = grpc.ServerStreamingClient[ListenAsAge
 // for forward compatibility.
 //
 // Task Manager is a service that performs state management associated with Tasks, and also the execution of Tasks
-//
-//	on their designated agents.
+// on their designated agents.
 type TaskManagerAPIServer interface {
 	// Create a new Task.
 	CreateTask(context.Context, *CreateTaskRequest) (*CreateTaskResponse, error)
 	// Get an existing Task.
 	GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error)
-	// Update definition of a Task, only works on Tasks that are not DONE or CANCEL_REQUESTED. Notes:
-	//   - send the current task_version in Task, API will increment definition_version, and reset status_version to 1.
-	//   - previous definition_version will have status set to REPLACED.
-	//   - depending on assignee, replacing the definition will either update if capable on backend,
-	//     or cancel previous and issue new.
-	UpdateTask(context.Context, *UpdateTaskRequest) (*UpdateTaskResponse, error)
+	// Find Tasks that match request criteria.
+	QueryTasks(context.Context, *QueryTasksRequest) (*QueryTasksResponse, error)
 	// Update the status of a Task.
 	UpdateStatus(context.Context, *UpdateStatusRequest) (*UpdateStatusResponse, error)
-	// Stream all existing live (not yet done) Tasks and any new updates.
-	// Intended for clients to gain visibility into real time updates for live Tasks.
-	StreamTasks(*StreamTasksRequest, grpc.ServerStreamingServer[StreamTasksResponse]) error
 	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
 	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC (no Flux access)
 	ListenAsAgent(*ListenAsAgentRequest, grpc.ServerStreamingServer[ListenAsAgentResponse]) error
@@ -183,14 +147,11 @@ func (UnimplementedTaskManagerAPIServer) CreateTask(context.Context, *CreateTask
 func (UnimplementedTaskManagerAPIServer) GetTask(context.Context, *GetTaskRequest) (*GetTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTask not implemented")
 }
-func (UnimplementedTaskManagerAPIServer) UpdateTask(context.Context, *UpdateTaskRequest) (*UpdateTaskResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateTask not implemented")
+func (UnimplementedTaskManagerAPIServer) QueryTasks(context.Context, *QueryTasksRequest) (*QueryTasksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryTasks not implemented")
 }
 func (UnimplementedTaskManagerAPIServer) UpdateStatus(context.Context, *UpdateStatusRequest) (*UpdateStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateStatus not implemented")
-}
-func (UnimplementedTaskManagerAPIServer) StreamTasks(*StreamTasksRequest, grpc.ServerStreamingServer[StreamTasksResponse]) error {
-	return status.Errorf(codes.Unimplemented, "method StreamTasks not implemented")
 }
 func (UnimplementedTaskManagerAPIServer) ListenAsAgent(*ListenAsAgentRequest, grpc.ServerStreamingServer[ListenAsAgentResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method ListenAsAgent not implemented")
@@ -252,20 +213,20 @@ func _TaskManagerAPI_GetTask_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TaskManagerAPI_UpdateTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateTaskRequest)
+func _TaskManagerAPI_QueryTasks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTasksRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TaskManagerAPIServer).UpdateTask(ctx, in)
+		return srv.(TaskManagerAPIServer).QueryTasks(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: TaskManagerAPI_UpdateTask_FullMethodName,
+		FullMethod: TaskManagerAPI_QueryTasks_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TaskManagerAPIServer).UpdateTask(ctx, req.(*UpdateTaskRequest))
+		return srv.(TaskManagerAPIServer).QueryTasks(ctx, req.(*QueryTasksRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -287,17 +248,6 @@ func _TaskManagerAPI_UpdateStatus_Handler(srv interface{}, ctx context.Context, 
 	}
 	return interceptor(ctx, in, info, handler)
 }
-
-func _TaskManagerAPI_StreamTasks_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(StreamTasksRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(TaskManagerAPIServer).StreamTasks(m, &grpc.GenericServerStream[StreamTasksRequest, StreamTasksResponse]{ServerStream: stream})
-}
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type TaskManagerAPI_StreamTasksServer = grpc.ServerStreamingServer[StreamTasksResponse]
 
 func _TaskManagerAPI_ListenAsAgent_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(ListenAsAgentRequest)
@@ -326,8 +276,8 @@ var TaskManagerAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TaskManagerAPI_GetTask_Handler,
 		},
 		{
-			MethodName: "UpdateTask",
-			Handler:    _TaskManagerAPI_UpdateTask_Handler,
+			MethodName: "QueryTasks",
+			Handler:    _TaskManagerAPI_QueryTasks_Handler,
 		},
 		{
 			MethodName: "UpdateStatus",
@@ -335,11 +285,6 @@ var TaskManagerAPI_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "StreamTasks",
-			Handler:       _TaskManagerAPI_StreamTasks_Handler,
-			ServerStreams: true,
-		},
 		{
 			StreamName:    "ListenAsAgent",
 			Handler:       _TaskManagerAPI_ListenAsAgent_Handler,
