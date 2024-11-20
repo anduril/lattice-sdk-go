@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: anduril/taskmanager/v1/task_manager_api.pub.proto
+// source: anduril/taskmanager/v1/task_manager_grpcapi.pub.proto
 
 package taskmanagerv1
 
@@ -42,7 +42,7 @@ type TaskManagerAPIClient interface {
 	// Update the status of a Task.
 	UpdateStatus(ctx context.Context, in *UpdateStatusRequest, opts ...grpc.CallOption) (*UpdateStatusResponse, error)
 	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
-	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC (no Flux access)
+	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC
 	ListenAsAgent(ctx context.Context, in *ListenAsAgentRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ListenAsAgentResponse], error)
 }
 
@@ -129,7 +129,7 @@ type TaskManagerAPIServer interface {
 	// Update the status of a Task.
 	UpdateStatus(context.Context, *UpdateStatusRequest) (*UpdateStatusResponse, error)
 	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
-	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC (no Flux access)
+	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC
 	ListenAsAgent(*ListenAsAgentRequest, grpc.ServerStreamingServer[ListenAsAgentResponse]) error
 	mustEmbedUnimplementedTaskManagerAPIServer()
 }
@@ -291,5 +291,5 @@ var TaskManagerAPI_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "anduril/taskmanager/v1/task_manager_api.pub.proto",
+	Metadata: "anduril/taskmanager/v1/task_manager_grpcapi.pub.proto",
 }

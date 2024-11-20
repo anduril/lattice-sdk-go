@@ -37,9 +37,9 @@ const (
 	AltIdType_ALT_ID_TYPE_TRACK_REPO_ALERT_ID AltIdType = 4
 	// an Anduril AssetId
 	AltIdType_ALT_ID_TYPE_ASSET_ID AltIdType = 5
-	// Use for Link 16 track identifiers for non-JTIDS Unit (JU) entities, such as assets (STN) and tracks (RefTN). Values range from AA000 to ZZ777.
+	// Use for Link 16 track identifiers for non-JTIDS Unit entities.
 	AltIdType_ALT_ID_TYPE_LINK16_TRACK_NUMBER AltIdType = 6
-	// Use for Link 16 JTIDS Unit (JU) identifiers. Applicable to assets representing JUs, with values ranging from 00001 to 77777.
+	// Use for Link 16 JTIDS Unit identifiers.
 	AltIdType_ALT_ID_TYPE_LINK16_JU AltIdType = 7
 	// an NCCT message ID
 	AltIdType_ALT_ID_TYPE_NCCT_MESSAGE_ID AltIdType = 8
@@ -65,14 +65,11 @@ const (
 	AltIdType_ALT_ID_TYPE_REGISTRATION_ID AltIdType = 16
 	// Integrated Broadcast Service Common Message Format Global Identifier
 	AltIdType_ALT_ID_TYPE_IBS_GID AltIdType = 17
-	// Department of Defense Activity Address Code uniquely identifies a unit, activity, or organization with the DoDAAD. A single unit could have multiple DoDAACs
+	// Department of Defense Activity Address Code.
 	AltIdType_ALT_ID_TYPE_DODAAC AltIdType = 18
 	// Unit Identification Code uniquely identifies each US Department of Defense entity
 	AltIdType_ALT_ID_TYPE_UIC AltIdType = 19
-	// A NORAD Satellite Catalog Number, a 9-digit number uniquely representing orbital objects around Earth. This is
-	// the standard ID used for satellites by the DOD.
-	// Note that there is ongoing work to replace the 9-digit number with a 9-digit alphanumeric sequence to accommodate
-	// ever-increasing numbers of satellites (and space debris). Treat the accompanied ID field as alphanumeric instead
+	// A NORAD Satellite Catalog Number, a 9-digit number uniquely representing orbital objects around Earth.
 	// of strictly numeric.
 	AltIdType_ALT_ID_TYPE_NORAD_CAT_ID AltIdType = 20
 	// Space object name. If populated, use names from the UN Office
