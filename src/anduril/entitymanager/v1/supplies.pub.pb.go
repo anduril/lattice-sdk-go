@@ -206,12 +206,11 @@ type Munition struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// unique munition identifier (for the DoD would be called a munition code. e.g., AGM-114 for the AGM-114 Hellfire missile)
-	// no "componentIdentifier" field option included. It may be possible munitions with the same identifier (e.g., AGM-114)
-	// but different condition codes or quantities (e.g., qty 4 in condition A but qty 2 in condition F) are included in the
+	// unique munition identifier (for the DoD would be called a munition code). It may be possible munitions with the same identifier
+	// but different condition codes or quantities (e.g., qty 4 in condition A but qty 2 in condition F) to be included in the
 	// repeated munitions field of the supplies message.
 	MunitionId string `protobuf:"bytes,1,opt,name=munition_id,json=munitionId,proto3" json:"munition_id,omitempty"`
-	// long form name of the munition (e.g., AGM-114 Hellfire)
+	// long form name of the munition
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// condition of the munitions (maintained as a "oneof" condition to accommodate future non-DoD specific condition identifiers)
 	//
@@ -324,13 +323,13 @@ type Fuel struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// unique munition identifier (for the DoD would be called a munition code. e.g., AGM-114 for the AGM-114 Hellfire missile)
+	// unique fuel identifier
 	FuelId string `protobuf:"bytes,1,opt,name=fuel_id,json=fuelId,proto3" json:"fuel_id,omitempty"`
-	// long form name of the munition (e.g., AGM-114 Hellfire)
+	// long form name of the fuel source.
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// timestamp the information was reported
 	ReportedDate *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=reported_date,json=reportedDate,proto3" json:"reported_date,omitempty"`
-	// amount on hand of the unit of measure
+	// amount of gallons on hand
 	AmountGallons uint32 `protobuf:"varint,4,opt,name=amount_gallons,json=amountGallons,proto3" json:"amount_gallons,omitempty"`
 	// how much the asset is allowed to have available (in gallons)
 	MaxAuthorizedCapacityGallons uint32 `protobuf:"varint,5,opt,name=max_authorized_capacity_gallons,json=maxAuthorizedCapacityGallons,proto3" json:"max_authorized_capacity_gallons,omitempty"`
