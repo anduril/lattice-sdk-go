@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: anduril/entitymanager/v1/entity_manager_api.pub.proto
+// source: anduril/entitymanager/v1/entity_manager_grpcapi.pub.proto
 
 package entitymanagerv1
 
@@ -31,21 +31,22 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// The Entity Manager provides a UI centric data model for understanding the entities in a battle space.
+// Entity Manager manages the lifecycle of the entities that comprise the common operational picture.
 //
-// Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a life cycle,
+// Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a lifecycle
 // and a collection of data components. Each data component is a separate protobuf message definition.
 //
-// EntityManager provides a way to query the currently live set of entities within a set of filter constraints,
+// Entity Manager provides a way to query the currently live set of entities within a set of filter constraints,
 // as well as a limited set of management APIs to change the grouping or relationships between entities.
 type EntityManagerAPIClient interface {
-	// Unary RPC to publish an entity for ingest into Entity Manager. This is the preferred RPC to integrate entities
-	// and should be used by most integrations to publish high- or low-update rate entities. Entities created with this
-	// method are "owned" by the originator: other sources, such as the UI, may not edit or delete these entities.
-	// Entities are validated at RPC call time and an error is returned if the entity is invalid.
+	// Publishes an entity for ingestion by Entity Manager. You "own" the entity you create using PublishEntity;
+	// other sources, such as the UI, may not edit or delete these entities.
+	// When called, PublishEntity validates the entity and returns an error if the entity is invalid. We recommend using PublishEntity to publish high- or
+	// low-update rate entities.
 	PublishEntity(ctx context.Context, in *PublishEntityRequest, opts ...grpc.CallOption) (*PublishEntityResponse, error)
-	// Create or Update one or more Entities. Prefer PublishEntity instead. The same caveats of PublishEntity apply.
-	// This RPC does not return error messages for invalid entities or any other feedback from the server.
+	// Creates or updates one or more entities. You "own" the entity you create using PublishEntities; other sources may not edit or delete these entities.
+	// Note that PublishEntities doesn't return error messages for invalid entities or provide any other feedback from the server. We recommend using PublishEntity instead.
+	// We only recommend switching to PublishEntities if you publish at an extremely high rate and find that waiting for a response from the server causes your publishing task to fall behind.
 	PublishEntities(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[PublishEntitiesRequest, PublishEntitiesResponse], error)
 	// Get a entity based on an entityId.
 	GetEntity(ctx context.Context, in *GetEntityRequest, opts ...grpc.CallOption) (*GetEntityResponse, error)
@@ -144,21 +145,22 @@ type EntityManagerAPI_StreamEntityComponentsClient = grpc.ServerStreamingClient[
 // All implementations must embed UnimplementedEntityManagerAPIServer
 // for forward compatibility.
 //
-// The Entity Manager provides a UI centric data model for understanding the entities in a battle space.
+// Entity Manager manages the lifecycle of the entities that comprise the common operational picture.
 //
-// Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a life cycle,
+// Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a lifecycle
 // and a collection of data components. Each data component is a separate protobuf message definition.
 //
-// EntityManager provides a way to query the currently live set of entities within a set of filter constraints,
+// Entity Manager provides a way to query the currently live set of entities within a set of filter constraints,
 // as well as a limited set of management APIs to change the grouping or relationships between entities.
 type EntityManagerAPIServer interface {
-	// Unary RPC to publish an entity for ingest into Entity Manager. This is the preferred RPC to integrate entities
-	// and should be used by most integrations to publish high- or low-update rate entities. Entities created with this
-	// method are "owned" by the originator: other sources, such as the UI, may not edit or delete these entities.
-	// Entities are validated at RPC call time and an error is returned if the entity is invalid.
+	// Publishes an entity for ingestion by Entity Manager. You "own" the entity you create using PublishEntity;
+	// other sources, such as the UI, may not edit or delete these entities.
+	// When called, PublishEntity validates the entity and returns an error if the entity is invalid. We recommend using PublishEntity to publish high- or
+	// low-update rate entities.
 	PublishEntity(context.Context, *PublishEntityRequest) (*PublishEntityResponse, error)
-	// Create or Update one or more Entities. Prefer PublishEntity instead. The same caveats of PublishEntity apply.
-	// This RPC does not return error messages for invalid entities or any other feedback from the server.
+	// Creates or updates one or more entities. You "own" the entity you create using PublishEntities; other sources may not edit or delete these entities.
+	// Note that PublishEntities doesn't return error messages for invalid entities or provide any other feedback from the server. We recommend using PublishEntity instead.
+	// We only recommend switching to PublishEntities if you publish at an extremely high rate and find that waiting for a response from the server causes your publishing task to fall behind.
 	PublishEntities(grpc.ClientStreamingServer[PublishEntitiesRequest, PublishEntitiesResponse]) error
 	// Get a entity based on an entityId.
 	GetEntity(context.Context, *GetEntityRequest) (*GetEntityResponse, error)
@@ -346,5 +348,5 @@ var EntityManagerAPI_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "anduril/entitymanager/v1/entity_manager_api.pub.proto",
+	Metadata: "anduril/entitymanager/v1/entity_manager_grpcapi.pub.proto",
 }
