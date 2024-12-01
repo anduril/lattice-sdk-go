@@ -80,14 +80,11 @@ type TransponderCodes struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The mode 1 code assigned to military assets. Mode 1 is a 5-bit decimal (1-31) value. Note that Mode 1 codes are
-	// NOT unique. A zero mode code indicates No Statement.
+	// The mode 1 code assigned to military assets.
 	Mode1 uint32 `protobuf:"varint,1,opt,name=mode1,proto3" json:"mode1,omitempty"`
-	// The Mode 2 code assigned to military assets. Mode 2 is a 12-bit decimal (1-4095) value. If displaying to a user,
-	// convert to 4 digit octal 0001-7777. Note that Mode 2 codes are NOT unique. A zero mode code indicates No Statement.
+	// The Mode 2 code assigned to military assets.
 	Mode2 uint32 `protobuf:"varint,2,opt,name=mode2,proto3" json:"mode2,omitempty"`
-	// The Mode 3 code assigned by ATC to the asset. Mode 3 is a 12-bit decimal (1-4095) value. If displaying to a user,
-	// convert to 4 digit octal 0001-7777. Note that Mode 3 codes are NOT unique. A zero mode code indicates No Statement.
+	// The Mode 3 code assigned by ATC to the asset.
 	Mode3 uint32 `protobuf:"varint,3,opt,name=mode3,proto3" json:"mode3,omitempty"`
 	// The validity of the response from the Mode 4 interrogation.
 	Mode4InterrogationResponse InterrogationResponse `protobuf:"varint,4,opt,name=mode4_interrogation_response,json=mode4InterrogationResponse,proto3,enum=anduril.entitymanager.v1.InterrogationResponse" json:"mode4_interrogation_response,omitempty"`
@@ -177,14 +174,9 @@ type Mode5 struct {
 
 	// The validity of the response from the Mode 5 interrogation.
 	Mode5InterrogationResponse InterrogationResponse `protobuf:"varint,1,opt,name=mode5_interrogation_response,json=mode5InterrogationResponse,proto3,enum=anduril.entitymanager.v1.InterrogationResponse" json:"mode5_interrogation_response,omitempty"`
-	// The Mode 5 code assigned to military assets. Mode 5 is a 12-bit decimal (1-4095) value. If displaying to a user,
-	// convert to 4 digit octal 0001-7777. Note that Mode 5 codes are NOT unique by themselves, but should be used in
-	// conjunction with the Mode 5 platform ID & nationality to provide unique identification.
-	// A zero mode code indicates No Statement.
+	// The Mode 5 code assigned to military assets.
 	Mode5 uint32 `protobuf:"varint,2,opt,name=mode5,proto3" json:"mode5,omitempty"`
-	// The Mode 5 platform identification code. Expected values are between 1 and 16383. Used in conjunction with the
-	// Nationality it provides IFF/SIF capabilities.
-	// A zero platform id indicates No Statement.
+	// The Mode 5 platform identification code.
 	Mode5PlatformId uint32 `protobuf:"varint,3,opt,name=mode5_platform_id,json=mode5PlatformId,proto3" json:"mode5_platform_id,omitempty"`
 }
 
