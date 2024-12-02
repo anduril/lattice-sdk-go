@@ -83,7 +83,7 @@ func (PayloadOperationalState) EnumDescriptor() ([]byte, []int) {
 	return file_anduril_entitymanager_v1_payloads_pub_proto_rawDescGZIP(), []int{0}
 }
 
-// List of payloads available for an entity. i.e a weapon.
+// List of payloads available for an entity.
 type Payloads struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

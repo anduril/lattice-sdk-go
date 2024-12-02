@@ -196,8 +196,6 @@ type CronWindow struct {
 	//	    0 0/5 12-20 * * ? *
 	//	This schedule begins at 12:00:00pm UTC on March 2nd 2023
 	//	    0 0 12 2 3 ? 2023
-	//
-	// for more guidance see: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
 	CronExpression string `protobuf:"bytes,1,opt,name=cron_expression,json=cronExpression,proto3" json:"cron_expression,omitempty"`
 	// describes the duration
 	DurationMillis uint64 `protobuf:"varint,2,opt,name=duration_millis,json=durationMillis,proto3" json:"duration_millis,omitempty"`

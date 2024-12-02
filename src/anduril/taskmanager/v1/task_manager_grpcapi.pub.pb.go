@@ -78,7 +78,7 @@ type CreateTaskRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Human readable display name for this Task, should be short (<100 chars).
+	// Human-readable display name for this Task, should be short (<100 chars).
 	DisplayName string `protobuf:"bytes,1,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// Full task parameterization, must be a message under anduril/tasks/v*/.
 	Specification *anypb.Any `protobuf:"bytes,2,opt,name=specification,proto3" json:"specification,omitempty"`
@@ -91,7 +91,7 @@ type CreateTaskRequest struct {
 	//
 	//	for execution.
 	Relations *Relations `protobuf:"bytes,5,opt,name=relations,proto3" json:"relations,omitempty"`
-	// Longer, free form human readable description of this Task.
+	// Longer, free-form, human-readable description of this Task.
 	Description string `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
 	// If set, then task-manager will not trigger execution of this task on an agent. Useful for when ingesting
 	// tasks from an external system that is triggering execution of tasks on agents.
@@ -309,7 +309,7 @@ type GetTaskResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Task that received.
+	// Task that was returned.
 	Task *Task `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
 }
 

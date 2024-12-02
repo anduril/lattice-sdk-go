@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Available for Entities that have a military view representation.
+// Provides the disposition, environment, and nationality of an Entity.
 type MilView struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -90,10 +90,8 @@ type Ontology struct {
 	unknownFields protoimpl.UnknownFields
 
 	// A string that describes the entity's high-level type with natural language.
-	// Examples include "FIGHTER", "TANK", "AIRCRAFT CARRIER", "UAV".
 	PlatformType string `protobuf:"bytes,3,opt,name=platform_type,json=platformType,proto3" json:"platform_type,omitempty"`
 	// A string that describes the entity's exact model or type.
-	// Examples include "F-16", "NASAMS-LCHR", "ARLEIGH BURKE DDG", "GHOST".
 	SpecificType string `protobuf:"bytes,4,opt,name=specific_type,json=specificType,proto3" json:"specific_type,omitempty"`
 	// The template used when creating this entity. Specifies minimum required components.
 	Template Template `protobuf:"varint,2,opt,name=template,proto3,enum=anduril.entitymanager.v1.Template" json:"template,omitempty"`
