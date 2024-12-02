@@ -292,7 +292,7 @@ func (x *StrikeParameters) GetGlideSlopeAngle() float64 {
 	return 0
 }
 
-// Individual payload configuration, can represent a munition such as a missile, a gun, or a non-kinetic effect.
+// Individual payload configuration.
 type PayloadConfiguration struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

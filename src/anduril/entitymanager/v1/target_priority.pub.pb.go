@@ -93,8 +93,6 @@ type HighValueTarget struct {
 	// All of the high value target descriptions that the target matches against.
 	TargetMatches []*HighValueTargetMatch `protobuf:"bytes,3,rep,name=target_matches,json=targetMatches,proto3" json:"target_matches,omitempty"`
 	// Indicates whether the target is a 'High Payoff Target'. Targets can be one or both of high value and high payoff.
-	// Semantically a High Value Target characterizes the target's importance to Red, whereas a High Payoff Target
-	// indicates prosecuting the target furthers Blue's specific objectives.
 	IsHighPayoffTarget bool `protobuf:"varint,4,opt,name=is_high_payoff_target,json=isHighPayoffTarget,proto3" json:"is_high_payoff_target,omitempty"`
 }
 

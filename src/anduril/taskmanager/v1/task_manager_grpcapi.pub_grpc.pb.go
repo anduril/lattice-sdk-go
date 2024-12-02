@@ -42,7 +42,7 @@ type TaskManagerAPIClient interface {
 	// Update the status of a Task.
 	UpdateStatus(ctx context.Context, in *UpdateStatusRequest, opts ...grpc.CallOption) (*UpdateStatusResponse, error)
 	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
-	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC
+	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC.
 	ListenAsAgent(ctx context.Context, in *ListenAsAgentRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[ListenAsAgentResponse], error)
 }
 
@@ -129,7 +129,7 @@ type TaskManagerAPIServer interface {
 	// Update the status of a Task.
 	UpdateStatus(context.Context, *UpdateStatusRequest) (*UpdateStatusResponse, error)
 	// Stream Tasks ready for RPC Agent execution that match agent selector (ex: entity_ids).
-	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC
+	// Intended for use by Taskable Agents that need to receive Tasks ready for execution by RPC.
 	ListenAsAgent(*ListenAsAgentRequest, grpc.ServerStreamingServer[ListenAsAgentResponse]) error
 	mustEmbedUnimplementedTaskManagerAPIServer()
 }

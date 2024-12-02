@@ -295,7 +295,7 @@ func (TaskView) EnumDescriptor() ([]byte, []int) {
 	return file_anduril_taskmanager_v1_task_pub_proto_rawDescGZIP(), []int{3}
 }
 
-// A Task is something an agent can be asked to do within a battle space, typically against a given objective.
+// A Task is something an agent can be asked to do.
 type Task struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -1382,7 +1382,7 @@ func (x *Team) GetMembers() []*Agent {
 	return nil
 }
 
-// Represents an Agent on the Battlespace.
+// Represents an Agent in the COP.
 type Agent struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

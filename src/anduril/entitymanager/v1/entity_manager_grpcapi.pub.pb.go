@@ -93,7 +93,7 @@ type PublishEntityRequest struct {
 	// Sends an entity object to publish.
 	// Required fields:
 	//   - expiry_time. This must be in the future, but less than 30 days from now.
-	//   - provenance.data_type. If using the deprecated provenance.source, migrate to data_type.
+	//   - provenance.data_type.
 	//   - provenance.source_update_time. This can be earlier than the RPC call if the data entered is older.
 	//   - aliases.name
 	//   - ontology.template
@@ -184,7 +184,7 @@ type PublishEntitiesRequest struct {
 	// Sends a stream of entity objects to publish.
 	// Each entity requires the following fields:
 	//   - expiry_time. This must be in the future, but less than 30 days from now.
-	//   - provenance.data_type. If using the deprecated provenance.source, migrate to data_type.
+	//   - provenance.data_type.
 	//   - provenance.source_update_time. This can be earlier than the RPC call if the data entered is older.
 	//   - aliases.name
 	//   - ontology.template
@@ -275,7 +275,7 @@ type GetEntityRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// the GUID of this entity to query
+	// The GUID of this entity to query.
 	EntityId string `protobuf:"bytes,1,opt,name=entity_id,json=entityId,proto3" json:"entity_id,omitempty"`
 }
 
@@ -321,7 +321,7 @@ type GetEntityResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// an Entity object that corresponds with the requested entityId
+	// An Entity object that corresponds with the requested entityId.
 	Entity *Entity `protobuf:"bytes,1,opt,name=entity,proto3" json:"entity,omitempty"`
 }
 
@@ -367,13 +367,13 @@ type OverrideEntityRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The entity containing the overwritten fields. The service will extract the overridable fields from the entity
+	// The entity containing the overridden fields. The service will extract the overridable fields from the entity
 	// object and ignore any other fields.
 	Entity *Entity `protobuf:"bytes,1,opt,name=entity,proto3" json:"entity,omitempty"`
 	// The field paths that will be extracted from the Entity and saved as an override. Only fields marked overridable can
 	// be overridden.
 	FieldPath []string `protobuf:"bytes,2,rep,name=field_path,json=fieldPath,proto3" json:"field_path,omitempty"`
-	// Additional information about the source of the override
+	// Additional information about the source of the override.
 	Provenance *Provenance `protobuf:"bytes,3,opt,name=provenance,proto3" json:"provenance,omitempty"`
 }
 
@@ -479,7 +479,7 @@ type RemoveEntityOverrideRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The entity ID that the override will be removed from
+	// The entity ID that the override will be removed from.
 	EntityId string `protobuf:"bytes,1,opt,name=entity_id,json=entityId,proto3" json:"entity_id,omitempty"`
 	// The field paths to remove from the override store for the provided entityId.
 	FieldPath []string `protobuf:"bytes,2,rep,name=field_path,json=fieldPath,proto3" json:"field_path,omitempty"`
@@ -571,22 +571,22 @@ type StreamEntityComponentsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// lower_snake_cased component names to include in response events, e.g. location. Only included components will
+	// lower_snake_case component names to include in response events, e.g. location. Only included components will
 	// populate.
 	ComponentsToInclude []string `protobuf:"bytes,1,rep,name=components_to_include,json=componentsToInclude,proto3" json:"components_to_include,omitempty"`
-	// subscribe to all components. This should only be used in cases where you want all components.
+	// Subscribe to all components. This should only be used in cases where you want all components.
 	// Setting both components_to_include and include_all_components is invalid and will be rejected.
 	IncludeAllComponents bool `protobuf:"varint,2,opt,name=include_all_components,json=includeAllComponents,proto3" json:"include_all_components,omitempty"`
 	// The root node of a statement filter "tree".
 	// If provided, only entities matching the filter criteria will be streamed. The filter is applied dynamically so if a
 	// new entity matches, it will be included, and if an entity updates to no longer match, it will be excluded.
 	Filter *Statement `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`
-	// optional rate-limiting / down-sampling parameters, see RateLimit message for details.
+	// Optional rate-limiting / down-sampling parameters, see RateLimit message for details.
 	RateLimit *RateLimit `protobuf:"bytes,4,opt,name=rate_limit,json=rateLimit,proto3" json:"rate_limit,omitempty"`
 	// The period (in milliseconds) at which a Heartbeat message will be sent on the
 	// message stream. If this field is set to 0 then no Heartbeat messages are sent.
 	HeartbeatPeriodMillis uint32 `protobuf:"varint,5,opt,name=heartbeat_period_millis,json=heartbeatPeriodMillis,proto3" json:"heartbeat_period_millis,omitempty"`
-	// subscribe to a finite stream of preexisting events which closes when there are no additional pre-existing events to
+	// Subscribe to a finite stream of preexisting events which closes when there are no additional pre-existing events to
 	// process. Respects the filter specified on the StreamEntityComponentsRequest.
 	PreexistingOnly bool `protobuf:"varint,6,opt,name=preexisting_only,json=preexistingOnly,proto3" json:"preexisting_only,omitempty"`
 }

@@ -31,24 +31,29 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// Entity Manager manages the lifecycle of the entities that comprise the common operational picture.
+// Entity Manager manages the lifecycle of the entities that comprise the common operational picture (COP).
 //
-// Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a lifecycle
+// Every object in the COP is represented as an "Entity." Each Entity is essentially an ID, with a lifecycle
 // and a collection of data components. Each data component is a separate protobuf message definition.
 //
 // Entity Manager provides a way to query the currently live set of entities within a set of filter constraints,
 // as well as a limited set of management APIs to change the grouping or relationships between entities.
 type EntityManagerAPIClient interface {
-	// Publishes an entity for ingestion by Entity Manager. You "own" the entity you create using PublishEntity;
-	// other sources, such as the UI, may not edit or delete these entities.
-	// When called, PublishEntity validates the entity and returns an error if the entity is invalid. We recommend using PublishEntity to publish high- or
-	// low-update rate entities.
+	// Create or update an entity and get a response confirming whether the Entity Manager API succesfully processes
+	// the entity. Ideal for testing environments.
+	// When publishing an entity, only your integration can modify or delete that entity; other sources, such as the
+	// UI or other integrations, can't. If you're pushing entity updates so fast that your publish task can't keep
+	// up with your update rate (a rough estimate of >= 1 Hz), use the PublishEntities request instead.
 	PublishEntity(ctx context.Context, in *PublishEntityRequest, opts ...grpc.CallOption) (*PublishEntityResponse, error)
-	// Creates or updates one or more entities. You "own" the entity you create using PublishEntities; other sources may not edit or delete these entities.
-	// Note that PublishEntities doesn't return error messages for invalid entities or provide any other feedback from the server. We recommend using PublishEntity instead.
-	// We only recommend switching to PublishEntities if you publish at an extremely high rate and find that waiting for a response from the server causes your publishing task to fall behind.
+	// Create or update one or more entities rapidly using PublishEntities, which doesn't return error messages
+	// for invalid entities or provide server feedback. When publishing entities, only your integration can
+	// modify or delete those entities; other sources, such as the UI or other integrations, can't.
+	// When you use PublishEntities, you gain higher throughput at the expense of receiving no server responses or
+	// validation. In addition, due to gRPC stream mechanics, you risk losing messages queued on the outgoing gRPC
+	// buffer if the stream connection is lost prior to the messages being sent. If you need validation responses,
+	// are developing in testing environments, or have lower entity update rates, use PublishEntity.
 	PublishEntities(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[PublishEntitiesRequest, PublishEntitiesResponse], error)
-	// Get a entity based on an entityId.
+	// Get an entity using its entityId.
 	GetEntity(ctx context.Context, in *GetEntityRequest, opts ...grpc.CallOption) (*GetEntityResponse, error)
 	// Override an Entity Component. An override is a definitive change to entity data. Any authorized user of service
 	// can override overridable components on any entity. Only fields marked with overridable can be overridden.
@@ -57,7 +62,7 @@ type EntityManagerAPIClient interface {
 	OverrideEntity(ctx context.Context, in *OverrideEntityRequest, opts ...grpc.CallOption) (*OverrideEntityResponse, error)
 	// Remove an override for an Entity component.
 	RemoveEntityOverride(ctx context.Context, in *RemoveEntityOverrideRequest, opts ...grpc.CallOption) (*RemoveEntityOverrideResponse, error)
-	// Returns a stream of entity with specified components populated.
+	// Returns a stream of entities with specified components populated.
 	StreamEntityComponents(ctx context.Context, in *StreamEntityComponentsRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[StreamEntityComponentsResponse], error)
 }
 
@@ -145,24 +150,29 @@ type EntityManagerAPI_StreamEntityComponentsClient = grpc.ServerStreamingClient[
 // All implementations must embed UnimplementedEntityManagerAPIServer
 // for forward compatibility.
 //
-// Entity Manager manages the lifecycle of the entities that comprise the common operational picture.
+// Entity Manager manages the lifecycle of the entities that comprise the common operational picture (COP).
 //
-// Every object in a battle space is represented as an "Entity". Each Entity is essentially an ID, with a lifecycle
+// Every object in the COP is represented as an "Entity." Each Entity is essentially an ID, with a lifecycle
 // and a collection of data components. Each data component is a separate protobuf message definition.
 //
 // Entity Manager provides a way to query the currently live set of entities within a set of filter constraints,
 // as well as a limited set of management APIs to change the grouping or relationships between entities.
 type EntityManagerAPIServer interface {
-	// Publishes an entity for ingestion by Entity Manager. You "own" the entity you create using PublishEntity;
-	// other sources, such as the UI, may not edit or delete these entities.
-	// When called, PublishEntity validates the entity and returns an error if the entity is invalid. We recommend using PublishEntity to publish high- or
-	// low-update rate entities.
+	// Create or update an entity and get a response confirming whether the Entity Manager API succesfully processes
+	// the entity. Ideal for testing environments.
+	// When publishing an entity, only your integration can modify or delete that entity; other sources, such as the
+	// UI or other integrations, can't. If you're pushing entity updates so fast that your publish task can't keep
+	// up with your update rate (a rough estimate of >= 1 Hz), use the PublishEntities request instead.
 	PublishEntity(context.Context, *PublishEntityRequest) (*PublishEntityResponse, error)
-	// Creates or updates one or more entities. You "own" the entity you create using PublishEntities; other sources may not edit or delete these entities.
-	// Note that PublishEntities doesn't return error messages for invalid entities or provide any other feedback from the server. We recommend using PublishEntity instead.
-	// We only recommend switching to PublishEntities if you publish at an extremely high rate and find that waiting for a response from the server causes your publishing task to fall behind.
+	// Create or update one or more entities rapidly using PublishEntities, which doesn't return error messages
+	// for invalid entities or provide server feedback. When publishing entities, only your integration can
+	// modify or delete those entities; other sources, such as the UI or other integrations, can't.
+	// When you use PublishEntities, you gain higher throughput at the expense of receiving no server responses or
+	// validation. In addition, due to gRPC stream mechanics, you risk losing messages queued on the outgoing gRPC
+	// buffer if the stream connection is lost prior to the messages being sent. If you need validation responses,
+	// are developing in testing environments, or have lower entity update rates, use PublishEntity.
 	PublishEntities(grpc.ClientStreamingServer[PublishEntitiesRequest, PublishEntitiesResponse]) error
-	// Get a entity based on an entityId.
+	// Get an entity using its entityId.
 	GetEntity(context.Context, *GetEntityRequest) (*GetEntityResponse, error)
 	// Override an Entity Component. An override is a definitive change to entity data. Any authorized user of service
 	// can override overridable components on any entity. Only fields marked with overridable can be overridden.
@@ -171,7 +181,7 @@ type EntityManagerAPIServer interface {
 	OverrideEntity(context.Context, *OverrideEntityRequest) (*OverrideEntityResponse, error)
 	// Remove an override for an Entity component.
 	RemoveEntityOverride(context.Context, *RemoveEntityOverrideRequest) (*RemoveEntityOverrideResponse, error)
-	// Returns a stream of entity with specified components populated.
+	// Returns a stream of entities with specified components populated.
 	StreamEntityComponents(*StreamEntityComponentsRequest, grpc.ServerStreamingServer[StreamEntityComponentsResponse]) error
 	mustEmbedUnimplementedEntityManagerAPIServer()
 }
