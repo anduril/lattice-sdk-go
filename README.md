@@ -23,4 +23,4 @@ go get github.com/anduril/lattice-sdk-go
 
 ## Support
 
-For support with this library please [file an issue](https://github.com/anduril/lattice-sdk-go/issues/new) or reach out to your Anduril representative. 
+For support with this library please reach out to your Anduril representative. 
