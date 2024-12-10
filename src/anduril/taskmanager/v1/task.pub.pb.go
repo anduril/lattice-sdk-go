@@ -35,9 +35,10 @@ const (
 	Status_STATUS_SCHEDULED_IN_MANAGER Status = 2
 	// Sent to another system (Asset), no receipt yet.
 	Status_STATUS_SENT Status = 3
-	// In case of a human operated asset assignee, the machine was reachable and responded, but operator did not ACK yet.
+	// Task was sent to Assignee, and some system was reachable and responded.
+	// However, the system responsible for execution on the Assignee has not yet acknowledged the Task.
 	Status_STATUS_MACHINE_RECEIPT Status = 4
-	// Assignee (either human or system in case of autonomous robot) has acknowledged receipt of Task.
+	// System responsible for execution on the Assignee has acknowledged the Task.
 	Status_STATUS_ACK Status = 5
 	// Assignee confirmed they "will comply" / intend to execute Task.
 	Status_STATUS_WILCO Status = 6

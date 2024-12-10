@@ -183,7 +183,7 @@ type Entity struct {
 	Correlation *Correlation `protobuf:"bytes,47,opt,name=correlation,proto3" json:"correlation,omitempty"`
 	// View of the entity.
 	MilView *MilView `protobuf:"bytes,10,opt,name=mil_view,json=milView,proto3" json:"mil_view,omitempty"`
-	// A standardized representation of the entity.
+	// Ontology defines an entity's categorization in Lattice, and improves data retrieval and integration. Builds a standardized representation of the entity.
 	Ontology *Ontology `protobuf:"bytes,11,opt,name=ontology,proto3" json:"ontology,omitempty"`
 	// Details an entity's available sensors.
 	Sensors *Sensors `protobuf:"bytes,20,opt,name=sensors,proto3" json:"sensors,omitempty"`
