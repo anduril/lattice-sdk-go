@@ -5,7 +5,7 @@ The official [Anduril](https://www.anduril.com/) Lattice SDK for Go.
 
 ## Documentation
 
-See the documentation for [Lattice Go SDK](https://docs.anduril.com/sdks/go).
+See the documentation for [Lattice Go SDK](https://docs.anduril.com/guide/sdks/go).
 
 ## Requirements
 
