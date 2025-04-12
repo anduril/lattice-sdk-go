@@ -176,29 +176,20 @@ type Template int32
 
 const (
 	Template_TEMPLATE_INVALID Template = 0
-	// additional track required components:
-	//   - location
-	//   - mil_view
+	// Refers to any detected object.
+	// Requires setting the location, and mil_view components.
 	Template_TEMPLATE_TRACK Template = 1
-	// additional SPI required components:
-	//   - location
-	//   - mil_view
-	//   - produced_by
+	// Refers to any sensors detected at a specific location.
+	// Requires setting location, and mil_view.
 	Template_TEMPLATE_SENSOR_POINT_OF_INTEREST Template = 2
-	// additional asset required components:
-	//   - location
-	//   - mil_view
-	//   - ontology
+	// Refers to a taskable entity under the control of friendly forces.
+	// Requires setting location, and mil_view, and ontology.
 	Template_TEMPLATE_ASSET Template = 3
-	// additional geo required components:
-	//   - geo_shape
-	//   - geo_details
+	// Refers to shapes or points of interest drawn on the map.
+	// Requires setting geo_shape and geo_details.
 	Template_TEMPLATE_GEO Template = 4
-	// additional SOI required components:
-	//   - signal
-	//   - location field should be populated if there is a fix.
-	//   - mil_view
-	//   - ontology
+	// Refers to signal detection with characteristics such as emitter notation, frequency, or lines of bearing.
+	// Requires setting signal, and mil_view, and ontology. Requies setting location, if the signal.fixed component is populated.
 	Template_TEMPLATE_SIGNAL_OF_INTEREST Template = 5
 )
 
