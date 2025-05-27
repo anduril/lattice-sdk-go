@@ -807,17 +807,17 @@ var File_anduril_entitymanager_v1_signal_pub_proto protoreflect.FileDescriptor
 
 const file_anduril_entitymanager_v1_signal_pub_proto_rawDesc = "" +
 	"\n" +
-	")anduril/entitymanager/v1/signal.pub.proto\x12\x18anduril.entitymanager.v1\x1a\x1danduril/type/coords.pub.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xe1\x06\n" +
-	"\x06Signal\x12P\n" +
-	"\x10frequency_center\x18\x01 \x01(\v2#.anduril.entitymanager.v1.FrequencyH\x00R\x0ffrequencyCenter\x12S\n" +
-	"\x0ffrequency_range\x18\x02 \x01(\v2(.anduril.entitymanager.v1.FrequencyRangeH\x00R\x0efrequencyRange\x12?\n" +
-	"\fbandwidth_hz\x18\x03 \x01(\v2\x1c.google.protobuf.DoubleValueR\vbandwidthHz\x12O\n" +
+	")anduril/entitymanager/v1/signal.pub.proto\x12\x18anduril.entitymanager.v1\x1a*anduril/entitymanager/v1/options.pub.proto\x1a\x1danduril/type/coords.pub.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xff\x06\n" +
+	"\x06Signal\x12U\n" +
+	"\x10frequency_center\x18\x01 \x01(\v2#.anduril.entitymanager.v1.FrequencyB\x03\xc8>\x01H\x00R\x0ffrequencyCenter\x12X\n" +
+	"\x0ffrequency_range\x18\x02 \x01(\v2(.anduril.entitymanager.v1.FrequencyRangeB\x03\xc8>\x01H\x00R\x0efrequencyRange\x12D\n" +
+	"\fbandwidth_hz\x18\x03 \x01(\v2\x1c.google.protobuf.DoubleValueB\x03\xc8>\x01R\vbandwidthHz\x12O\n" +
 	"\x15signal_to_noise_ratio\x18\x04 \x01(\v2\x1c.google.protobuf.DoubleValueR\x12signalToNoiseRatio\x12Q\n" +
 	"\x0fline_of_bearing\x18\x05 \x01(\v2'.anduril.entitymanager.v1.LineOfBearingH\x01R\rlineOfBearing\x127\n" +
-	"\x05fixed\x18\x06 \x01(\v2\x1f.anduril.entitymanager.v1.FixedH\x01R\x05fixed\x12V\n" +
-	"\x11emitter_notations\x18\a \x03(\v2).anduril.entitymanager.v1.EmitterNotationR\x10emitterNotations\x12@\n" +
-	"\rpulse_width_s\x18\b \x01(\v2\x1c.google.protobuf.DoubleValueR\vpulseWidthS\x12m\n" +
-	"\x19pulse_repetition_interval\x18\t \x01(\v21.anduril.entitymanager.v1.PulseRepetitionIntervalR\x17pulseRepetitionInterval\x12`\n" +
+	"\x05fixed\x18\x06 \x01(\v2\x1f.anduril.entitymanager.v1.FixedH\x01R\x05fixed\x12[\n" +
+	"\x11emitter_notations\x18\a \x03(\v2).anduril.entitymanager.v1.EmitterNotationB\x03\xc8>\x01R\x10emitterNotations\x12E\n" +
+	"\rpulse_width_s\x18\b \x01(\v2\x1c.google.protobuf.DoubleValueB\x03\xc8>\x01R\vpulseWidthS\x12r\n" +
+	"\x19pulse_repetition_interval\x18\t \x01(\v21.anduril.entitymanager.v1.PulseRepetitionIntervalB\x03\xc8>\x01R\x17pulseRepetitionInterval\x12`\n" +
 	"\x14scan_characteristics\x18\v \x01(\v2-.anduril.entitymanager.v1.ScanCharacteristicsR\x13scanCharacteristicsB\x17\n" +
 	"\x15frequency_measurementB\b\n" +
 	"\x06reportJ\x04\b\n" +
@@ -937,6 +937,7 @@ func file_anduril_entitymanager_v1_signal_pub_proto_init() {
 	if File_anduril_entitymanager_v1_signal_pub_proto != nil {
 		return
 	}
+	file_anduril_entitymanager_v1_options_pub_proto_init()
 	file_anduril_entitymanager_v1_signal_pub_proto_msgTypes[0].OneofWrappers = []any{
 		(*Signal_FrequencyCenter)(nil),
 		(*Signal_FrequencyRange)(nil),
