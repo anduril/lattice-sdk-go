@@ -208,6 +208,8 @@ type Entity struct {
 	DataClassification *Classification `protobuf:"bytes,29,opt,name=data_classification,json=dataClassification,proto3" json:"data_classification,omitempty"`
 	// A catalog of tasks that can be performed by an entity.
 	TaskCatalog *v2.TaskCatalog `protobuf:"bytes,31,opt,name=task_catalog,json=taskCatalog,proto3" json:"task_catalog,omitempty"`
+	// Media associated with an entity, such as videos, images, or thumbnails.
+	Media *Media `protobuf:"bytes,32,opt,name=media,proto3" json:"media,omitempty"`
 	// The relationships between this entity and other entities in the common operational picture (COP).
 	Relationships *Relationships `protobuf:"bytes,33,opt,name=relationships,proto3" json:"relationships,omitempty"`
 	// Visual details associated with the display of an entity in the client.
@@ -438,6 +440,13 @@ func (x *Entity) GetDataClassification() *Classification {
 func (x *Entity) GetTaskCatalog() *v2.TaskCatalog {
 	if x != nil {
 		return x.TaskCatalog
+	}
+	return nil
+}
+
+func (x *Entity) GetMedia() *Media {
+	if x != nil {
+		return x.Media
 	}
 	return nil
 }
@@ -1826,7 +1835,7 @@ var File_anduril_entitymanager_v1_entity_pub_proto protoreflect.FileDescriptor
 
 const file_anduril_entitymanager_v1_entity_pub_proto_rawDesc = "" +
 	"\n" +
-	")anduril/entitymanager/v1/entity.pub.proto\x12\x18anduril.entitymanager.v1\x1a1anduril/entitymanager/v1/classification.pub.proto\x1a-anduril/entitymanager/v1/dimensions.pub.proto\x1a,anduril/entitymanager/v1/geoentity.pub.proto\x1a(anduril/entitymanager/v1/group.pub.proto\x1a0anduril/entitymanager/v1/health_status.pub.proto\x1a+anduril/entitymanager/v1/location.pub.proto\x1a+anduril/entitymanager/v1/ontology.pub.proto\x1a*anduril/entitymanager/v1/options.pub.proto\x1a(anduril/entitymanager/v1/orbit.pub.proto\x1a+anduril/entitymanager/v1/payloads.pub.proto\x1a(anduril/entitymanager/v1/power.pub.proto\x1a/anduril/entitymanager/v1/relationship.pub.proto\x1a0anduril/entitymanager/v1/route_details.pub.proto\x1a+anduril/entitymanager/v1/schedule.pub.proto\x1a*anduril/entitymanager/v1/sensors.pub.proto\x1a)anduril/entitymanager/v1/signal.pub.proto\x1a+anduril/entitymanager/v1/supplies.pub.proto\x1a2anduril/entitymanager/v1/target_priority.pub.proto\x1a4anduril/entitymanager/v1/transponder_codes.pub.proto\x1a(anduril/entitymanager/v1/types.pub.proto\x1a\"anduril/tasks/v2/catalog.pub.proto\x1a\x1canduril/type/color.pub.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\x99\x13\n" +
+	")anduril/entitymanager/v1/entity.pub.proto\x12\x18anduril.entitymanager.v1\x1a1anduril/entitymanager/v1/classification.pub.proto\x1a-anduril/entitymanager/v1/dimensions.pub.proto\x1a,anduril/entitymanager/v1/geoentity.pub.proto\x1a(anduril/entitymanager/v1/group.pub.proto\x1a0anduril/entitymanager/v1/health_status.pub.proto\x1a+anduril/entitymanager/v1/location.pub.proto\x1a(anduril/entitymanager/v1/media.pub.proto\x1a+anduril/entitymanager/v1/ontology.pub.proto\x1a*anduril/entitymanager/v1/options.pub.proto\x1a(anduril/entitymanager/v1/orbit.pub.proto\x1a+anduril/entitymanager/v1/payloads.pub.proto\x1a(anduril/entitymanager/v1/power.pub.proto\x1a/anduril/entitymanager/v1/relationship.pub.proto\x1a0anduril/entitymanager/v1/route_details.pub.proto\x1a+anduril/entitymanager/v1/schedule.pub.proto\x1a*anduril/entitymanager/v1/sensors.pub.proto\x1a)anduril/entitymanager/v1/signal.pub.proto\x1a+anduril/entitymanager/v1/supplies.pub.proto\x1a2anduril/entitymanager/v1/target_priority.pub.proto\x1a4anduril/entitymanager/v1/transponder_codes.pub.proto\x1a(anduril/entitymanager/v1/types.pub.proto\x1a\"anduril/tasks/v2/catalog.pub.proto\x1a\x1canduril/type/color.pub.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xc3\x13\n" +
 	"\x06Entity\x12\x1b\n" +
 	"\tentity_id\x18\x01 \x01(\tR\bentityId\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x17\n" +
@@ -1861,7 +1870,8 @@ const file_anduril_entitymanager_v1_entity_pub_proto_rawDesc = "" +
 	"\x06signal\x18\x19 \x01(\v2 .anduril.entitymanager.v1.SignalR\x06signal\x12W\n" +
 	"\x11transponder_codes\x18\x1a \x01(\v2*.anduril.entitymanager.v1.TransponderCodesR\x10transponderCodes\x12Y\n" +
 	"\x13data_classification\x18\x1d \x01(\v2(.anduril.entitymanager.v1.ClassificationR\x12dataClassification\x12E\n" +
-	"\ftask_catalog\x18\x1f \x01(\v2\x1d.anduril.tasks.v2.TaskCatalogB\x03\xc8>\x01R\vtaskCatalog\x12M\n" +
+	"\ftask_catalog\x18\x1f \x01(\v2\x1d.anduril.tasks.v2.TaskCatalogB\x03\xc8>\x01R\vtaskCatalog\x125\n" +
+	"\x05media\x18  \x01(\v2\x1f.anduril.entitymanager.v1.MediaR\x05media\x12M\n" +
 	"\rrelationships\x18! \x01(\v2'.anduril.entitymanager.v1.RelationshipsR\rrelationships\x12N\n" +
 	"\x0evisual_details\x18\" \x01(\v2'.anduril.entitymanager.v1.VisualDetailsR\rvisualDetails\x12D\n" +
 	"\n" +
@@ -1873,9 +1883,9 @@ const file_anduril_entitymanager_v1_entity_pub_proto_rawDesc = "" +
 	"\rgroup_details\x18( \x01(\v2&.anduril.entitymanager.v1.GroupDetailsR\fgroupDetails\x12>\n" +
 	"\bsupplies\x18* \x01(\v2\".anduril.entitymanager.v1.SuppliesR\bsupplies\x125\n" +
 	"\x05orbit\x18. \x01(\v2\x1f.anduril.entitymanager.v1.OrbitR\x05orbitJ\x04\b\t\x10\n" +
-	"J\x04\b\x10\x10\x11J\x04\b\x11\x10\x12J\x04\b\x12\x10\x13J\x04\b\x1b\x10\x1cJ\x04\b\x1c\x10\x1dJ\x04\b \x10!J\x04\b)\x10*J\x04\b+\x10,R\n" +
+	"J\x04\b\x10\x10\x11J\x04\b\x11\x10\x12J\x04\b\x12\x10\x13J\x04\b\x1b\x10\x1cJ\x04\b\x1c\x10\x1dJ\x04\b)\x10*J\x04\b+\x10,R\n" +
 	"correlatedR\roriginal_dataR\n" +
-	"geopolygonR\x05mediaR\acontactR\vteam_statusR\tno_expiry\"I\n" +
+	"geopolygonR\acontactR\vteam_statusR\tno_expiry\"I\n" +
 	"\x06Status\x12+\n" +
 	"\x11platform_activity\x18\x01 \x01(\tR\x10platformActivity\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\"s\n" +
@@ -2035,23 +2045,24 @@ var file_anduril_entitymanager_v1_entity_pub_proto_goTypes = []any{
 	(*TransponderCodes)(nil),        // 35: anduril.entitymanager.v1.TransponderCodes
 	(*Classification)(nil),          // 36: anduril.entitymanager.v1.Classification
 	(*v2.TaskCatalog)(nil),          // 37: anduril.tasks.v2.TaskCatalog
-	(*Relationships)(nil),           // 38: anduril.entitymanager.v1.Relationships
-	(*Dimensions)(nil),              // 39: anduril.entitymanager.v1.Dimensions
-	(*RouteDetails)(nil),            // 40: anduril.entitymanager.v1.RouteDetails
-	(*Schedules)(nil),               // 41: anduril.entitymanager.v1.Schedules
-	(*Health)(nil),                  // 42: anduril.entitymanager.v1.Health
-	(*GroupDetails)(nil),            // 43: anduril.entitymanager.v1.GroupDetails
-	(*Supplies)(nil),                // 44: anduril.entitymanager.v1.Supplies
-	(*Orbit)(nil),                   // 45: anduril.entitymanager.v1.Orbit
-	(*wrapperspb.Int32Value)(nil),   // 46: google.protobuf.Int32Value
-	(*UInt32Range)(nil),             // 47: anduril.entitymanager.v1.UInt32Range
-	(*wrapperspb.DoubleValue)(nil),  // 48: google.protobuf.DoubleValue
-	(*LineOfBearing)(nil),           // 49: anduril.entitymanager.v1.LineOfBearing
-	(*wrapperspb.BoolValue)(nil),    // 50: google.protobuf.BoolValue
-	(OverrideStatus)(0),             // 51: anduril.entitymanager.v1.OverrideStatus
-	(OverrideType)(0),               // 52: anduril.entitymanager.v1.OverrideType
-	(AltIdType)(0),                  // 53: anduril.entitymanager.v1.AltIdType
-	(*_type.Color)(nil),             // 54: anduril.type.Color
+	(*Media)(nil),                   // 38: anduril.entitymanager.v1.Media
+	(*Relationships)(nil),           // 39: anduril.entitymanager.v1.Relationships
+	(*Dimensions)(nil),              // 40: anduril.entitymanager.v1.Dimensions
+	(*RouteDetails)(nil),            // 41: anduril.entitymanager.v1.RouteDetails
+	(*Schedules)(nil),               // 42: anduril.entitymanager.v1.Schedules
+	(*Health)(nil),                  // 43: anduril.entitymanager.v1.Health
+	(*GroupDetails)(nil),            // 44: anduril.entitymanager.v1.GroupDetails
+	(*Supplies)(nil),                // 45: anduril.entitymanager.v1.Supplies
+	(*Orbit)(nil),                   // 46: anduril.entitymanager.v1.Orbit
+	(*wrapperspb.Int32Value)(nil),   // 47: google.protobuf.Int32Value
+	(*UInt32Range)(nil),             // 48: anduril.entitymanager.v1.UInt32Range
+	(*wrapperspb.DoubleValue)(nil),  // 49: google.protobuf.DoubleValue
+	(*LineOfBearing)(nil),           // 50: anduril.entitymanager.v1.LineOfBearing
+	(*wrapperspb.BoolValue)(nil),    // 51: google.protobuf.BoolValue
+	(OverrideStatus)(0),             // 52: anduril.entitymanager.v1.OverrideStatus
+	(OverrideType)(0),               // 53: anduril.entitymanager.v1.OverrideType
+	(AltIdType)(0),                  // 54: anduril.entitymanager.v1.AltIdType
+	(*_type.Color)(nil),             // 55: anduril.type.Color
 }
 var file_anduril_entitymanager_v1_entity_pub_proto_depIdxs = []int32{
 	23, // 0: anduril.entitymanager.v1.Entity.created_time:type_name -> google.protobuf.Timestamp
@@ -2077,60 +2088,61 @@ var file_anduril_entitymanager_v1_entity_pub_proto_depIdxs = []int32{
 	35, // 20: anduril.entitymanager.v1.Entity.transponder_codes:type_name -> anduril.entitymanager.v1.TransponderCodes
 	36, // 21: anduril.entitymanager.v1.Entity.data_classification:type_name -> anduril.entitymanager.v1.Classification
 	37, // 22: anduril.entitymanager.v1.Entity.task_catalog:type_name -> anduril.tasks.v2.TaskCatalog
-	38, // 23: anduril.entitymanager.v1.Entity.relationships:type_name -> anduril.entitymanager.v1.Relationships
-	11, // 24: anduril.entitymanager.v1.Entity.visual_details:type_name -> anduril.entitymanager.v1.VisualDetails
-	39, // 25: anduril.entitymanager.v1.Entity.dimensions:type_name -> anduril.entitymanager.v1.Dimensions
-	40, // 26: anduril.entitymanager.v1.Entity.route_details:type_name -> anduril.entitymanager.v1.RouteDetails
-	41, // 27: anduril.entitymanager.v1.Entity.schedules:type_name -> anduril.entitymanager.v1.Schedules
-	42, // 28: anduril.entitymanager.v1.Entity.health:type_name -> anduril.entitymanager.v1.Health
-	43, // 29: anduril.entitymanager.v1.Entity.group_details:type_name -> anduril.entitymanager.v1.GroupDetails
-	44, // 30: anduril.entitymanager.v1.Entity.supplies:type_name -> anduril.entitymanager.v1.Supplies
-	45, // 31: anduril.entitymanager.v1.Entity.orbit:type_name -> anduril.entitymanager.v1.Orbit
-	10, // 32: anduril.entitymanager.v1.Aliases.alternate_ids:type_name -> anduril.entitymanager.v1.AlternateId
-	46, // 33: anduril.entitymanager.v1.Tracked.track_quality_wrapper:type_name -> google.protobuf.Int32Value
-	46, // 34: anduril.entitymanager.v1.Tracked.sensor_hits:type_name -> google.protobuf.Int32Value
-	47, // 35: anduril.entitymanager.v1.Tracked.number_of_objects:type_name -> anduril.entitymanager.v1.UInt32Range
-	48, // 36: anduril.entitymanager.v1.Tracked.radar_cross_section:type_name -> google.protobuf.DoubleValue
-	23, // 37: anduril.entitymanager.v1.Tracked.last_measurement_time:type_name -> google.protobuf.Timestamp
-	49, // 38: anduril.entitymanager.v1.Tracked.line_of_bearing:type_name -> anduril.entitymanager.v1.LineOfBearing
-	23, // 39: anduril.entitymanager.v1.Provenance.source_update_time:type_name -> google.protobuf.Timestamp
-	50, // 40: anduril.entitymanager.v1.Indicators.simulated:type_name -> google.protobuf.BoolValue
-	50, // 41: anduril.entitymanager.v1.Indicators.exercise:type_name -> google.protobuf.BoolValue
-	50, // 42: anduril.entitymanager.v1.Indicators.emergency:type_name -> google.protobuf.BoolValue
-	50, // 43: anduril.entitymanager.v1.Indicators.c2:type_name -> google.protobuf.BoolValue
-	50, // 44: anduril.entitymanager.v1.Indicators.egressable:type_name -> google.protobuf.BoolValue
-	50, // 45: anduril.entitymanager.v1.Indicators.starred:type_name -> google.protobuf.BoolValue
-	9,  // 46: anduril.entitymanager.v1.Overrides.override:type_name -> anduril.entitymanager.v1.Override
-	2,  // 47: anduril.entitymanager.v1.Override.masked_field_value:type_name -> anduril.entitymanager.v1.Entity
-	51, // 48: anduril.entitymanager.v1.Override.status:type_name -> anduril.entitymanager.v1.OverrideStatus
-	6,  // 49: anduril.entitymanager.v1.Override.provenance:type_name -> anduril.entitymanager.v1.Provenance
-	52, // 50: anduril.entitymanager.v1.Override.type:type_name -> anduril.entitymanager.v1.OverrideType
-	23, // 51: anduril.entitymanager.v1.Override.request_timestamp:type_name -> google.protobuf.Timestamp
-	53, // 52: anduril.entitymanager.v1.AlternateId.type:type_name -> anduril.entitymanager.v1.AltIdType
-	12, // 53: anduril.entitymanager.v1.VisualDetails.range_rings:type_name -> anduril.entitymanager.v1.RangeRings
-	48, // 54: anduril.entitymanager.v1.RangeRings.min_distance_m:type_name -> google.protobuf.DoubleValue
-	48, // 55: anduril.entitymanager.v1.RangeRings.max_distance_m:type_name -> google.protobuf.DoubleValue
-	54, // 56: anduril.entitymanager.v1.RangeRings.ring_line_color:type_name -> anduril.type.Color
-	14, // 57: anduril.entitymanager.v1.Correlation.primary:type_name -> anduril.entitymanager.v1.PrimaryCorrelation
-	15, // 58: anduril.entitymanager.v1.Correlation.secondary:type_name -> anduril.entitymanager.v1.SecondaryCorrelation
-	16, // 59: anduril.entitymanager.v1.Correlation.membership:type_name -> anduril.entitymanager.v1.CorrelationMembership
-	19, // 60: anduril.entitymanager.v1.Correlation.decorrelation:type_name -> anduril.entitymanager.v1.Decorrelation
-	22, // 61: anduril.entitymanager.v1.SecondaryCorrelation.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
-	17, // 62: anduril.entitymanager.v1.CorrelationMembership.primary:type_name -> anduril.entitymanager.v1.PrimaryMembership
-	18, // 63: anduril.entitymanager.v1.CorrelationMembership.non_primary:type_name -> anduril.entitymanager.v1.NonPrimaryMembership
-	22, // 64: anduril.entitymanager.v1.CorrelationMembership.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
-	20, // 65: anduril.entitymanager.v1.Decorrelation.all:type_name -> anduril.entitymanager.v1.DecorrelatedAll
-	21, // 66: anduril.entitymanager.v1.Decorrelation.decorrelated_entities:type_name -> anduril.entitymanager.v1.DecorrelatedSingle
-	22, // 67: anduril.entitymanager.v1.DecorrelatedAll.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
-	22, // 68: anduril.entitymanager.v1.DecorrelatedSingle.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
-	6,  // 69: anduril.entitymanager.v1.CorrelationMetadata.provenance:type_name -> anduril.entitymanager.v1.Provenance
-	1,  // 70: anduril.entitymanager.v1.CorrelationMetadata.replication_mode:type_name -> anduril.entitymanager.v1.CorrelationReplicationMode
-	0,  // 71: anduril.entitymanager.v1.CorrelationMetadata.type:type_name -> anduril.entitymanager.v1.CorrelationType
-	72, // [72:72] is the sub-list for method output_type
-	72, // [72:72] is the sub-list for method input_type
-	72, // [72:72] is the sub-list for extension type_name
-	72, // [72:72] is the sub-list for extension extendee
-	0,  // [0:72] is the sub-list for field type_name
+	38, // 23: anduril.entitymanager.v1.Entity.media:type_name -> anduril.entitymanager.v1.Media
+	39, // 24: anduril.entitymanager.v1.Entity.relationships:type_name -> anduril.entitymanager.v1.Relationships
+	11, // 25: anduril.entitymanager.v1.Entity.visual_details:type_name -> anduril.entitymanager.v1.VisualDetails
+	40, // 26: anduril.entitymanager.v1.Entity.dimensions:type_name -> anduril.entitymanager.v1.Dimensions
+	41, // 27: anduril.entitymanager.v1.Entity.route_details:type_name -> anduril.entitymanager.v1.RouteDetails
+	42, // 28: anduril.entitymanager.v1.Entity.schedules:type_name -> anduril.entitymanager.v1.Schedules
+	43, // 29: anduril.entitymanager.v1.Entity.health:type_name -> anduril.entitymanager.v1.Health
+	44, // 30: anduril.entitymanager.v1.Entity.group_details:type_name -> anduril.entitymanager.v1.GroupDetails
+	45, // 31: anduril.entitymanager.v1.Entity.supplies:type_name -> anduril.entitymanager.v1.Supplies
+	46, // 32: anduril.entitymanager.v1.Entity.orbit:type_name -> anduril.entitymanager.v1.Orbit
+	10, // 33: anduril.entitymanager.v1.Aliases.alternate_ids:type_name -> anduril.entitymanager.v1.AlternateId
+	47, // 34: anduril.entitymanager.v1.Tracked.track_quality_wrapper:type_name -> google.protobuf.Int32Value
+	47, // 35: anduril.entitymanager.v1.Tracked.sensor_hits:type_name -> google.protobuf.Int32Value
+	48, // 36: anduril.entitymanager.v1.Tracked.number_of_objects:type_name -> anduril.entitymanager.v1.UInt32Range
+	49, // 37: anduril.entitymanager.v1.Tracked.radar_cross_section:type_name -> google.protobuf.DoubleValue
+	23, // 38: anduril.entitymanager.v1.Tracked.last_measurement_time:type_name -> google.protobuf.Timestamp
+	50, // 39: anduril.entitymanager.v1.Tracked.line_of_bearing:type_name -> anduril.entitymanager.v1.LineOfBearing
+	23, // 40: anduril.entitymanager.v1.Provenance.source_update_time:type_name -> google.protobuf.Timestamp
+	51, // 41: anduril.entitymanager.v1.Indicators.simulated:type_name -> google.protobuf.BoolValue
+	51, // 42: anduril.entitymanager.v1.Indicators.exercise:type_name -> google.protobuf.BoolValue
+	51, // 43: anduril.entitymanager.v1.Indicators.emergency:type_name -> google.protobuf.BoolValue
+	51, // 44: anduril.entitymanager.v1.Indicators.c2:type_name -> google.protobuf.BoolValue
+	51, // 45: anduril.entitymanager.v1.Indicators.egressable:type_name -> google.protobuf.BoolValue
+	51, // 46: anduril.entitymanager.v1.Indicators.starred:type_name -> google.protobuf.BoolValue
+	9,  // 47: anduril.entitymanager.v1.Overrides.override:type_name -> anduril.entitymanager.v1.Override
+	2,  // 48: anduril.entitymanager.v1.Override.masked_field_value:type_name -> anduril.entitymanager.v1.Entity
+	52, // 49: anduril.entitymanager.v1.Override.status:type_name -> anduril.entitymanager.v1.OverrideStatus
+	6,  // 50: anduril.entitymanager.v1.Override.provenance:type_name -> anduril.entitymanager.v1.Provenance
+	53, // 51: anduril.entitymanager.v1.Override.type:type_name -> anduril.entitymanager.v1.OverrideType
+	23, // 52: anduril.entitymanager.v1.Override.request_timestamp:type_name -> google.protobuf.Timestamp
+	54, // 53: anduril.entitymanager.v1.AlternateId.type:type_name -> anduril.entitymanager.v1.AltIdType
+	12, // 54: anduril.entitymanager.v1.VisualDetails.range_rings:type_name -> anduril.entitymanager.v1.RangeRings
+	49, // 55: anduril.entitymanager.v1.RangeRings.min_distance_m:type_name -> google.protobuf.DoubleValue
+	49, // 56: anduril.entitymanager.v1.RangeRings.max_distance_m:type_name -> google.protobuf.DoubleValue
+	55, // 57: anduril.entitymanager.v1.RangeRings.ring_line_color:type_name -> anduril.type.Color
+	14, // 58: anduril.entitymanager.v1.Correlation.primary:type_name -> anduril.entitymanager.v1.PrimaryCorrelation
+	15, // 59: anduril.entitymanager.v1.Correlation.secondary:type_name -> anduril.entitymanager.v1.SecondaryCorrelation
+	16, // 60: anduril.entitymanager.v1.Correlation.membership:type_name -> anduril.entitymanager.v1.CorrelationMembership
+	19, // 61: anduril.entitymanager.v1.Correlation.decorrelation:type_name -> anduril.entitymanager.v1.Decorrelation
+	22, // 62: anduril.entitymanager.v1.SecondaryCorrelation.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
+	17, // 63: anduril.entitymanager.v1.CorrelationMembership.primary:type_name -> anduril.entitymanager.v1.PrimaryMembership
+	18, // 64: anduril.entitymanager.v1.CorrelationMembership.non_primary:type_name -> anduril.entitymanager.v1.NonPrimaryMembership
+	22, // 65: anduril.entitymanager.v1.CorrelationMembership.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
+	20, // 66: anduril.entitymanager.v1.Decorrelation.all:type_name -> anduril.entitymanager.v1.DecorrelatedAll
+	21, // 67: anduril.entitymanager.v1.Decorrelation.decorrelated_entities:type_name -> anduril.entitymanager.v1.DecorrelatedSingle
+	22, // 68: anduril.entitymanager.v1.DecorrelatedAll.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
+	22, // 69: anduril.entitymanager.v1.DecorrelatedSingle.metadata:type_name -> anduril.entitymanager.v1.CorrelationMetadata
+	6,  // 70: anduril.entitymanager.v1.CorrelationMetadata.provenance:type_name -> anduril.entitymanager.v1.Provenance
+	1,  // 71: anduril.entitymanager.v1.CorrelationMetadata.replication_mode:type_name -> anduril.entitymanager.v1.CorrelationReplicationMode
+	0,  // 72: anduril.entitymanager.v1.CorrelationMetadata.type:type_name -> anduril.entitymanager.v1.CorrelationType
+	73, // [73:73] is the sub-list for method output_type
+	73, // [73:73] is the sub-list for method input_type
+	73, // [73:73] is the sub-list for extension type_name
+	73, // [73:73] is the sub-list for extension extendee
+	0,  // [0:73] is the sub-list for field type_name
 }
 
 func init() { file_anduril_entitymanager_v1_entity_pub_proto_init() }
@@ -2144,6 +2156,7 @@ func file_anduril_entitymanager_v1_entity_pub_proto_init() {
 	file_anduril_entitymanager_v1_group_pub_proto_init()
 	file_anduril_entitymanager_v1_health_status_pub_proto_init()
 	file_anduril_entitymanager_v1_location_pub_proto_init()
+	file_anduril_entitymanager_v1_media_pub_proto_init()
 	file_anduril_entitymanager_v1_ontology_pub_proto_init()
 	file_anduril_entitymanager_v1_options_pub_proto_init()
 	file_anduril_entitymanager_v1_orbit_pub_proto_init()

@@ -24,28 +24,22 @@ const (
 type MediaType int32
 
 const (
-	MediaType_MEDIA_TYPE_INVALID      MediaType = 0
-	MediaType_MEDIA_TYPE_THUMBNAIL    MediaType = 1
-	MediaType_MEDIA_TYPE_IMAGE        MediaType = 2
-	MediaType_MEDIA_TYPE_VIDEO        MediaType = 3
-	MediaType_MEDIA_TYPE_SLIPPY_TILES MediaType = 4
+	MediaType_MEDIA_TYPE_INVALID MediaType = 0
+	MediaType_MEDIA_TYPE_IMAGE   MediaType = 2
+	MediaType_MEDIA_TYPE_VIDEO   MediaType = 3
 )
 
 // Enum value maps for MediaType.
 var (
 	MediaType_name = map[int32]string{
 		0: "MEDIA_TYPE_INVALID",
-		1: "MEDIA_TYPE_THUMBNAIL",
 		2: "MEDIA_TYPE_IMAGE",
 		3: "MEDIA_TYPE_VIDEO",
-		4: "MEDIA_TYPE_SLIPPY_TILES",
 	}
 	MediaType_value = map[string]int32{
-		"MEDIA_TYPE_INVALID":      0,
-		"MEDIA_TYPE_THUMBNAIL":    1,
-		"MEDIA_TYPE_IMAGE":        2,
-		"MEDIA_TYPE_VIDEO":        3,
-		"MEDIA_TYPE_SLIPPY_TILES": 4,
+		"MEDIA_TYPE_INVALID": 0,
+		"MEDIA_TYPE_IMAGE":   2,
+		"MEDIA_TYPE_VIDEO":   3,
 	}
 )
 
@@ -123,12 +117,8 @@ func (x *Media) GetMedia() []*MediaItem {
 
 type MediaItem struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// To Be Deprecated, use relative_path.
-	// The url where the media related to an entity can be accessed
-	Url  string    `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
-	Type MediaType `protobuf:"varint,2,opt,name=type,proto3,enum=anduril.entitymanager.v1.MediaType" json:"type,omitempty"`
-	// The relative path where the media related to an entity can be accessed when used to query against a blobs service
-	// node.
+	Type  MediaType              `protobuf:"varint,2,opt,name=type,proto3,enum=anduril.entitymanager.v1.MediaType" json:"type,omitempty"`
+	// The path, relative to the environment base URL, where media related to an entity can be accessed
 	RelativePath  string `protobuf:"bytes,3,opt,name=relative_path,json=relativePath,proto3" json:"relative_path,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -164,13 +154,6 @@ func (*MediaItem) Descriptor() ([]byte, []int) {
 	return file_anduril_entitymanager_v1_media_pub_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *MediaItem) GetUrl() string {
-	if x != nil {
-		return x.Url
-	}
-	return ""
-}
-
 func (x *MediaItem) GetType() MediaType {
 	if x != nil {
 		return x.Type
@@ -191,17 +174,14 @@ const file_anduril_entitymanager_v1_media_pub_proto_rawDesc = "" +
 	"\n" +
 	"(anduril/entitymanager/v1/media.pub.proto\x12\x18anduril.entitymanager.v1\x1a*anduril/entitymanager/v1/options.pub.proto\"G\n" +
 	"\x05Media\x12>\n" +
-	"\x05media\x18\x01 \x03(\v2#.anduril.entitymanager.v1.MediaItemB\x03\xc8>\x01R\x05media\"{\n" +
-	"\tMediaItem\x12\x10\n" +
-	"\x03url\x18\x01 \x01(\tR\x03url\x127\n" +
+	"\x05media\x18\x01 \x03(\v2#.anduril.entitymanager.v1.MediaItemB\x03\xc8>\x01R\x05media\"o\n" +
+	"\tMediaItem\x127\n" +
 	"\x04type\x18\x02 \x01(\x0e2#.anduril.entitymanager.v1.MediaTypeR\x04type\x12#\n" +
-	"\rrelative_path\x18\x03 \x01(\tR\frelativePath*\x86\x01\n" +
+	"\rrelative_path\x18\x03 \x01(\tR\frelativePathJ\x04\b\x01\x10\x02*[\n" +
 	"\tMediaType\x12\x16\n" +
-	"\x12MEDIA_TYPE_INVALID\x10\x00\x12\x18\n" +
-	"\x14MEDIA_TYPE_THUMBNAIL\x10\x01\x12\x14\n" +
+	"\x12MEDIA_TYPE_INVALID\x10\x00\x12\x14\n" +
 	"\x10MEDIA_TYPE_IMAGE\x10\x02\x12\x14\n" +
-	"\x10MEDIA_TYPE_VIDEO\x10\x03\x12\x1b\n" +
-	"\x17MEDIA_TYPE_SLIPPY_TILES\x10\x04B\xff\x01\n" +
+	"\x10MEDIA_TYPE_VIDEO\x10\x03\"\x04\b\x01\x10\x01\"\x04\b\x04\x10\x04B\xff\x01\n" +
 	"\x1ccom.anduril.entitymanager.v1B\rMediaPubProtoP\x01ZNgithub.com/anduril/lattice-sdk-go/src/anduril/entitymanager/v1;entitymanagerv1\xa2\x02\x03AEX\xaa\x02\x18Anduril.Entitymanager.V1\xca\x02\x18Anduril\\Entitymanager\\V1\xe2\x02$Anduril\\Entitymanager\\V1\\GPBMetadata\xea\x02\x1aAnduril::Entitymanager::V1b\x06proto3"
 
 var (
