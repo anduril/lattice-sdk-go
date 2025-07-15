@@ -1,0 +1,304 @@
+package objects
+
+import (
+	bytes "bytes"
+	context "context"
+	lattice "github.com/anduril/lattice-sdk-go"
+	core "github.com/anduril/lattice-sdk-go/core"
+	internal "github.com/anduril/lattice-sdk-go/internal"
+	option "github.com/anduril/lattice-sdk-go/option"
+	io "io"
+	http "net/http"
+)
+
+type RawClient struct {
+	baseURL string
+	caller  *internal.Caller
+	header  http.Header
+}
+
+func NewRawClient(options *core.RequestOptions) *RawClient {
+	return &RawClient{
+		baseURL: options.BaseURL,
+		caller: internal.NewCaller(
+			&internal.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
+	}
+}
+
+func (r *RawClient) GetObject(
+	ctx context.Context,
+	// The path of the object to fetch.
+	objectPath string,
+	request *lattice.GetObjectRequest,
+	opts ...option.RequestOption,
+) (*core.Response[io.Reader], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://example.developer.anduril.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/api/v1/objects/%v",
+		objectPath,
+	)
+	headers := internal.MergeHeaders(
+		r.header.Clone(),
+		options.ToHeader(),
+	)
+	if request.AcceptEncoding != nil {
+
+		headers.Add("Accept-Encoding", *request.AcceptEncoding)
+	}
+
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
+	response := bytes.NewBuffer(nil)
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[io.Reader]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) UploadObject(
+	ctx context.Context,
+	// Path of the Object that is to be uploaded.
+	objectPath string,
+	request []byte,
+	opts ...option.RequestOption,
+) (*core.Response[*lattice.PathMetadata], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://example.developer.anduril.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/api/v1/objects/%v",
+		objectPath,
+	)
+	headers := internal.MergeHeaders(
+		r.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		413: func(apiError *core.APIError) error {
+			return &lattice.ContentTooLargeError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+		507: func(apiError *core.APIError) error {
+			return &lattice.InsufficientStorageError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *lattice.PathMetadata
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*lattice.PathMetadata]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
+func (r *RawClient) DeleteObject(
+	ctx context.Context,
+	// The path of the object to delete.
+	objectPath string,
+	opts ...option.RequestOption,
+) (*core.Response[any], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://example.developer.anduril.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/api/v1/objects/%v",
+		objectPath,
+	)
+	headers := internal.MergeHeaders(
+		r.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodDelete,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[any]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       nil,
+	}, nil
+}
+
+func (r *RawClient) GetObjectMetadata(
+	ctx context.Context,
+	// The path of the object to query.
+	objectPath string,
+	opts ...option.RequestOption,
+) (*core.Response[any], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://example.developer.anduril.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/api/v1/objects/%v",
+		objectPath,
+	)
+	headers := internal.MergeHeaders(
+		r.header.Clone(),
+		options.ToHeader(),
+	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodHead,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[any]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       nil,
+	}, nil
+}
