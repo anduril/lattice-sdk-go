@@ -53,7 +53,7 @@ func (r *RawClient) GetObject(
 	)
 	if request.AcceptEncoding != nil {
 
-		headers.Add("Accept-Encoding", *request.AcceptEncoding)
+		headers.Add("Accept-Encoding", string(*request.AcceptEncoding))
 	}
 
 	errorCodes := internal.ErrorCodes{
