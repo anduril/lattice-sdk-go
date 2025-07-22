@@ -1,4 +1,4 @@
-module github.com/anduril/lattice-sdk-go
+module github.com/anduril/lattice-sdk-go/v2
 
 go 1.23
 
