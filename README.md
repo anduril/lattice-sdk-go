@@ -37,7 +37,7 @@ import (
     client "github.com/anduril/lattice-sdk-go/v2/client"
     option "github.com/anduril/lattice-sdk-go/v2/option"
     context "context"
-    v2 "github.com/anduril/lattice-sdk-go/v2"
+    lattice "github.com/anduril/lattice-sdk-go/v2"
 )
 
 func do() {
@@ -48,7 +48,7 @@ func do() {
     )
     client.Entities.LongPollEntityEvents(
         context.TODO(),
-        &v2.EntityEventRequest{
+        &lattice.EntityEventRequest{
             SessionToken: "sessionToken",
         },
     )
@@ -62,7 +62,7 @@ URL, which is particularly useful in test environments.
 
 ```go
 client := client.NewClient(
-    option.WithBaseURL(Lattice.Environments.Default),
+    option.WithBaseURL(lattice.Environments.Default),
 )
 ```
 
