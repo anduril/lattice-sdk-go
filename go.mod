@@ -13,5 +13,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-# These contain references to the old Protobuf generated SDKs
+// These contain references to the old Protobuf generated SDKs
 retract v2.0.0
