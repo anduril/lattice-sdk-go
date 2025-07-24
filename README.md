@@ -19,7 +19,7 @@ To use the SDK please ensure you have the following installed:
 Install the Lattice SDK package with
 
 ```
-go get github.com/anduril/lattice-sdk-go
+go get github.com/anduril/lattice-sdk-go/v2
 ```
 
 ## Support
