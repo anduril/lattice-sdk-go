@@ -1,4 +1,4 @@
-# Anduril Go Library
+# Lattice SDK Go
 
 ![](https://www.anduril.com/lattice-sdk/)
 
