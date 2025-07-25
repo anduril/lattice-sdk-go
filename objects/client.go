@@ -131,7 +131,7 @@ func (c *Client) GetObject(
 	return response.Body, nil
 }
 
-// Uploads an object using multiform data. The object must be 1 GiB or smaller.
+// Uploads an object. The object must be 1 GiB or smaller.
 func (c *Client) UploadObject(
 	ctx context.Context,
 	// Path of the Object that is to be uploaded.
