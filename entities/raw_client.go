@@ -4,10 +4,10 @@ package entities
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	v3 "github.com/anduril/lattice-sdk-go/v3"
+	core "github.com/anduril/lattice-sdk-go/v3/core"
+	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	option "github.com/anduril/lattice-sdk-go/v3/option"
 	http "net/http"
 )
 
@@ -32,9 +32,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) PublishEntity(
 	ctx context.Context,
-	request *v2.Entity,
+	request *v3.Entity,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*v3.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -48,17 +48,17 @@ func (r *RawClient) PublishEntity(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Entity
+	var response *v3.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -77,7 +77,7 @@ func (r *RawClient) PublishEntity(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*v3.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -89,7 +89,7 @@ func (r *RawClient) GetEntity(
 	// ID of the entity to return
 	entityID string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*v3.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -106,22 +106,22 @@ func (r *RawClient) GetEntity(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Entity
+	var response *v3.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -139,7 +139,7 @@ func (r *RawClient) GetEntity(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*v3.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -152,9 +152,9 @@ func (r *RawClient) OverrideEntity(
 	entityID string,
 	// fieldPath to override
 	fieldPath string,
-	request *v2.EntityOverride,
+	request *v3.EntityOverride,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*v3.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -173,22 +173,22 @@ func (r *RawClient) OverrideEntity(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Entity
+	var response *v3.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -207,7 +207,7 @@ func (r *RawClient) OverrideEntity(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*v3.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -221,7 +221,7 @@ func (r *RawClient) RemoveEntityOverride(
 	// The fieldPath to clear overrides from.
 	fieldPath string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*v3.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -239,22 +239,22 @@ func (r *RawClient) RemoveEntityOverride(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Entity
+	var response *v3.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -272,7 +272,7 @@ func (r *RawClient) RemoveEntityOverride(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*v3.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -281,9 +281,9 @@ func (r *RawClient) RemoveEntityOverride(
 
 func (r *RawClient) LongPollEntityEvents(
 	ctx context.Context,
-	request *v2.EntityEventRequest,
+	request *v3.EntityEventRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.EntityEventResponse], error) {
+) (*core.Response[*v3.EntityEventResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -298,32 +298,32 @@ func (r *RawClient) LongPollEntityEvents(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		408: func(apiError *core.APIError) error {
-			return &v2.RequestTimeoutError{
+			return &v3.RequestTimeoutError{
 				APIError: apiError,
 			}
 		},
 		429: func(apiError *core.APIError) error {
-			return &v2.TooManyRequestsError{
+			return &v3.TooManyRequestsError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.EntityEventResponse
+	var response *v3.EntityEventResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -342,7 +342,7 @@ func (r *RawClient) LongPollEntityEvents(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.EntityEventResponse]{
+	return &core.Response[*v3.EntityEventResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

@@ -5,10 +5,10 @@ package objects
 import (
 	bytes "bytes"
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	v3 "github.com/anduril/lattice-sdk-go/v3"
+	core "github.com/anduril/lattice-sdk-go/v3/core"
+	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	option "github.com/anduril/lattice-sdk-go/v3/option"
 	io "io"
 	http "net/http"
 )
@@ -36,7 +36,7 @@ func (r *RawClient) GetObject(
 	ctx context.Context,
 	// The path of the object to fetch.
 	objectPath string,
-	request *v2.GetObjectRequest,
+	request *v3.GetObjectRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[io.Reader], error) {
 	options := core.NewRequestOptions(opts...)
@@ -59,22 +59,22 @@ func (r *RawClient) GetObject(
 
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &v3.InternalServerError{
 				APIError: apiError,
 			}
 		},
@@ -110,7 +110,7 @@ func (r *RawClient) UploadObject(
 	objectPath string,
 	request []byte,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.PathMetadata], error) {
+) (*core.Response[*v3.PathMetadata], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -127,32 +127,32 @@ func (r *RawClient) UploadObject(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		413: func(apiError *core.APIError) error {
-			return &v2.ContentTooLargeError{
+			return &v3.ContentTooLargeError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &v3.InternalServerError{
 				APIError: apiError,
 			}
 		},
 		507: func(apiError *core.APIError) error {
-			return &v2.InsufficientStorageError{
+			return &v3.InsufficientStorageError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.PathMetadata
+	var response *v3.PathMetadata
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -171,7 +171,7 @@ func (r *RawClient) UploadObject(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.PathMetadata]{
+	return &core.Response[*v3.PathMetadata]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -200,22 +200,22 @@ func (r *RawClient) DeleteObject(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &v3.InternalServerError{
 				APIError: apiError,
 			}
 		},
@@ -265,17 +265,17 @@ func (r *RawClient) GetObjectMetadata(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &v3.InternalServerError{
 				APIError: apiError,
 			}
 		},

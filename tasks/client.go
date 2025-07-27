@@ -4,10 +4,10 @@ package tasks
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	v3 "github.com/anduril/lattice-sdk-go/v3"
+	core "github.com/anduril/lattice-sdk-go/v3/core"
+	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	option "github.com/anduril/lattice-sdk-go/v3/option"
 	http "net/http"
 )
 
@@ -38,9 +38,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 // be asynchronously updated by their destined agent.
 func (c *Client) CreateTask(
 	ctx context.Context,
-	request *v2.TaskCreation,
+	request *v3.TaskCreation,
 	opts ...option.RequestOption,
-) (*v2.Task, error) {
+) (*v3.Task, error) {
 	response, err := c.WithRawResponse.CreateTask(
 		ctx,
 		request,
@@ -57,7 +57,7 @@ func (c *Client) GetTask(
 	// ID of task to return
 	taskID string,
 	opts ...option.RequestOption,
-) (*v2.Task, error) {
+) (*v3.Task, error) {
 	response, err := c.WithRawResponse.GetTask(
 		ctx,
 		taskID,
@@ -74,9 +74,9 @@ func (c *Client) UpdateTaskStatus(
 	ctx context.Context,
 	// ID of task to update status of
 	taskID string,
-	request *v2.TaskStatusUpdate,
+	request *v3.TaskStatusUpdate,
 	opts ...option.RequestOption,
-) (*v2.Task, error) {
+) (*v3.Task, error) {
 	response, err := c.WithRawResponse.UpdateTaskStatus(
 		ctx,
 		taskID,
@@ -92,9 +92,9 @@ func (c *Client) UpdateTaskStatus(
 // Query for tasks by a specified search criteria.
 func (c *Client) QueryTasks(
 	ctx context.Context,
-	request *v2.TaskQuery,
+	request *v3.TaskQuery,
 	opts ...option.RequestOption,
-) (*v2.TaskQueryResults, error) {
+) (*v3.TaskQueryResults, error) {
 	response, err := c.WithRawResponse.QueryTasks(
 		ctx,
 		request,
@@ -111,9 +111,9 @@ func (c *Client) QueryTasks(
 // period you will be expected to reinitiate a new request.
 func (c *Client) ListenAsAgent(
 	ctx context.Context,
-	request *v2.AgentListener,
+	request *v3.AgentListener,
 	opts ...option.RequestOption,
-) (*v2.AgentRequest, error) {
+) (*v3.AgentRequest, error) {
 	response, err := c.WithRawResponse.ListenAsAgent(
 		ctx,
 		request,
