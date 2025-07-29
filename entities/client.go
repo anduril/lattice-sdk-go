@@ -4,10 +4,10 @@ package entities
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	v3 "github.com/anduril/lattice-sdk-go/v3"
+	core "github.com/anduril/lattice-sdk-go/v3/core"
+	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	option "github.com/anduril/lattice-sdk-go/v3/option"
 	http "net/http"
 )
 
@@ -43,9 +43,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 // provenance.sourceUpdateTime is greater than the provenance.sourceUpdateTime of the existing entity.
 func (c *Client) PublishEntity(
 	ctx context.Context,
-	request *v2.Entity,
+	request *v3.Entity,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*v3.Entity, error) {
 	response, err := c.WithRawResponse.PublishEntity(
 		ctx,
 		request,
@@ -62,7 +62,7 @@ func (c *Client) GetEntity(
 	// ID of the entity to return
 	entityID string,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*v3.Entity, error) {
 	response, err := c.WithRawResponse.GetEntity(
 		ctx,
 		entityID,
@@ -87,9 +87,9 @@ func (c *Client) OverrideEntity(
 	entityID string,
 	// fieldPath to override
 	fieldPath string,
-	request *v2.EntityOverride,
+	request *v3.EntityOverride,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*v3.Entity, error) {
 	response, err := c.WithRawResponse.OverrideEntity(
 		ctx,
 		entityID,
@@ -111,7 +111,7 @@ func (c *Client) RemoveEntityOverride(
 	// The fieldPath to clear overrides from.
 	fieldPath string,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*v3.Entity, error) {
 	response, err := c.WithRawResponse.RemoveEntityOverride(
 		ctx,
 		entityID,
@@ -135,9 +135,9 @@ func (c *Client) RemoveEntityOverride(
 // In this case you must start a new session by sending a request with an empty session token.
 func (c *Client) LongPollEntityEvents(
 	ctx context.Context,
-	request *v2.EntityEventRequest,
+	request *v3.EntityEventRequest,
 	opts ...option.RequestOption,
-) (*v2.EntityEventResponse, error) {
+) (*v3.EntityEventResponse, error) {
 	response, err := c.WithRawResponse.LongPollEntityEvents(
 		ctx,
 		request,
@@ -149,12 +149,12 @@ func (c *Client) LongPollEntityEvents(
 	return response.Body, nil
 }
 
-// This SSE API establishes a persistent connection to stream entity events as they occur.
-func (c *Client) SseEntityEvents(
+// Establishes a persistent connection to stream entity events as they occur.
+func (c *Client) StreamEntities(
 	ctx context.Context,
-	request *v2.EntityStreamRequest,
+	request *v3.EntityStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Stream[v2.SseEntityEventsResponse], error) {
+) (*core.Stream[v3.StreamEntitiesResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -170,17 +170,17 @@ func (c *Client) SseEntityEvents(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 	}
-	streamer := internal.NewStreamer[v2.SseEntityEventsResponse](c.caller)
+	streamer := internal.NewStreamer[v3.StreamEntitiesResponse](c.caller)
 	return streamer.Stream(
 		ctx,
 		&internal.StreamParams{

@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
+	internal "github.com/anduril/lattice-sdk-go/v3/internal"
 	time "time"
 )
 
@@ -360,35 +360,35 @@ func (e *EntityStreamHeartbeatData) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// stream event response.
-type SseEntityEventsResponse struct {
+// The stream event response.
+type StreamEntitiesResponse struct {
 	Event     string
 	Heartbeat *EntityStreamHeartbeat
 	Entity    *EntityStreamEvent
 }
 
-func (s *SseEntityEventsResponse) GetEvent() string {
+func (s *StreamEntitiesResponse) GetEvent() string {
 	if s == nil {
 		return ""
 	}
 	return s.Event
 }
 
-func (s *SseEntityEventsResponse) GetHeartbeat() *EntityStreamHeartbeat {
+func (s *StreamEntitiesResponse) GetHeartbeat() *EntityStreamHeartbeat {
 	if s == nil {
 		return nil
 	}
 	return s.Heartbeat
 }
 
-func (s *SseEntityEventsResponse) GetEntity() *EntityStreamEvent {
+func (s *StreamEntitiesResponse) GetEntity() *EntityStreamEvent {
 	if s == nil {
 		return nil
 	}
 	return s.Entity
 }
 
-func (s *SseEntityEventsResponse) UnmarshalJSON(data []byte) error {
+func (s *StreamEntitiesResponse) UnmarshalJSON(data []byte) error {
 	var unmarshaler struct {
 		Event string `json:"event"`
 	}
@@ -416,7 +416,7 @@ func (s *SseEntityEventsResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s SseEntityEventsResponse) MarshalJSON() ([]byte, error) {
+func (s StreamEntitiesResponse) MarshalJSON() ([]byte, error) {
 	if err := s.validate(); err != nil {
 		return nil, err
 	}
@@ -429,12 +429,12 @@ func (s SseEntityEventsResponse) MarshalJSON() ([]byte, error) {
 	return nil, fmt.Errorf("type %T does not define a non-empty union type", s)
 }
 
-type SseEntityEventsResponseVisitor interface {
+type StreamEntitiesResponseVisitor interface {
 	VisitHeartbeat(*EntityStreamHeartbeat) error
 	VisitEntity(*EntityStreamEvent) error
 }
 
-func (s *SseEntityEventsResponse) Accept(visitor SseEntityEventsResponseVisitor) error {
+func (s *StreamEntitiesResponse) Accept(visitor StreamEntitiesResponseVisitor) error {
 	if s.Heartbeat != nil {
 		return visitor.VisitHeartbeat(s.Heartbeat)
 	}
@@ -444,7 +444,7 @@ func (s *SseEntityEventsResponse) Accept(visitor SseEntityEventsResponseVisitor)
 	return fmt.Errorf("type %T does not define a non-empty union type", s)
 }
 
-func (s *SseEntityEventsResponse) validate() error {
+func (s *StreamEntitiesResponse) validate() error {
 	if s == nil {
 		return fmt.Errorf("type %T is nil", s)
 	}

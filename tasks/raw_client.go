@@ -4,10 +4,10 @@ package tasks
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	v3 "github.com/anduril/lattice-sdk-go/v3"
+	core "github.com/anduril/lattice-sdk-go/v3/core"
+	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	option "github.com/anduril/lattice-sdk-go/v3/option"
 	http "net/http"
 )
 
@@ -32,9 +32,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) CreateTask(
 	ctx context.Context,
-	request *v2.TaskCreation,
+	request *v3.TaskCreation,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Task], error) {
+) (*core.Response[*v3.Task], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -49,17 +49,17 @@ func (r *RawClient) CreateTask(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Task
+	var response *v3.Task
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -78,7 +78,7 @@ func (r *RawClient) CreateTask(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Task]{
+	return &core.Response[*v3.Task]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -90,7 +90,7 @@ func (r *RawClient) GetTask(
 	// ID of task to return
 	taskID string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Task], error) {
+) (*core.Response[*v3.Task], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -107,22 +107,22 @@ func (r *RawClient) GetTask(
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Task
+	var response *v3.Task
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -140,7 +140,7 @@ func (r *RawClient) GetTask(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Task]{
+	return &core.Response[*v3.Task]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -151,9 +151,9 @@ func (r *RawClient) UpdateTaskStatus(
 	ctx context.Context,
 	// ID of task to update status of
 	taskID string,
-	request *v2.TaskStatusUpdate,
+	request *v3.TaskStatusUpdate,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Task], error) {
+) (*core.Response[*v3.Task], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -171,22 +171,22 @@ func (r *RawClient) UpdateTaskStatus(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.Task
+	var response *v3.Task
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -205,7 +205,7 @@ func (r *RawClient) UpdateTaskStatus(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Task]{
+	return &core.Response[*v3.Task]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -214,9 +214,9 @@ func (r *RawClient) UpdateTaskStatus(
 
 func (r *RawClient) QueryTasks(
 	ctx context.Context,
-	request *v2.TaskQuery,
+	request *v3.TaskQuery,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.TaskQueryResults], error) {
+) (*core.Response[*v3.TaskQueryResults], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -231,22 +231,22 @@ func (r *RawClient) QueryTasks(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &v3.NotFoundError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.TaskQueryResults
+	var response *v3.TaskQueryResults
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -265,7 +265,7 @@ func (r *RawClient) QueryTasks(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.TaskQueryResults]{
+	return &core.Response[*v3.TaskQueryResults]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -274,9 +274,9 @@ func (r *RawClient) QueryTasks(
 
 func (r *RawClient) ListenAsAgent(
 	ctx context.Context,
-	request *v2.AgentListener,
+	request *v3.AgentListener,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.AgentRequest], error) {
+) (*core.Response[*v3.AgentRequest], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -291,17 +291,17 @@ func (r *RawClient) ListenAsAgent(
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &v3.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &v3.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.AgentRequest
+	var response *v3.AgentRequest
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -320,7 +320,7 @@ func (r *RawClient) ListenAsAgent(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.AgentRequest]{
+	return &core.Response[*v3.AgentRequest]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

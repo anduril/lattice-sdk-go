@@ -1,4 +1,4 @@
-module github.com/anduril/lattice-sdk-go/v2
+module github.com/anduril/lattice-sdk-go/v3
 
 go 1.18
 
@@ -12,6 +12,3 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-// These contain references to the old Protobuf generated SDKs
-retract v2.0.0
