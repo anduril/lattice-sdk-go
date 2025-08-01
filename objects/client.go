@@ -136,7 +136,7 @@ func (c *Client) UploadObject(
 	ctx context.Context,
 	// Path of the Object that is to be uploaded.
 	objectPath string,
-	request []byte,
+	request io.Reader,
 	opts ...option.RequestOption,
 ) (*v2.PathMetadata, error) {
 	response, err := c.WithRawResponse.UploadObject(
