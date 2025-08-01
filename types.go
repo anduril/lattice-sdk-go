@@ -3985,6 +3985,71 @@ func (h HealthHealthStatus) Ptr() *HealthHealthStatus {
 	return &h
 }
 
+type HeartbeatObject struct {
+	// timestamp of the heartbeat
+	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (h *HeartbeatObject) GetTimestamp() *time.Time {
+	if h == nil {
+		return nil
+	}
+	return h.Timestamp
+}
+
+func (h *HeartbeatObject) GetExtraProperties() map[string]interface{} {
+	return h.extraProperties
+}
+
+func (h *HeartbeatObject) UnmarshalJSON(data []byte) error {
+	type embed HeartbeatObject
+	var unmarshaler = struct {
+		embed
+		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
+	}{
+		embed: embed(*h),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*h = HeartbeatObject(unmarshaler.embed)
+	h.Timestamp = unmarshaler.Timestamp.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *h)
+	if err != nil {
+		return err
+	}
+	h.extraProperties = extraProperties
+	h.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (h *HeartbeatObject) MarshalJSON() ([]byte, error) {
+	type embed HeartbeatObject
+	var marshaler = struct {
+		embed
+		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
+	}{
+		embed:     embed(*h),
+		Timestamp: internal.NewOptionalDateTime(h.Timestamp),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (h *HeartbeatObject) String() string {
+	if len(h.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(h); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", h)
+}
+
 // Describes whether something is a high value target or not.
 type HighValueTarget struct {
 	// Indicates whether the target matches any description from a high value target list.
