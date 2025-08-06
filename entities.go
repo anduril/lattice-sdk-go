@@ -204,17 +204,33 @@ func (e *EntityEventResponse) String() string {
 }
 
 type EntityStreamEvent struct {
-	Data *EntityEvent `json:"data" url:"data"`
+	EventType *EntityEventEventType `json:"eventType,omitempty" url:"eventType,omitempty"`
+	Time      *time.Time            `json:"time,omitempty" url:"time,omitempty"`
+	Entity    *Entity               `json:"entity,omitempty" url:"entity,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (e *EntityStreamEvent) GetData() *EntityEvent {
+func (e *EntityStreamEvent) GetEventType() *EntityEventEventType {
 	if e == nil {
 		return nil
 	}
-	return e.Data
+	return e.EventType
+}
+
+func (e *EntityStreamEvent) GetTime() *time.Time {
+	if e == nil {
+		return nil
+	}
+	return e.Time
+}
+
+func (e *EntityStreamEvent) GetEntity() *Entity {
+	if e == nil {
+		return nil
+	}
+	return e.Entity
 }
 
 func (e *EntityStreamEvent) GetExtraProperties() map[string]interface{} {
@@ -222,12 +238,18 @@ func (e *EntityStreamEvent) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *EntityStreamEvent) UnmarshalJSON(data []byte) error {
-	type unmarshaler EntityStreamEvent
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed EntityStreamEvent
+	var unmarshaler = struct {
+		embed
+		Time *internal.DateTime `json:"time,omitempty"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = EntityStreamEvent(value)
+	*e = EntityStreamEvent(unmarshaler.embed)
+	e.Time = unmarshaler.Time.TimePtr()
 	extraProperties, err := internal.ExtractExtraProperties(data, *e)
 	if err != nil {
 		return err
@@ -235,6 +257,18 @@ func (e *EntityStreamEvent) UnmarshalJSON(data []byte) error {
 	e.extraProperties = extraProperties
 	e.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *EntityStreamEvent) MarshalJSON() ([]byte, error) {
+	type embed EntityStreamEvent
+	var marshaler = struct {
+		embed
+		Time *internal.DateTime `json:"time,omitempty"`
+	}{
+		embed: embed(*e),
+		Time:  internal.NewOptionalDateTime(e.Time),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (e *EntityStreamEvent) String() string {
@@ -250,17 +284,18 @@ func (e *EntityStreamEvent) String() string {
 }
 
 type EntityStreamHeartbeat struct {
-	Data *EntityStreamHeartbeatData `json:"data" url:"data"`
+	// timestamp of the heartbeat
+	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
 }
 
-func (e *EntityStreamHeartbeat) GetData() *EntityStreamHeartbeatData {
+func (e *EntityStreamHeartbeat) GetTimestamp() *time.Time {
 	if e == nil {
 		return nil
 	}
-	return e.Data
+	return e.Timestamp
 }
 
 func (e *EntityStreamHeartbeat) GetExtraProperties() map[string]interface{} {
@@ -268,12 +303,18 @@ func (e *EntityStreamHeartbeat) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *EntityStreamHeartbeat) UnmarshalJSON(data []byte) error {
-	type unmarshaler EntityStreamHeartbeat
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+	type embed EntityStreamHeartbeat
+	var unmarshaler = struct {
+		embed
+		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = EntityStreamHeartbeat(value)
+	*e = EntityStreamHeartbeat(unmarshaler.embed)
+	e.Timestamp = unmarshaler.Timestamp.TimePtr()
 	extraProperties, err := internal.ExtractExtraProperties(data, *e)
 	if err != nil {
 		return err
@@ -281,6 +322,18 @@ func (e *EntityStreamHeartbeat) UnmarshalJSON(data []byte) error {
 	e.extraProperties = extraProperties
 	e.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *EntityStreamHeartbeat) MarshalJSON() ([]byte, error) {
+	type embed EntityStreamHeartbeat
+	var marshaler = struct {
+		embed
+		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
+	}{
+		embed:     embed(*e),
+		Timestamp: internal.NewOptionalDateTime(e.Timestamp),
+	}
+	return json.Marshal(marshaler)
 }
 
 func (e *EntityStreamHeartbeat) String() string {
@@ -295,7 +348,7 @@ func (e *EntityStreamHeartbeat) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-type EntityStreamHeartbeatData struct {
+type HeartbeatObject struct {
 	// timestamp of the heartbeat
 	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
 
@@ -303,92 +356,92 @@ type EntityStreamHeartbeatData struct {
 	rawJSON         json.RawMessage
 }
 
-func (e *EntityStreamHeartbeatData) GetTimestamp() *time.Time {
-	if e == nil {
+func (h *HeartbeatObject) GetTimestamp() *time.Time {
+	if h == nil {
 		return nil
 	}
-	return e.Timestamp
+	return h.Timestamp
 }
 
-func (e *EntityStreamHeartbeatData) GetExtraProperties() map[string]interface{} {
-	return e.extraProperties
+func (h *HeartbeatObject) GetExtraProperties() map[string]interface{} {
+	return h.extraProperties
 }
 
-func (e *EntityStreamHeartbeatData) UnmarshalJSON(data []byte) error {
-	type embed EntityStreamHeartbeatData
+func (h *HeartbeatObject) UnmarshalJSON(data []byte) error {
+	type embed HeartbeatObject
 	var unmarshaler = struct {
 		embed
 		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
 	}{
-		embed: embed(*e),
+		embed: embed(*h),
 	}
 	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*e = EntityStreamHeartbeatData(unmarshaler.embed)
-	e.Timestamp = unmarshaler.Timestamp.TimePtr()
-	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	*h = HeartbeatObject(unmarshaler.embed)
+	h.Timestamp = unmarshaler.Timestamp.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *h)
 	if err != nil {
 		return err
 	}
-	e.extraProperties = extraProperties
-	e.rawJSON = json.RawMessage(data)
+	h.extraProperties = extraProperties
+	h.rawJSON = json.RawMessage(data)
 	return nil
 }
 
-func (e *EntityStreamHeartbeatData) MarshalJSON() ([]byte, error) {
-	type embed EntityStreamHeartbeatData
+func (h *HeartbeatObject) MarshalJSON() ([]byte, error) {
+	type embed HeartbeatObject
 	var marshaler = struct {
 		embed
 		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
 	}{
-		embed:     embed(*e),
-		Timestamp: internal.NewOptionalDateTime(e.Timestamp),
+		embed:     embed(*h),
+		Timestamp: internal.NewOptionalDateTime(h.Timestamp),
 	}
 	return json.Marshal(marshaler)
 }
 
-func (e *EntityStreamHeartbeatData) String() string {
-	if len(e.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+func (h *HeartbeatObject) String() string {
+	if len(h.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
 			return value
 		}
 	}
-	if value, err := internal.StringifyJSON(e); err == nil {
+	if value, err := internal.StringifyJSON(h); err == nil {
 		return value
 	}
-	return fmt.Sprintf("%#v", e)
+	return fmt.Sprintf("%#v", h)
 }
 
-// stream event response.
-type SseEntityEventsResponse struct {
+// The stream event response.
+type StreamEntitiesResponse struct {
 	Event     string
 	Heartbeat *EntityStreamHeartbeat
 	Entity    *EntityStreamEvent
 }
 
-func (s *SseEntityEventsResponse) GetEvent() string {
+func (s *StreamEntitiesResponse) GetEvent() string {
 	if s == nil {
 		return ""
 	}
 	return s.Event
 }
 
-func (s *SseEntityEventsResponse) GetHeartbeat() *EntityStreamHeartbeat {
+func (s *StreamEntitiesResponse) GetHeartbeat() *EntityStreamHeartbeat {
 	if s == nil {
 		return nil
 	}
 	return s.Heartbeat
 }
 
-func (s *SseEntityEventsResponse) GetEntity() *EntityStreamEvent {
+func (s *StreamEntitiesResponse) GetEntity() *EntityStreamEvent {
 	if s == nil {
 		return nil
 	}
 	return s.Entity
 }
 
-func (s *SseEntityEventsResponse) UnmarshalJSON(data []byte) error {
+func (s *StreamEntitiesResponse) UnmarshalJSON(data []byte) error {
 	var unmarshaler struct {
 		Event string `json:"event"`
 	}
@@ -416,7 +469,7 @@ func (s *SseEntityEventsResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (s SseEntityEventsResponse) MarshalJSON() ([]byte, error) {
+func (s StreamEntitiesResponse) MarshalJSON() ([]byte, error) {
 	if err := s.validate(); err != nil {
 		return nil, err
 	}
@@ -429,12 +482,12 @@ func (s SseEntityEventsResponse) MarshalJSON() ([]byte, error) {
 	return nil, fmt.Errorf("type %T does not define a non-empty union type", s)
 }
 
-type SseEntityEventsResponseVisitor interface {
+type StreamEntitiesResponseVisitor interface {
 	VisitHeartbeat(*EntityStreamHeartbeat) error
 	VisitEntity(*EntityStreamEvent) error
 }
 
-func (s *SseEntityEventsResponse) Accept(visitor SseEntityEventsResponseVisitor) error {
+func (s *StreamEntitiesResponse) Accept(visitor StreamEntitiesResponseVisitor) error {
 	if s.Heartbeat != nil {
 		return visitor.VisitHeartbeat(s.Heartbeat)
 	}
@@ -444,7 +497,7 @@ func (s *SseEntityEventsResponse) Accept(visitor SseEntityEventsResponseVisitor)
 	return fmt.Errorf("type %T does not define a non-empty union type", s)
 }
 
-func (s *SseEntityEventsResponse) validate() error {
+func (s *StreamEntitiesResponse) validate() error {
 	if s == nil {
 		return fmt.Errorf("type %T is nil", s)
 	}
