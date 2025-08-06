@@ -1,4 +1,4 @@
-# Anduril Lattice SDK Go
+# Lattice SDK Go
 
 ![](https://www.anduril.com/lattice-sdk/)
 
@@ -24,7 +24,7 @@ go get github.com/anduril/lattice-sdk-go/v2
 
 ## Support
 
-For support with this library please reach out to your Anduril representative. 
+For support with this library, please reach out to your Anduril representative. 
 
 ## Usage
 
@@ -150,15 +150,4 @@ response, err := client.Entities.LongPollEntityEvents(
     ...,
     option.WithMaxAttempts(1),
 )
-```
-
-### Timeouts
-
-Setting a timeout for each individual request is as simple as using the standard context library. Setting a one second timeout for an individual API call looks like the following:
-
-```go
-ctx, cancel := context.WithTimeout(ctx, time.Second)
-defer cancel()
-
-response, err := client.Entities.LongPollEntityEvents(ctx, ...)
 ```
