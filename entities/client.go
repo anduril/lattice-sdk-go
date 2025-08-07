@@ -149,12 +149,12 @@ func (c *Client) LongPollEntityEvents(
 	return response.Body, nil
 }
 
-// This SSE API establishes a persistent connection to stream entity events as they occur.
-func (c *Client) SseEntityEvents(
+// Establishes a persistent connection to stream entity events as they occur.
+func (c *Client) StreamEntities(
 	ctx context.Context,
 	request *v2.EntityStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Stream[v2.SseEntityEventsResponse], error) {
+) (*core.Stream[v2.StreamEntitiesResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -180,7 +180,7 @@ func (c *Client) SseEntityEvents(
 			}
 		},
 	}
-	streamer := internal.NewStreamer[v2.SseEntityEventsResponse](c.caller)
+	streamer := internal.NewStreamer[v2.StreamEntitiesResponse](c.caller)
 	return streamer.Stream(
 		ctx,
 		&internal.StreamParams{
@@ -193,6 +193,7 @@ func (c *Client) SseEntityEvents(
 			Client:          options.HTTPClient,
 			Prefix:          internal.DefaultSSEDataPrefix,
 			Terminator:      internal.DefaultSSETerminator,
+			Format:          core.StreamFormatSSE,
 			Request:         request,
 			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
