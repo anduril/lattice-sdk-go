@@ -108,7 +108,7 @@ func (r *RawClient) UploadObject(
 	ctx context.Context,
 	// Path of the Object that is to be uploaded.
 	objectPath string,
-	request []byte,
+	request io.Reader,
 	opts ...option.RequestOption,
 ) (*core.Response[*v2.PathMetadata], error) {
 	options := core.NewRequestOptions(opts...)

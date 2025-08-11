@@ -1,8 +1,8 @@
-# Lattice SDK Go
+# Lattice SDK Go library
 
 ![](https://www.anduril.com/lattice-sdk/)
 
-The Anduril Go library provides convenient access to the Anduril API from Go.
+The Lattice SDK Go library provides convenient access to the Lattice API from Go.
 
 ## Documentation
 
@@ -37,7 +37,7 @@ import (
     client "github.com/anduril/lattice-sdk-go/v2/client"
     option "github.com/anduril/lattice-sdk-go/v2/option"
     context "context"
-    lattice "github.com/anduril/lattice-sdk-go/v2"
+    Lattice "github.com/anduril/lattice-sdk-go/v2"
 )
 
 func do() {
@@ -48,7 +48,7 @@ func do() {
     )
     client.Entities.LongPollEntityEvents(
         context.TODO(),
-        &lattice.EntityEventRequest{
+        &Lattice.EntityEventRequest{
             SessionToken: "sessionToken",
         },
     )
@@ -62,7 +62,7 @@ URL, which is particularly useful in test environments.
 
 ```go
 client := client.NewClient(
-    option.WithBaseURL(lattice.Environments.Default),
+    option.WithBaseURL(Lattice.Environments.Default),
 )
 ```
 
