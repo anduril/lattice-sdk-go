@@ -37,7 +37,7 @@ import (
     client "github.com/anduril/lattice-sdk-go/v2/client"
     option "github.com/anduril/lattice-sdk-go/v2/option"
     context "context"
-    v2 "github.com/anduril/lattice-sdk-go/v2"
+    Lattice "github.com/anduril/lattice-sdk-go/v2"
 )
 
 func do() {
@@ -48,7 +48,7 @@ func do() {
     )
     client.Entities.LongPollEntityEvents(
         context.TODO(),
-        &v2.EntityEventRequest{
+        &Lattice.EntityEventRequest{
             SessionToken: "sessionToken",
         },
     )
