@@ -2050,6 +2050,12 @@ type Entity struct {
 	//	This field is required when publishing a prepopulated entity.
 	//	The expiry time must be in the future, but less than 30 days from the current time.
 	ExpiryTime *time.Time `json:"expiryTime,omitempty" url:"expiryTime,omitempty"`
+	// Use noExpiry only when the entity contains information that should be available to other
+	//
+	//	tasks or integrations beyond its immediate operational context. For example, use noExpiry
+	//	for long-living geographical entities that maintain persistent relevance across multiple
+	//	operations or tasks.
+	NoExpiry *bool `json:"noExpiry,omitempty" url:"noExpiry,omitempty"`
 	// Human-readable descriptions of what the entity is currently doing.
 	Status *Status `json:"status,omitempty" url:"status,omitempty"`
 	// Geospatial data related to the entity, including its position, kinematics, and orientation.
@@ -2155,6 +2161,13 @@ func (e *Entity) GetExpiryTime() *time.Time {
 		return nil
 	}
 	return e.ExpiryTime
+}
+
+func (e *Entity) GetNoExpiry() *bool {
+	if e == nil {
+		return nil
+	}
+	return e.NoExpiry
 }
 
 func (e *Entity) GetStatus() *Status {
