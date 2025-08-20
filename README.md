@@ -1,8 +1,10 @@
-# Lattice SDK Go library
+# Anduril Go Library
 
 ![](https://www.anduril.com/lattice-sdk/)
 
-The Lattice SDK Go library provides convenient access to the Lattice API from Go.
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fanduril%2Flattice-sdk-go)
+
+The Anduril Go library provides convenient access to the Anduril API from Go.
 
 ## Documentation
 
@@ -37,7 +39,7 @@ import (
     client "github.com/anduril/lattice-sdk-go/v2/client"
     option "github.com/anduril/lattice-sdk-go/v2/option"
     context "context"
-    Lattice "github.com/anduril/lattice-sdk-go/v2"
+    v2 "github.com/anduril/lattice-sdk-go/v2"
 )
 
 func do() {
@@ -48,7 +50,7 @@ func do() {
     )
     client.Entities.LongPollEntityEvents(
         context.TODO(),
-        &Lattice.EntityEventRequest{
+        &v2.EntityEventRequest{
             SessionToken: "sessionToken",
         },
     )
@@ -162,3 +164,13 @@ defer cancel()
 
 response, err := client.Entities.LongPollEntityEvents(ctx, ...)
 ```
+
+## Contributing
+
+While we value open-source contributions to this SDK, this library is generated programmatically.
+Additions made directly to this library would have to be moved over to our generation code,
+otherwise they would be overwritten upon the next generated release. Feel free to open a PR as
+a proof of concept, but know that we will not be able to merge it as-is. We suggest opening
+an issue first to discuss with us!
+
+On the other hand, contributions to the README are always very welcome!
