@@ -5,10 +5,10 @@ package objects
 import (
 	bytes "bytes"
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	lattice "github.com/anduril/lattice-sdk-go"
+	core "github.com/anduril/lattice-sdk-go/core"
+	internal "github.com/anduril/lattice-sdk-go/internal"
+	option "github.com/anduril/lattice-sdk-go/option"
 	io "io"
 	http "net/http"
 )
@@ -16,11 +16,12 @@ import (
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -28,7 +29,6 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -36,7 +36,7 @@ func (r *RawClient) GetObject(
 	ctx context.Context,
 	// The path of the object to fetch.
 	objectPath string,
-	request *v2.GetObjectRequest,
+	request *lattice.GetObjectRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[io.Reader], error) {
 	options := core.NewRequestOptions(opts...)
@@ -50,7 +50,7 @@ func (r *RawClient) GetObject(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	if request.AcceptEncoding != nil {
@@ -59,22 +59,22 @@ func (r *RawClient) GetObject(
 
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &lattice.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &lattice.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &lattice.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &lattice.InternalServerError{
 				APIError: apiError,
 			}
 		},
@@ -110,7 +110,7 @@ func (r *RawClient) UploadObject(
 	objectPath string,
 	request io.Reader,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.PathMetadata], error) {
+) (*core.Response[*lattice.PathMetadata], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -122,37 +122,37 @@ func (r *RawClient) UploadObject(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &lattice.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &lattice.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		413: func(apiError *core.APIError) error {
-			return &v2.ContentTooLargeError{
+			return &lattice.ContentTooLargeError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &lattice.InternalServerError{
 				APIError: apiError,
 			}
 		},
 		507: func(apiError *core.APIError) error {
-			return &v2.InsufficientStorageError{
+			return &lattice.InsufficientStorageError{
 				APIError: apiError,
 			}
 		},
 	}
-	var response *v2.PathMetadata
+	var response *lattice.PathMetadata
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -171,7 +171,7 @@ func (r *RawClient) UploadObject(
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.PathMetadata]{
+	return &core.Response[*lattice.PathMetadata]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -195,27 +195,27 @@ func (r *RawClient) DeleteObject(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &lattice.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &lattice.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
+			return &lattice.NotFoundError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &lattice.InternalServerError{
 				APIError: apiError,
 			}
 		},
@@ -260,22 +260,22 @@ func (r *RawClient) GetObjectMetadata(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &lattice.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &lattice.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
+			return &lattice.InternalServerError{
 				APIError: apiError,
 			}
 		},
