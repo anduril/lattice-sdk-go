@@ -4,25 +4,25 @@ package entities
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	lattice "github.com/anduril/lattice-sdk-go"
+	core "github.com/anduril/lattice-sdk-go/core"
+	internal "github.com/anduril/lattice-sdk-go/internal"
+	option "github.com/anduril/lattice-sdk-go/option"
 	http "net/http"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -30,7 +30,6 @@ func NewClient(opts ...option.RequestOption) *Client {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -43,9 +42,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 // provenance.sourceUpdateTime is greater than the provenance.sourceUpdateTime of the existing entity.
 func (c *Client) PublishEntity(
 	ctx context.Context,
-	request *v2.Entity,
+	request *lattice.Entity,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*lattice.Entity, error) {
 	response, err := c.WithRawResponse.PublishEntity(
 		ctx,
 		request,
@@ -62,7 +61,7 @@ func (c *Client) GetEntity(
 	// ID of the entity to return
 	entityID string,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*lattice.Entity, error) {
 	response, err := c.WithRawResponse.GetEntity(
 		ctx,
 		entityID,
@@ -87,9 +86,9 @@ func (c *Client) OverrideEntity(
 	entityID string,
 	// fieldPath to override
 	fieldPath string,
-	request *v2.EntityOverride,
+	request *lattice.EntityOverride,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*lattice.Entity, error) {
 	response, err := c.WithRawResponse.OverrideEntity(
 		ctx,
 		entityID,
@@ -111,7 +110,7 @@ func (c *Client) RemoveEntityOverride(
 	// The fieldPath to clear overrides from.
 	fieldPath string,
 	opts ...option.RequestOption,
-) (*v2.Entity, error) {
+) (*lattice.Entity, error) {
 	response, err := c.WithRawResponse.RemoveEntityOverride(
 		ctx,
 		entityID,
@@ -135,9 +134,9 @@ func (c *Client) RemoveEntityOverride(
 // In this case you must start a new session by sending a request with an empty session token.
 func (c *Client) LongPollEntityEvents(
 	ctx context.Context,
-	request *v2.EntityEventRequest,
+	request *lattice.EntityEventRequest,
 	opts ...option.RequestOption,
-) (*v2.EntityEventResponse, error) {
+) (*lattice.EntityEventResponse, error) {
 	response, err := c.WithRawResponse.LongPollEntityEvents(
 		ctx,
 		request,
@@ -152,9 +151,9 @@ func (c *Client) LongPollEntityEvents(
 // Establishes a persistent connection to stream entity events as they occur.
 func (c *Client) StreamEntities(
 	ctx context.Context,
-	request *v2.EntityStreamRequest,
+	request *lattice.EntityStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Stream[v2.StreamEntitiesResponse], error) {
+) (*core.Stream[lattice.StreamEntitiesResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -163,24 +162,24 @@ func (c *Client) StreamEntities(
 	)
 	endpointURL := baseURL + "/api/v1/entities/stream"
 	headers := internal.MergeHeaders(
-		c.header.Clone(),
+		c.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Accept", "text/event-stream")
 	headers.Add("Content-Type", "application/json")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
+			return &lattice.BadRequestError{
 				APIError: apiError,
 			}
 		},
 		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
+			return &lattice.UnauthorizedError{
 				APIError: apiError,
 			}
 		},
 	}
-	streamer := internal.NewStreamer[v2.StreamEntitiesResponse](c.caller)
+	streamer := internal.NewStreamer[lattice.StreamEntitiesResponse](c.caller)
 	return streamer.Stream(
 		ctx,
 		&internal.StreamParams{
