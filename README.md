@@ -1,8 +1,10 @@
-# Lattice SDK Go library
+# Lattice SDK Go Library
 
 ![](https://www.anduril.com/lattice-sdk/)
 
-The Lattice SDK Go library provides convenient access to the Lattice API from Go.
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fanduril%2Flattice-sdk-go)
+
+The Lattice SDK Go library provides convenient access to the Lattice SDK APIs from Go.
 
 ## Documentation
 
@@ -26,6 +28,10 @@ go get github.com/anduril/lattice-sdk-go/v2
 
 For support with this library please reach out to your Anduril representative. 
 
+## Reference
+
+A full reference for this library is available [here](https://github.com/anduril/lattice-sdk-go/blob/HEAD/./reference.md).
+
 ## Usage
 
 Instantiate and use the client with the following:
@@ -37,7 +43,7 @@ import (
     client "github.com/anduril/lattice-sdk-go/v2/client"
     option "github.com/anduril/lattice-sdk-go/v2/option"
     context "context"
-    Lattice "github.com/anduril/lattice-sdk-go/v2"
+    v2 "github.com/anduril/lattice-sdk-go/v2"
 )
 
 func do() {
@@ -48,7 +54,7 @@ func do() {
     )
     client.Entities.LongPollEntityEvents(
         context.TODO(),
-        &Lattice.EntityEventRequest{
+        &v2.EntityEventRequest{
             SessionToken: "sessionToken",
         },
     )
