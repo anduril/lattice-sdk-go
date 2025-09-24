@@ -4,25 +4,24 @@ package tasks
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
-	http "net/http"
+	latticesdkgo "github.com/anduril/lattice-sdk-go"
+	core "github.com/anduril/lattice-sdk-go/core"
+	internal "github.com/anduril/lattice-sdk-go/internal"
+	option "github.com/anduril/lattice-sdk-go/option"
 )
 
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -30,7 +29,6 @@ func NewClient(opts ...option.RequestOption) *Client {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -38,9 +36,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 // be asynchronously updated by their destined agent.
 func (c *Client) CreateTask(
 	ctx context.Context,
-	request *v2.TaskCreation,
+	request *latticesdkgo.TaskCreation,
 	opts ...option.RequestOption,
-) (*v2.Task, error) {
+) (*latticesdkgo.Task, error) {
 	response, err := c.WithRawResponse.CreateTask(
 		ctx,
 		request,
@@ -57,7 +55,7 @@ func (c *Client) GetTask(
 	// ID of task to return
 	taskID string,
 	opts ...option.RequestOption,
-) (*v2.Task, error) {
+) (*latticesdkgo.Task, error) {
 	response, err := c.WithRawResponse.GetTask(
 		ctx,
 		taskID,
@@ -74,9 +72,9 @@ func (c *Client) UpdateTaskStatus(
 	ctx context.Context,
 	// ID of task to update status of
 	taskID string,
-	request *v2.TaskStatusUpdate,
+	request *latticesdkgo.TaskStatusUpdate,
 	opts ...option.RequestOption,
-) (*v2.Task, error) {
+) (*latticesdkgo.Task, error) {
 	response, err := c.WithRawResponse.UpdateTaskStatus(
 		ctx,
 		taskID,
@@ -92,9 +90,9 @@ func (c *Client) UpdateTaskStatus(
 // Query for tasks by a specified search criteria.
 func (c *Client) QueryTasks(
 	ctx context.Context,
-	request *v2.TaskQuery,
+	request *latticesdkgo.TaskQuery,
 	opts ...option.RequestOption,
-) (*v2.TaskQueryResults, error) {
+) (*latticesdkgo.TaskQueryResults, error) {
 	response, err := c.WithRawResponse.QueryTasks(
 		ctx,
 		request,
@@ -111,9 +109,9 @@ func (c *Client) QueryTasks(
 // period you will be expected to reinitiate a new request.
 func (c *Client) ListenAsAgent(
 	ctx context.Context,
-	request *v2.AgentListener,
+	request *latticesdkgo.AgentListener,
 	opts ...option.RequestOption,
-) (*v2.AgentRequest, error) {
+) (*latticesdkgo.AgentRequest, error) {
 	response, err := c.WithRawResponse.ListenAsAgent(
 		ctx,
 		request,
