@@ -3,7 +3,7 @@
 package option
 
 import (
-	core "github.com/anduril/lattice-sdk-go/v2/core"
+	core "github.com/anduril/lattice-sdk-go/core"
 	http "net/http"
 	url "net/url"
 )

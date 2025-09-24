@@ -4,7 +4,7 @@ package Lattice
 
 import (
 	json "encoding/json"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
+	core "github.com/anduril/lattice-sdk-go/core"
 )
 
 // Bad request
