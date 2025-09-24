@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/anduril/lattice-sdk-go/v2/core"
+	"github.com/anduril/lattice-sdk-go/core"
 )
 
 // ErrorDecoder decodes *http.Response errors and returns a
