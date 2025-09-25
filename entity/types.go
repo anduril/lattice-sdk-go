@@ -6,11 +6,20 @@ import (
 	json "encoding/json"
 	fmt "fmt"
 	internal "github.com/anduril/lattice-sdk-go/v2/internal"
+	big "math/big"
+)
+
+var (
+	errorFieldErrorCode = big.NewInt(1 << 0)
+	errorFieldMessage   = big.NewInt(1 << 1)
 )
 
 type Error struct {
 	ErrorCode string `json:"errorCode" url:"errorCode"`
 	Message   string `json:"message" url:"message"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -34,6 +43,27 @@ func (e *Error) GetExtraProperties() map[string]interface{} {
 	return e.extraProperties
 }
 
+func (e *Error) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetErrorCode sets the ErrorCode field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *Error) SetErrorCode(errorCode string) {
+	e.ErrorCode = errorCode
+	e.require(errorFieldErrorCode)
+}
+
+// SetMessage sets the Message field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *Error) SetMessage(message string) {
+	e.Message = message
+	e.require(errorFieldMessage)
+}
+
 func (e *Error) UnmarshalJSON(data []byte) error {
 	type unmarshaler Error
 	var value unmarshaler
@@ -48,6 +78,17 @@ func (e *Error) UnmarshalJSON(data []byte) error {
 	e.extraProperties = extraProperties
 	e.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (e *Error) MarshalJSON() ([]byte, error) {
+	type embed Error
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (e *Error) String() string {
