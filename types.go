@@ -2123,6 +2123,8 @@ type Entity struct {
 	Supplies *Supplies `json:"supplies,omitempty" url:"supplies,omitempty"`
 	// Orbit information for space objects.
 	Orbit *Orbit `json:"orbit,omitempty" url:"orbit,omitempty"`
+	// Symbology/iconography for the entity respecting an existing standard.
+	Symbology *Symbology `json:"symbology,omitempty" url:"symbology,omitempty"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -2385,6 +2387,13 @@ func (e *Entity) GetOrbit() *Orbit {
 		return nil
 	}
 	return e.Orbit
+}
+
+func (e *Entity) GetSymbology() *Symbology {
+	if e == nil {
+		return nil
+	}
+	return e.Symbology
 }
 
 func (e *Entity) GetExtraProperties() map[string]interface{} {
@@ -4966,6 +4975,52 @@ func (m *MergedFrom) UnmarshalJSON(data []byte) error {
 }
 
 func (m *MergedFrom) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+type MilStd2525C struct {
+	Sidc *string `json:"sidc,omitempty" url:"sidc,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *MilStd2525C) GetSidc() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Sidc
+}
+
+func (m *MilStd2525C) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *MilStd2525C) UnmarshalJSON(data []byte) error {
+	type unmarshaler MilStd2525C
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = MilStd2525C(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *MilStd2525C) String() string {
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -8577,6 +8632,53 @@ func (s *Supplies) UnmarshalJSON(data []byte) error {
 }
 
 func (s *Supplies) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+// Symbology associated with an entity.
+type Symbology struct {
+	MilStd2525C *MilStd2525C `json:"milStd2525C,omitempty" url:"milStd2525C,omitempty"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *Symbology) GetMilStd2525C() *MilStd2525C {
+	if s == nil {
+		return nil
+	}
+	return s.MilStd2525C
+}
+
+func (s *Symbology) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *Symbology) UnmarshalJSON(data []byte) error {
+	type unmarshaler Symbology
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = Symbology(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *Symbology) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
