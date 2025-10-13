@@ -9,7 +9,6 @@ import (
 	objects "github.com/anduril/lattice-sdk-go/v2/objects"
 	option "github.com/anduril/lattice-sdk-go/v2/option"
 	tasks "github.com/anduril/lattice-sdk-go/v2/tasks"
-	http "net/http"
 )
 
 type Client struct {
@@ -17,17 +16,18 @@ type Client struct {
 	Tasks    *tasks.Client
 	Objects  *objects.Client
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
 func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
 	return &Client{
-		Entities: entities.NewClient(opts...),
-		Tasks:    tasks.NewClient(opts...),
-		Objects:  objects.NewClient(opts...),
+		Entities: entities.NewClient(options),
+		Tasks:    tasks.NewClient(options),
+		Objects:  objects.NewClient(options),
+		options:  options,
 		baseURL:  options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -35,6 +35,5 @@ func NewClient(opts ...option.RequestOption) *Client {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
