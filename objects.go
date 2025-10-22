@@ -5,14 +5,53 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
+	internal "github.com/anduril/lattice-sdk-go/v3/v2/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	getObjectRequestFieldAcceptEncoding = big.NewInt(1 << 0)
+	getObjectRequestFieldPriority       = big.NewInt(1 << 1)
 )
 
 type GetObjectRequest struct {
 	// If set, Lattice will compress the response using the specified compression method. If the header is not defined, or the compression method is set to `identity`, no compression will be applied to the response.
 	AcceptEncoding *GetObjectRequestAcceptEncoding `json:"-" url:"-"`
+	// Indicates a client's preference for the priority of the response. The value is a structured header as defined in RFC 9218. If you do not set the header, Lattice uses the default priority set for the environment. Incremental delivery directives are not supported and will be ignored.
+	Priority *string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (g *GetObjectRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetAcceptEncoding sets the AcceptEncoding field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetObjectRequest) SetAcceptEncoding(acceptEncoding *GetObjectRequestAcceptEncoding) {
+	g.AcceptEncoding = acceptEncoding
+	g.require(getObjectRequestFieldAcceptEncoding)
+}
+
+// SetPriority sets the Priority field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetObjectRequest) SetPriority(priority *string) {
+	g.Priority = priority
+	g.require(getObjectRequestFieldPriority)
+}
+
+var (
+	listObjectsRequestFieldPrefix           = big.NewInt(1 << 0)
+	listObjectsRequestFieldSinceTimestamp   = big.NewInt(1 << 1)
+	listObjectsRequestFieldPageToken        = big.NewInt(1 << 2)
+	listObjectsRequestFieldAllObjectsInMesh = big.NewInt(1 << 3)
+)
 
 type ListObjectsRequest struct {
 	// Filters the objects based on the specified prefix path. If no path is specified, all objects are returned.
@@ -23,7 +62,50 @@ type ListObjectsRequest struct {
 	PageToken *string `json:"-" url:"pageToken,omitempty"`
 	// Lists objects across all environment nodes in a Lattice Mesh.
 	AllObjectsInMesh *bool `json:"-" url:"allObjectsInMesh,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (l *ListObjectsRequest) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetPrefix sets the Prefix field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListObjectsRequest) SetPrefix(prefix *string) {
+	l.Prefix = prefix
+	l.require(listObjectsRequestFieldPrefix)
+}
+
+// SetSinceTimestamp sets the SinceTimestamp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListObjectsRequest) SetSinceTimestamp(sinceTimestamp *time.Time) {
+	l.SinceTimestamp = sinceTimestamp
+	l.require(listObjectsRequestFieldSinceTimestamp)
+}
+
+// SetPageToken sets the PageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListObjectsRequest) SetPageToken(pageToken *string) {
+	l.PageToken = pageToken
+	l.require(listObjectsRequestFieldPageToken)
+}
+
+// SetAllObjectsInMesh sets the AllObjectsInMesh field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListObjectsRequest) SetAllObjectsInMesh(allObjectsInMesh *bool) {
+	l.AllObjectsInMesh = allObjectsInMesh
+	l.require(listObjectsRequestFieldAllObjectsInMesh)
+}
+
+var (
+	contentIdentifierFieldPath     = big.NewInt(1 << 0)
+	contentIdentifierFieldChecksum = big.NewInt(1 << 1)
+)
 
 type ContentIdentifier struct {
 	// A valid path must not contain the following:
@@ -34,6 +116,9 @@ type ContentIdentifier struct {
 	Path string `json:"path" url:"path"`
 	// The SHA-256 checksum of this object.
 	Checksum string `json:"checksum" url:"checksum"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -57,6 +142,27 @@ func (c *ContentIdentifier) GetExtraProperties() map[string]interface{} {
 	return c.extraProperties
 }
 
+func (c *ContentIdentifier) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetPath sets the Path field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ContentIdentifier) SetPath(path string) {
+	c.Path = path
+	c.require(contentIdentifierFieldPath)
+}
+
+// SetChecksum sets the Checksum field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *ContentIdentifier) SetChecksum(checksum string) {
+	c.Checksum = checksum
+	c.require(contentIdentifierFieldChecksum)
+}
+
 func (c *ContentIdentifier) UnmarshalJSON(data []byte) error {
 	type unmarshaler ContentIdentifier
 	var value unmarshaler
@@ -73,6 +179,17 @@ func (c *ContentIdentifier) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c *ContentIdentifier) MarshalJSON() ([]byte, error) {
+	type embed ContentIdentifier
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (c *ContentIdentifier) String() string {
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
@@ -85,9 +202,17 @@ func (c *ContentIdentifier) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	listResponseFieldPathMetadatas = big.NewInt(1 << 0)
+	listResponseFieldNextPageToken = big.NewInt(1 << 1)
+)
+
 type ListResponse struct {
 	PathMetadatas []*PathMetadata `json:"path_metadatas" url:"path_metadatas"`
 	NextPageToken *string         `json:"next_page_token,omitempty" url:"next_page_token,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -111,6 +236,27 @@ func (l *ListResponse) GetExtraProperties() map[string]interface{} {
 	return l.extraProperties
 }
 
+func (l *ListResponse) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetPathMetadatas sets the PathMetadatas field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListResponse) SetPathMetadatas(pathMetadatas []*PathMetadata) {
+	l.PathMetadatas = pathMetadatas
+	l.require(listResponseFieldPathMetadatas)
+}
+
+// SetNextPageToken sets the NextPageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListResponse) SetNextPageToken(nextPageToken *string) {
+	l.NextPageToken = nextPageToken
+	l.require(listResponseFieldNextPageToken)
+}
+
 func (l *ListResponse) UnmarshalJSON(data []byte) error {
 	type unmarshaler ListResponse
 	var value unmarshaler
@@ -127,6 +273,17 @@ func (l *ListResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (l *ListResponse) MarshalJSON() ([]byte, error) {
+	type embed ListResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*l),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, l.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (l *ListResponse) String() string {
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
@@ -139,11 +296,21 @@ func (l *ListResponse) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
+var (
+	pathMetadataFieldContentIdentifier = big.NewInt(1 << 0)
+	pathMetadataFieldSizeBytes         = big.NewInt(1 << 1)
+	pathMetadataFieldLastUpdatedAt     = big.NewInt(1 << 2)
+	pathMetadataFieldExpiryTime        = big.NewInt(1 << 3)
+)
+
 type PathMetadata struct {
 	ContentIdentifier *ContentIdentifier `json:"content_identifier" url:"content_identifier"`
 	SizeBytes         int64              `json:"size_bytes" url:"size_bytes"`
 	LastUpdatedAt     time.Time          `json:"last_updated_at" url:"last_updated_at"`
 	ExpiryTime        *time.Time         `json:"expiry_time,omitempty" url:"expiry_time,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -181,6 +348,41 @@ func (p *PathMetadata) GetExtraProperties() map[string]interface{} {
 	return p.extraProperties
 }
 
+func (p *PathMetadata) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetContentIdentifier sets the ContentIdentifier field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PathMetadata) SetContentIdentifier(contentIdentifier *ContentIdentifier) {
+	p.ContentIdentifier = contentIdentifier
+	p.require(pathMetadataFieldContentIdentifier)
+}
+
+// SetSizeBytes sets the SizeBytes field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PathMetadata) SetSizeBytes(sizeBytes int64) {
+	p.SizeBytes = sizeBytes
+	p.require(pathMetadataFieldSizeBytes)
+}
+
+// SetLastUpdatedAt sets the LastUpdatedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PathMetadata) SetLastUpdatedAt(lastUpdatedAt time.Time) {
+	p.LastUpdatedAt = lastUpdatedAt
+	p.require(pathMetadataFieldLastUpdatedAt)
+}
+
+// SetExpiryTime sets the ExpiryTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *PathMetadata) SetExpiryTime(expiryTime *time.Time) {
+	p.ExpiryTime = expiryTime
+	p.require(pathMetadataFieldExpiryTime)
+}
+
 func (p *PathMetadata) UnmarshalJSON(data []byte) error {
 	type embed PathMetadata
 	var unmarshaler = struct {
@@ -216,7 +418,8 @@ func (p *PathMetadata) MarshalJSON() ([]byte, error) {
 		LastUpdatedAt: internal.NewDateTime(p.LastUpdatedAt),
 		ExpiryTime:    internal.NewOptionalDateTime(p.ExpiryTime),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (p *PathMetadata) String() string {
