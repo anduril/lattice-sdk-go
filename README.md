@@ -27,10 +27,6 @@ go get github.com/anduril/lattice-sdk-go/v2
 
 For support with this library please reach out to your Anduril representative. 
 
-## Reference
-
-A full reference for this library is available [here](https://github.com/anduril/lattice-sdk-go/blob/HEAD/./reference.md).
-
 ## Usage
 
 Instantiate and use the client with the following:
