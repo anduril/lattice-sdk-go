@@ -4,21 +4,22 @@ package tasks
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v2/v3"
+	core "github.com/anduril/lattice-sdk-go/v2/v3/core"
+	internal "github.com/anduril/lattice-sdk-go/v2/v3/internal"
+	option "github.com/anduril/lattice-sdk-go/v2/v3/option"
 	http "net/http"
 )
 
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -26,15 +27,14 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (r *RawClient) CreateTask(
 	ctx context.Context,
-	request *v2.TaskCreation,
+	request *Lattice.TaskCreation,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Task], error) {
+) (*core.Response[*Lattice.Task], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -43,23 +43,11 @@ func (r *RawClient) CreateTask(
 	)
 	endpointURL := baseURL + "/api/v1/tasks"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.Task
+	var response *Lattice.Task
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -72,13 +60,13 @@ func (r *RawClient) CreateTask(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Task]{
+	return &core.Response[*Lattice.Task]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -90,7 +78,7 @@ func (r *RawClient) GetTask(
 	// ID of task to return
 	taskID string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Task], error) {
+) (*core.Response[*Lattice.Task], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -102,27 +90,10 @@ func (r *RawClient) GetTask(
 		taskID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.Task
+	var response *Lattice.Task
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -134,13 +105,13 @@ func (r *RawClient) GetTask(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Task]{
+	return &core.Response[*Lattice.Task]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -151,9 +122,9 @@ func (r *RawClient) UpdateTaskStatus(
 	ctx context.Context,
 	// ID of task to update status of
 	taskID string,
-	request *v2.TaskStatusUpdate,
+	request *Lattice.TaskStatusUpdate,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Task], error) {
+) (*core.Response[*Lattice.Task], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -165,28 +136,11 @@ func (r *RawClient) UpdateTaskStatus(
 		taskID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.Task
+	var response *Lattice.Task
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -199,13 +153,13 @@ func (r *RawClient) UpdateTaskStatus(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Task]{
+	return &core.Response[*Lattice.Task]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -214,9 +168,9 @@ func (r *RawClient) UpdateTaskStatus(
 
 func (r *RawClient) QueryTasks(
 	ctx context.Context,
-	request *v2.TaskQuery,
+	request *Lattice.TaskQuery,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.TaskQueryResults], error) {
+) (*core.Response[*Lattice.TaskQueryResults], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -225,28 +179,11 @@ func (r *RawClient) QueryTasks(
 	)
 	endpointURL := baseURL + "/api/v1/tasks/query"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.TaskQueryResults
+	var response *Lattice.TaskQueryResults
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -259,13 +196,13 @@ func (r *RawClient) QueryTasks(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.TaskQueryResults]{
+	return &core.Response[*Lattice.TaskQueryResults]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -274,9 +211,9 @@ func (r *RawClient) QueryTasks(
 
 func (r *RawClient) ListenAsAgent(
 	ctx context.Context,
-	request *v2.AgentListener,
+	request *Lattice.AgentListener,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.AgentRequest], error) {
+) (*core.Response[*Lattice.AgentRequest], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -285,23 +222,11 @@ func (r *RawClient) ListenAsAgent(
 	)
 	endpointURL := baseURL + "/api/v1/agent/listen"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.AgentRequest
+	var response *Lattice.AgentRequest
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -314,13 +239,13 @@ func (r *RawClient) ListenAsAgent(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.AgentRequest]{
+	return &core.Response[*Lattice.AgentRequest]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

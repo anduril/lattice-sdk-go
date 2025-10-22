@@ -4,10 +4,10 @@ package objects
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v2/v3"
+	core "github.com/anduril/lattice-sdk-go/v2/v3/core"
+	internal "github.com/anduril/lattice-sdk-go/v2/v3/internal"
+	option "github.com/anduril/lattice-sdk-go/v2/v3/option"
 	io "io"
 	http "net/http"
 )
@@ -15,15 +15,15 @@ import (
 type Client struct {
 	WithRawResponse *RawClient
 
+	options *core.RequestOptions
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
 }
 
-func NewClient(opts ...option.RequestOption) *Client {
-	options := core.NewRequestOptions(opts...)
+func NewClient(options *core.RequestOptions) *Client {
 	return &Client{
 		WithRawResponse: NewRawClient(options),
+		options:         options,
 		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -31,16 +31,15 @@ func NewClient(opts ...option.RequestOption) *Client {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 // Lists objects in your environment. You can define a prefix to list a subset of your objects. If you do not set a prefix, Lattice returns all available objects. By default this endpoint will list local objects only.
 func (c *Client) ListObjects(
 	ctx context.Context,
-	request *v2.ListObjectsRequest,
+	request *Lattice.ListObjectsRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*v2.PathMetadata], error) {
+) (*core.Page[*Lattice.PathMetadata], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -53,26 +52,9 @@ func (c *Client) ListObjects(
 		return nil, err
 	}
 	headers := internal.MergeHeaders(
-		c.header.Clone(),
+		c.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
 	prepareCall := func(pageRequest *internal.PageRequest[*string]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
 			queryParams.Set("pageToken", *pageRequest.Cursor)
@@ -90,14 +72,14 @@ func (c *Client) ListObjects(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		}
 	}
-	readPageResponse := func(response *v2.ListResponse) *internal.PageResponse[*string, *v2.PathMetadata] {
+	readPageResponse := func(response *Lattice.ListResponse) *internal.PageResponse[*string, *Lattice.PathMetadata] {
 		var zeroValue *string
 		next := response.GetNextPageToken()
 		results := response.GetPathMetadatas()
-		return &internal.PageResponse[*string, *v2.PathMetadata]{
+		return &internal.PageResponse[*string, *Lattice.PathMetadata]{
 			Next:    next,
 			Results: results,
 			Done:    next == zeroValue,
@@ -116,7 +98,7 @@ func (c *Client) GetObject(
 	ctx context.Context,
 	// The path of the object to fetch.
 	objectPath string,
-	request *v2.GetObjectRequest,
+	request *Lattice.GetObjectRequest,
 	opts ...option.RequestOption,
 ) (io.Reader, error) {
 	response, err := c.WithRawResponse.GetObject(
@@ -138,7 +120,7 @@ func (c *Client) UploadObject(
 	objectPath string,
 	request io.Reader,
 	opts ...option.RequestOption,
-) (*v2.PathMetadata, error) {
+) (*Lattice.PathMetadata, error) {
 	response, err := c.WithRawResponse.UploadObject(
 		ctx,
 		objectPath,
