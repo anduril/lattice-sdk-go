@@ -3,7 +3,7 @@ package internal
 import (
 	"context"
 
-	"github.com/anduril/lattice-sdk-go/v2/core"
+	"github.com/anduril/lattice-sdk-go/v3/v2/core"
 )
 
 // PagerMode represents the different types of pagination modes.

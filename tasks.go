@@ -5,8 +5,20 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
+	internal "github.com/anduril/lattice-sdk-go/v3/v2/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	taskCreationFieldTaskID              = big.NewInt(1 << 0)
+	taskCreationFieldDisplayName         = big.NewInt(1 << 1)
+	taskCreationFieldDescription         = big.NewInt(1 << 2)
+	taskCreationFieldSpecification       = big.NewInt(1 << 3)
+	taskCreationFieldAuthor              = big.NewInt(1 << 4)
+	taskCreationFieldRelations           = big.NewInt(1 << 5)
+	taskCreationFieldIsExecutedElsewhere = big.NewInt(1 << 6)
+	taskCreationFieldInitialEntities     = big.NewInt(1 << 7)
 )
 
 type TaskCreation struct {
@@ -30,12 +42,106 @@ type TaskCreation struct {
 	// Indicates an initial set of entities that can be used to execute an entity aware
 	// task. For example, an entity Objective, an entity Keep In Zone, etc.
 	InitialEntities []*TaskEntity `json:"initialEntities,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (t *TaskCreation) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetTaskID(taskID *string) {
+	t.TaskID = taskID
+	t.require(taskCreationFieldTaskID)
+}
+
+// SetDisplayName sets the DisplayName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetDisplayName(displayName *string) {
+	t.DisplayName = displayName
+	t.require(taskCreationFieldDisplayName)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetDescription(description *string) {
+	t.Description = description
+	t.require(taskCreationFieldDescription)
+}
+
+// SetSpecification sets the Specification field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetSpecification(specification *GoogleProtobufAny) {
+	t.Specification = specification
+	t.require(taskCreationFieldSpecification)
+}
+
+// SetAuthor sets the Author field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetAuthor(author *Principal) {
+	t.Author = author
+	t.require(taskCreationFieldAuthor)
+}
+
+// SetRelations sets the Relations field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetRelations(relations *Relations) {
+	t.Relations = relations
+	t.require(taskCreationFieldRelations)
+}
+
+// SetIsExecutedElsewhere sets the IsExecutedElsewhere field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetIsExecutedElsewhere(isExecutedElsewhere *bool) {
+	t.IsExecutedElsewhere = isExecutedElsewhere
+	t.require(taskCreationFieldIsExecutedElsewhere)
+}
+
+// SetInitialEntities sets the InitialEntities field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetInitialEntities(initialEntities []*TaskEntity) {
+	t.InitialEntities = initialEntities
+	t.require(taskCreationFieldInitialEntities)
+}
+
+var (
+	agentListenerFieldAgentSelector = big.NewInt(1 << 0)
+)
 
 type AgentListener struct {
 	// Selector criteria to determine which Agent Tasks the agent receives
 	AgentSelector *EntityIDsSelector `json:"agentSelector,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (a *AgentListener) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetAgentSelector sets the AgentSelector field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AgentListener) SetAgentSelector(agentSelector *EntityIDsSelector) {
+	a.AgentSelector = agentSelector
+	a.require(agentListenerFieldAgentSelector)
+}
+
+var (
+	taskQueryFieldPageToken       = big.NewInt(1 << 0)
+	taskQueryFieldParentTaskID    = big.NewInt(1 << 1)
+	taskQueryFieldStatusFilter    = big.NewInt(1 << 2)
+	taskQueryFieldUpdateTimeRange = big.NewInt(1 << 3)
+)
 
 type TaskQuery struct {
 	// If set, returns results starting from the given pageToken.
@@ -47,12 +153,59 @@ type TaskQuery struct {
 	StatusFilter *TaskQueryStatusFilter `json:"statusFilter,omitempty" url:"-"`
 	// If provided, only provides Tasks updated within the time range.
 	UpdateTimeRange *TaskQueryUpdateTimeRange `json:"updateTimeRange,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (t *TaskQuery) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetPageToken sets the PageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQuery) SetPageToken(pageToken *string) {
+	t.PageToken = pageToken
+	t.require(taskQueryFieldPageToken)
+}
+
+// SetParentTaskID sets the ParentTaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQuery) SetParentTaskID(parentTaskID *string) {
+	t.ParentTaskID = parentTaskID
+	t.require(taskQueryFieldParentTaskID)
+}
+
+// SetStatusFilter sets the StatusFilter field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQuery) SetStatusFilter(statusFilter *TaskQueryStatusFilter) {
+	t.StatusFilter = statusFilter
+	t.require(taskQueryFieldStatusFilter)
+}
+
+// SetUpdateTimeRange sets the UpdateTimeRange field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQuery) SetUpdateTimeRange(updateTimeRange *TaskQueryUpdateTimeRange) {
+	t.UpdateTimeRange = updateTimeRange
+	t.require(taskQueryFieldUpdateTimeRange)
+}
+
+var (
+	agentRequestFieldExecuteRequest  = big.NewInt(1 << 0)
+	agentRequestFieldCancelRequest   = big.NewInt(1 << 1)
+	agentRequestFieldCompleteRequest = big.NewInt(1 << 2)
+)
 
 type AgentRequest struct {
 	ExecuteRequest  *ExecuteRequest  `json:"executeRequest,omitempty" url:"executeRequest,omitempty"`
 	CancelRequest   *CancelRequest   `json:"cancelRequest,omitempty" url:"cancelRequest,omitempty"`
 	CompleteRequest *CompleteRequest `json:"completeRequest,omitempty" url:"completeRequest,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -83,6 +236,34 @@ func (a *AgentRequest) GetExtraProperties() map[string]interface{} {
 	return a.extraProperties
 }
 
+func (a *AgentRequest) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetExecuteRequest sets the ExecuteRequest field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AgentRequest) SetExecuteRequest(executeRequest *ExecuteRequest) {
+	a.ExecuteRequest = executeRequest
+	a.require(agentRequestFieldExecuteRequest)
+}
+
+// SetCancelRequest sets the CancelRequest field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AgentRequest) SetCancelRequest(cancelRequest *CancelRequest) {
+	a.CancelRequest = cancelRequest
+	a.require(agentRequestFieldCancelRequest)
+}
+
+// SetCompleteRequest sets the CompleteRequest field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AgentRequest) SetCompleteRequest(completeRequest *CompleteRequest) {
+	a.CompleteRequest = completeRequest
+	a.require(agentRequestFieldCompleteRequest)
+}
+
 func (a *AgentRequest) UnmarshalJSON(data []byte) error {
 	type unmarshaler AgentRequest
 	var value unmarshaler
@@ -99,6 +280,17 @@ func (a *AgentRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (a *AgentRequest) MarshalJSON() ([]byte, error) {
+	type embed AgentRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (a *AgentRequest) String() string {
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
@@ -112,9 +304,16 @@ func (a *AgentRequest) String() string {
 }
 
 // Allocation contains a list of agents allocated to a Task.
+var (
+	allocationFieldActiveAgents = big.NewInt(1 << 0)
+)
+
 type Allocation struct {
 	// Agents actively being utilized in a Task.
 	ActiveAgents []*Agent `json:"activeAgents,omitempty" url:"activeAgents,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -129,6 +328,20 @@ func (a *Allocation) GetActiveAgents() []*Agent {
 
 func (a *Allocation) GetExtraProperties() map[string]interface{} {
 	return a.extraProperties
+}
+
+func (a *Allocation) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetActiveAgents sets the ActiveAgents field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Allocation) SetActiveAgents(activeAgents []*Agent) {
+	a.ActiveAgents = activeAgents
+	a.require(allocationFieldActiveAgents)
 }
 
 func (a *Allocation) UnmarshalJSON(data []byte) error {
@@ -147,6 +360,17 @@ func (a *Allocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (a *Allocation) MarshalJSON() ([]byte, error) {
+	type embed Allocation
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (a *Allocation) String() string {
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
@@ -160,6 +384,11 @@ func (a *Allocation) String() string {
 }
 
 // Request to Cancel a Task.
+var (
+	cancelRequestFieldTaskID   = big.NewInt(1 << 0)
+	cancelRequestFieldAssignee = big.NewInt(1 << 1)
+)
+
 type CancelRequest struct {
 	// ID of the Task to cancel.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
@@ -167,6 +396,9 @@ type CancelRequest struct {
 	//
 	//	especially onBehalfOf assignees.
 	Assignee *Principal `json:"assignee,omitempty" url:"assignee,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -190,6 +422,27 @@ func (c *CancelRequest) GetExtraProperties() map[string]interface{} {
 	return c.extraProperties
 }
 
+func (c *CancelRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CancelRequest) SetTaskID(taskID *string) {
+	c.TaskID = taskID
+	c.require(cancelRequestFieldTaskID)
+}
+
+// SetAssignee sets the Assignee field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CancelRequest) SetAssignee(assignee *Principal) {
+	c.Assignee = assignee
+	c.require(cancelRequestFieldAssignee)
+}
+
 func (c *CancelRequest) UnmarshalJSON(data []byte) error {
 	type unmarshaler CancelRequest
 	var value unmarshaler
@@ -206,6 +459,17 @@ func (c *CancelRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c *CancelRequest) MarshalJSON() ([]byte, error) {
+	type embed CancelRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (c *CancelRequest) String() string {
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
@@ -219,9 +483,16 @@ func (c *CancelRequest) String() string {
 }
 
 // Request to Complete a Task.
+var (
+	completeRequestFieldTaskID = big.NewInt(1 << 0)
+)
+
 type CompleteRequest struct {
 	// ID of the task to complete.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -236,6 +507,20 @@ func (c *CompleteRequest) GetTaskID() *string {
 
 func (c *CompleteRequest) GetExtraProperties() map[string]interface{} {
 	return c.extraProperties
+}
+
+func (c *CompleteRequest) require(field *big.Int) {
+	if c.explicitFields == nil {
+		c.explicitFields = big.NewInt(0)
+	}
+	c.explicitFields.Or(c.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CompleteRequest) SetTaskID(taskID *string) {
+	c.TaskID = taskID
+	c.require(completeRequestFieldTaskID)
 }
 
 func (c *CompleteRequest) UnmarshalJSON(data []byte) error {
@@ -254,6 +539,17 @@ func (c *CompleteRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (c *CompleteRequest) MarshalJSON() ([]byte, error) {
+	type embed CompleteRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (c *CompleteRequest) String() string {
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
@@ -266,9 +562,16 @@ func (c *CompleteRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	entityIDsSelectorFieldEntityIDs = big.NewInt(1 << 0)
+)
+
 type EntityIDsSelector struct {
 	// Receive tasks as an assignee for one or more of the supplied entity ids.
 	EntityIDs []string `json:"entityIds,omitempty" url:"entityIds,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -283,6 +586,20 @@ func (e *EntityIDsSelector) GetEntityIDs() []string {
 
 func (e *EntityIDsSelector) GetExtraProperties() map[string]interface{} {
 	return e.extraProperties
+}
+
+func (e *EntityIDsSelector) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetEntityIDs sets the EntityIDs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityIDsSelector) SetEntityIDs(entityIDs []string) {
+	e.EntityIDs = entityIDs
+	e.require(entityIDsSelectorFieldEntityIDs)
 }
 
 func (e *EntityIDsSelector) UnmarshalJSON(data []byte) error {
@@ -301,6 +618,17 @@ func (e *EntityIDsSelector) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (e *EntityIDsSelector) MarshalJSON() ([]byte, error) {
+	type embed EntityIDsSelector
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (e *EntityIDsSelector) String() string {
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
@@ -314,9 +642,16 @@ func (e *EntityIDsSelector) String() string {
 }
 
 // Request to execute a Task.
+var (
+	executeRequestFieldTask = big.NewInt(1 << 0)
+)
+
 type ExecuteRequest struct {
 	// Task to execute.
 	Task *Task `json:"task,omitempty" url:"task,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -331,6 +666,20 @@ func (e *ExecuteRequest) GetTask() *Task {
 
 func (e *ExecuteRequest) GetExtraProperties() map[string]interface{} {
 	return e.extraProperties
+}
+
+func (e *ExecuteRequest) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetTask sets the Task field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *ExecuteRequest) SetTask(task *Task) {
+	e.Task = task
+	e.require(executeRequestFieldTask)
 }
 
 func (e *ExecuteRequest) UnmarshalJSON(data []byte) error {
@@ -349,6 +698,17 @@ func (e *ExecuteRequest) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (e *ExecuteRequest) MarshalJSON() ([]byte, error) {
+	type embed ExecuteRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (e *ExecuteRequest) String() string {
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
@@ -361,10 +721,102 @@ func (e *ExecuteRequest) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+var (
+	googleProtobufAnyFieldType = big.NewInt(1 << 0)
+)
+
+type GoogleProtobufAny struct {
+	// The type of the serialized message.
+	Type *string `json:"@type,omitempty" url:"@type,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (g *GoogleProtobufAny) GetType() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Type
+}
+
+func (g *GoogleProtobufAny) GetExtraProperties() map[string]interface{} {
+	return g.ExtraProperties
+}
+
+func (g *GoogleProtobufAny) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GoogleProtobufAny) SetType(type_ *string) {
+	g.Type = type_
+	g.require(googleProtobufAnyFieldType)
+}
+
+func (g *GoogleProtobufAny) UnmarshalJSON(data []byte) error {
+	type embed GoogleProtobufAny
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*g = GoogleProtobufAny(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.ExtraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GoogleProtobufAny) MarshalJSON() ([]byte, error) {
+	type embed GoogleProtobufAny
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, g.ExtraProperties)
+}
+
+func (g *GoogleProtobufAny) String() string {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
 // Owner designates the entity responsible for writes of Task data.
+var (
+	ownerFieldEntityID = big.NewInt(1 << 0)
+)
+
 type Owner struct {
 	// Entity ID of the owner.
 	EntityID *string `json:"entityId,omitempty" url:"entityId,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -379,6 +831,20 @@ func (o *Owner) GetEntityID() *string {
 
 func (o *Owner) GetExtraProperties() map[string]interface{} {
 	return o.extraProperties
+}
+
+func (o *Owner) require(field *big.Int) {
+	if o.explicitFields == nil {
+		o.explicitFields = big.NewInt(0)
+	}
+	o.explicitFields.Or(o.explicitFields, field)
+}
+
+// SetEntityID sets the EntityID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (o *Owner) SetEntityID(entityID *string) {
+	o.EntityID = entityID
+	o.require(ownerFieldEntityID)
 }
 
 func (o *Owner) UnmarshalJSON(data []byte) error {
@@ -397,6 +863,17 @@ func (o *Owner) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (o *Owner) MarshalJSON() ([]byte, error) {
+	type embed Owner
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*o),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, o.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (o *Owner) String() string {
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
@@ -410,6 +887,13 @@ func (o *Owner) String() string {
 }
 
 // A Principal is an entity that has authority over this Task.
+var (
+	principalFieldSystem     = big.NewInt(1 << 0)
+	principalFieldUser       = big.NewInt(1 << 1)
+	principalFieldTeam       = big.NewInt(1 << 2)
+	principalFieldOnBehalfOf = big.NewInt(1 << 3)
+)
+
 type Principal struct {
 	System *System `json:"system,omitempty" url:"system,omitempty"`
 	User   *User   `json:"user,omitempty" url:"user,omitempty"`
@@ -418,6 +902,9 @@ type Principal struct {
 	//
 	//	Likely only populated once in the nesting (i.e. the "on_behalf_of" Principal would not have another "on_behalf_of" in most cases).
 	OnBehalfOf *Principal `json:"onBehalfOf,omitempty" url:"onBehalfOf,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -455,6 +942,41 @@ func (p *Principal) GetExtraProperties() map[string]interface{} {
 	return p.extraProperties
 }
 
+func (p *Principal) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+// SetSystem sets the System field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Principal) SetSystem(system *System) {
+	p.System = system
+	p.require(principalFieldSystem)
+}
+
+// SetUser sets the User field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Principal) SetUser(user *User) {
+	p.User = user
+	p.require(principalFieldUser)
+}
+
+// SetTeam sets the Team field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Principal) SetTeam(team *Team) {
+	p.Team = team
+	p.require(principalFieldTeam)
+}
+
+// SetOnBehalfOf sets the OnBehalfOf field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (p *Principal) SetOnBehalfOf(onBehalfOf *Principal) {
+	p.OnBehalfOf = onBehalfOf
+	p.require(principalFieldOnBehalfOf)
+}
+
 func (p *Principal) UnmarshalJSON(data []byte) error {
 	type unmarshaler Principal
 	var value unmarshaler
@@ -471,6 +993,17 @@ func (p *Principal) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (p *Principal) MarshalJSON() ([]byte, error) {
+	type embed Principal
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (p *Principal) String() string {
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
@@ -484,11 +1017,19 @@ func (p *Principal) String() string {
 }
 
 // Relations describes the relationships of this Task, such as assignment, or if the Task has any parents.
+var (
+	relationsFieldAssignee     = big.NewInt(1 << 0)
+	relationsFieldParentTaskID = big.NewInt(1 << 1)
+)
+
 type Relations struct {
 	// Who or what, if anyone, this Task is currently assigned to.
 	Assignee *Principal `json:"assignee,omitempty" url:"assignee,omitempty"`
 	// If this Task is a "sub-Task", what is its parent, none if empty.
 	ParentTaskID *string `json:"parentTaskId,omitempty" url:"parentTaskId,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -512,6 +1053,27 @@ func (r *Relations) GetExtraProperties() map[string]interface{} {
 	return r.extraProperties
 }
 
+func (r *Relations) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetAssignee sets the Assignee field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *Relations) SetAssignee(assignee *Principal) {
+	r.Assignee = assignee
+	r.require(relationsFieldAssignee)
+}
+
+// SetParentTaskID sets the ParentTaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *Relations) SetParentTaskID(parentTaskID *string) {
+	r.ParentTaskID = parentTaskID
+	r.require(relationsFieldParentTaskID)
+}
+
 func (r *Relations) UnmarshalJSON(data []byte) error {
 	type unmarshaler Relations
 	var value unmarshaler
@@ -528,6 +1090,17 @@ func (r *Relations) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (r *Relations) MarshalJSON() ([]byte, error) {
+	type embed Relations
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (r *Relations) String() string {
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
@@ -541,9 +1114,16 @@ func (r *Relations) String() string {
 }
 
 // Any metadata associated with the replication of a Task.
+var (
+	replicationFieldStaleTime = big.NewInt(1 << 0)
+)
+
 type Replication struct {
 	// Time by which this Task should be assumed to be stale.
 	StaleTime *time.Time `json:"staleTime,omitempty" url:"staleTime,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -558,6 +1138,20 @@ func (r *Replication) GetStaleTime() *time.Time {
 
 func (r *Replication) GetExtraProperties() map[string]interface{} {
 	return r.extraProperties
+}
+
+func (r *Replication) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetStaleTime sets the StaleTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *Replication) SetStaleTime(staleTime *time.Time) {
+	r.StaleTime = staleTime
+	r.require(replicationFieldStaleTime)
 }
 
 func (r *Replication) UnmarshalJSON(data []byte) error {
@@ -591,7 +1185,8 @@ func (r *Replication) MarshalJSON() ([]byte, error) {
 		embed:     embed(*r),
 		StaleTime: internal.NewOptionalDateTime(r.StaleTime),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (r *Replication) String() string {
@@ -607,6 +1202,12 @@ func (r *Replication) String() string {
 }
 
 // System Principal representing some autonomous system.
+var (
+	systemFieldServiceName          = big.NewInt(1 << 0)
+	systemFieldEntityID             = big.NewInt(1 << 1)
+	systemFieldManagesOwnScheduling = big.NewInt(1 << 2)
+)
+
 type System struct {
 	// Name of the service associated with this System.
 	ServiceName *string `json:"serviceName,omitempty" url:"serviceName,omitempty"`
@@ -619,6 +1220,9 @@ type System struct {
 	//	Regardless of the value defined by the client, the Task Manager will
 	//	determine and set this value appropriately.
 	ManagesOwnScheduling *bool `json:"managesOwnScheduling,omitempty" url:"managesOwnScheduling,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -649,6 +1253,34 @@ func (s *System) GetExtraProperties() map[string]interface{} {
 	return s.extraProperties
 }
 
+func (s *System) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetServiceName sets the ServiceName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *System) SetServiceName(serviceName *string) {
+	s.ServiceName = serviceName
+	s.require(systemFieldServiceName)
+}
+
+// SetEntityID sets the EntityID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *System) SetEntityID(entityID *string) {
+	s.EntityID = entityID
+	s.require(systemFieldEntityID)
+}
+
+// SetManagesOwnScheduling sets the ManagesOwnScheduling field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *System) SetManagesOwnScheduling(managesOwnScheduling *bool) {
+	s.ManagesOwnScheduling = managesOwnScheduling
+	s.require(systemFieldManagesOwnScheduling)
+}
+
 func (s *System) UnmarshalJSON(data []byte) error {
 	type unmarshaler System
 	var value unmarshaler
@@ -665,6 +1297,17 @@ func (s *System) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (s *System) MarshalJSON() ([]byte, error) {
+	type embed System
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (s *System) String() string {
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
@@ -678,6 +1321,24 @@ func (s *System) String() string {
 }
 
 // A Task is something an agent can be asked to do.
+var (
+	taskFieldVersion             = big.NewInt(1 << 0)
+	taskFieldDisplayName         = big.NewInt(1 << 1)
+	taskFieldSpecification       = big.NewInt(1 << 2)
+	taskFieldCreatedBy           = big.NewInt(1 << 3)
+	taskFieldLastUpdatedBy       = big.NewInt(1 << 4)
+	taskFieldLastUpdateTime      = big.NewInt(1 << 5)
+	taskFieldStatus              = big.NewInt(1 << 6)
+	taskFieldScheduledTime       = big.NewInt(1 << 7)
+	taskFieldRelations           = big.NewInt(1 << 8)
+	taskFieldDescription         = big.NewInt(1 << 9)
+	taskFieldIsExecutedElsewhere = big.NewInt(1 << 10)
+	taskFieldCreateTime          = big.NewInt(1 << 11)
+	taskFieldReplication         = big.NewInt(1 << 12)
+	taskFieldInitialEntities     = big.NewInt(1 << 13)
+	taskFieldOwner               = big.NewInt(1 << 14)
+)
+
 type Task struct {
 	// Version of this Task.
 	Version *TaskVersion `json:"version,omitempty" url:"version,omitempty"`
@@ -717,6 +1378,9 @@ type Task struct {
 	//
 	//	for replication of task data to other nodes running Task Manager.
 	Owner *Owner `json:"owner,omitempty" url:"owner,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -831,6 +1495,118 @@ func (t *Task) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *Task) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetVersion sets the Version field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetVersion(version *TaskVersion) {
+	t.Version = version
+	t.require(taskFieldVersion)
+}
+
+// SetDisplayName sets the DisplayName field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetDisplayName(displayName *string) {
+	t.DisplayName = displayName
+	t.require(taskFieldDisplayName)
+}
+
+// SetSpecification sets the Specification field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetSpecification(specification *GoogleProtobufAny) {
+	t.Specification = specification
+	t.require(taskFieldSpecification)
+}
+
+// SetCreatedBy sets the CreatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetCreatedBy(createdBy *Principal) {
+	t.CreatedBy = createdBy
+	t.require(taskFieldCreatedBy)
+}
+
+// SetLastUpdatedBy sets the LastUpdatedBy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetLastUpdatedBy(lastUpdatedBy *Principal) {
+	t.LastUpdatedBy = lastUpdatedBy
+	t.require(taskFieldLastUpdatedBy)
+}
+
+// SetLastUpdateTime sets the LastUpdateTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetLastUpdateTime(lastUpdateTime *time.Time) {
+	t.LastUpdateTime = lastUpdateTime
+	t.require(taskFieldLastUpdateTime)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetStatus(status *TaskStatus) {
+	t.Status = status
+	t.require(taskFieldStatus)
+}
+
+// SetScheduledTime sets the ScheduledTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetScheduledTime(scheduledTime *time.Time) {
+	t.ScheduledTime = scheduledTime
+	t.require(taskFieldScheduledTime)
+}
+
+// SetRelations sets the Relations field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetRelations(relations *Relations) {
+	t.Relations = relations
+	t.require(taskFieldRelations)
+}
+
+// SetDescription sets the Description field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetDescription(description *string) {
+	t.Description = description
+	t.require(taskFieldDescription)
+}
+
+// SetIsExecutedElsewhere sets the IsExecutedElsewhere field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetIsExecutedElsewhere(isExecutedElsewhere *bool) {
+	t.IsExecutedElsewhere = isExecutedElsewhere
+	t.require(taskFieldIsExecutedElsewhere)
+}
+
+// SetCreateTime sets the CreateTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetCreateTime(createTime *time.Time) {
+	t.CreateTime = createTime
+	t.require(taskFieldCreateTime)
+}
+
+// SetReplication sets the Replication field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetReplication(replication *Replication) {
+	t.Replication = replication
+	t.require(taskFieldReplication)
+}
+
+// SetInitialEntities sets the InitialEntities field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetInitialEntities(initialEntities []*TaskEntity) {
+	t.InitialEntities = initialEntities
+	t.require(taskFieldInitialEntities)
+}
+
+// SetOwner sets the Owner field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetOwner(owner *Owner) {
+	t.Owner = owner
+	t.require(taskFieldOwner)
+}
+
 func (t *Task) UnmarshalJSON(data []byte) error {
 	type embed Task
 	var unmarshaler = struct {
@@ -870,7 +1646,8 @@ func (t *Task) MarshalJSON() ([]byte, error) {
 		ScheduledTime:  internal.NewOptionalDateTime(t.ScheduledTime),
 		CreateTime:     internal.NewOptionalDateTime(t.CreateTime),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (t *Task) String() string {
@@ -886,11 +1663,19 @@ func (t *Task) String() string {
 }
 
 // Wrapper of an entity passed in Tasking, used to hold an additional information, and as a future extension point.
+var (
+	taskEntityFieldEntity   = big.NewInt(1 << 0)
+	taskEntityFieldSnapshot = big.NewInt(1 << 1)
+)
+
 type TaskEntity struct {
 	// The wrapped entity-manager entity.
 	Entity *Entity `json:"entity,omitempty" url:"entity,omitempty"`
 	// Indicates that this entity was generated from a snapshot of a live entity.
 	Snapshot *bool `json:"snapshot,omitempty" url:"snapshot,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -914,6 +1699,27 @@ func (t *TaskEntity) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *TaskEntity) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetEntity sets the Entity field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskEntity) SetEntity(entity *Entity) {
+	t.Entity = entity
+	t.require(taskEntityFieldEntity)
+}
+
+// SetSnapshot sets the Snapshot field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskEntity) SetSnapshot(snapshot *bool) {
+	t.Snapshot = snapshot
+	t.require(taskEntityFieldSnapshot)
+}
+
 func (t *TaskEntity) UnmarshalJSON(data []byte) error {
 	type unmarshaler TaskEntity
 	var value unmarshaler
@@ -930,6 +1736,17 @@ func (t *TaskEntity) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (t *TaskEntity) MarshalJSON() ([]byte, error) {
+	type embed TaskEntity
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (t *TaskEntity) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
@@ -943,6 +1760,12 @@ func (t *TaskEntity) String() string {
 }
 
 // TaskError contains an error code and message typically associated to a Task.
+var (
+	taskErrorFieldCode         = big.NewInt(1 << 0)
+	taskErrorFieldMessage      = big.NewInt(1 << 1)
+	taskErrorFieldErrorDetails = big.NewInt(1 << 2)
+)
+
 type TaskError struct {
 	// Error code for Task error.
 	Code *TaskErrorCode `json:"code,omitempty" url:"code,omitempty"`
@@ -950,6 +1773,9 @@ type TaskError struct {
 	Message *string `json:"message,omitempty" url:"message,omitempty"`
 	// Any additional details regarding this error.
 	ErrorDetails *GoogleProtobufAny `json:"errorDetails,omitempty" url:"errorDetails,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -980,6 +1806,34 @@ func (t *TaskError) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *TaskError) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskError) SetCode(code *TaskErrorCode) {
+	t.Code = code
+	t.require(taskErrorFieldCode)
+}
+
+// SetMessage sets the Message field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskError) SetMessage(message *string) {
+	t.Message = message
+	t.require(taskErrorFieldMessage)
+}
+
+// SetErrorDetails sets the ErrorDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskError) SetErrorDetails(errorDetails *GoogleProtobufAny) {
+	t.ErrorDetails = errorDetails
+	t.require(taskErrorFieldErrorDetails)
+}
+
 func (t *TaskError) UnmarshalJSON(data []byte) error {
 	type unmarshaler TaskError
 	var value unmarshaler
@@ -994,6 +1848,17 @@ func (t *TaskError) UnmarshalJSON(data []byte) error {
 	t.extraProperties = extraProperties
 	t.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (t *TaskError) MarshalJSON() ([]byte, error) {
+	type embed TaskError
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (t *TaskError) String() string {
@@ -1040,6 +1905,11 @@ func (t TaskErrorCode) Ptr() *TaskErrorCode {
 	return &t
 }
 
+var (
+	taskQueryResultsFieldTasks         = big.NewInt(1 << 0)
+	taskQueryResultsFieldNextPageToken = big.NewInt(1 << 1)
+)
+
 type TaskQueryResults struct {
 	Tasks []*Task `json:"tasks,omitempty" url:"tasks,omitempty"`
 	// Incomplete results can be detected by a non-empty nextPageToken field in the query results. In order to retrieve
@@ -1047,6 +1917,9 @@ type TaskQueryResults struct {
 	// nextPageToken from the previous page. A new nextPageToken is provided on the following pages until all the
 	// results are retrieved.
 	NextPageToken *string `json:"nextPageToken,omitempty" url:"nextPageToken,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -1070,6 +1943,27 @@ func (t *TaskQueryResults) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *TaskQueryResults) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTasks sets the Tasks field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQueryResults) SetTasks(tasks []*Task) {
+	t.Tasks = tasks
+	t.require(taskQueryResultsFieldTasks)
+}
+
+// SetNextPageToken sets the NextPageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQueryResults) SetNextPageToken(nextPageToken *string) {
+	t.NextPageToken = nextPageToken
+	t.require(taskQueryResultsFieldNextPageToken)
+}
+
 func (t *TaskQueryResults) UnmarshalJSON(data []byte) error {
 	type unmarshaler TaskQueryResults
 	var value unmarshaler
@@ -1084,6 +1978,17 @@ func (t *TaskQueryResults) UnmarshalJSON(data []byte) error {
 	t.extraProperties = extraProperties
 	t.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (t *TaskQueryResults) MarshalJSON() ([]byte, error) {
+	type embed TaskQueryResults
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (t *TaskQueryResults) String() string {
@@ -1101,6 +2006,16 @@ func (t *TaskQueryResults) String() string {
 // TaskStatus is contains information regarding the status of a Task at any given time. Can include related information
 //
 //	such as any progress towards Task completion, or any associated results if Task completed.
+var (
+	taskStatusFieldStatus     = big.NewInt(1 << 0)
+	taskStatusFieldTaskError  = big.NewInt(1 << 1)
+	taskStatusFieldProgress   = big.NewInt(1 << 2)
+	taskStatusFieldResult     = big.NewInt(1 << 3)
+	taskStatusFieldStartTime  = big.NewInt(1 << 4)
+	taskStatusFieldEstimate   = big.NewInt(1 << 5)
+	taskStatusFieldAllocation = big.NewInt(1 << 6)
+)
+
 type TaskStatus struct {
 	// Status of the Task.
 	Status *TaskStatusStatus `json:"status,omitempty" url:"status,omitempty"`
@@ -1116,6 +2031,9 @@ type TaskStatus struct {
 	Estimate *GoogleProtobufAny `json:"estimate,omitempty" url:"estimate,omitempty"`
 	// Any allocated agents of the Task.
 	Allocation *Allocation `json:"allocation,omitempty" url:"allocation,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -1174,6 +2092,62 @@ func (t *TaskStatus) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *TaskStatus) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetStatus(status *TaskStatusStatus) {
+	t.Status = status
+	t.require(taskStatusFieldStatus)
+}
+
+// SetTaskError sets the TaskError field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetTaskError(taskError *TaskError) {
+	t.TaskError = taskError
+	t.require(taskStatusFieldTaskError)
+}
+
+// SetProgress sets the Progress field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetProgress(progress *GoogleProtobufAny) {
+	t.Progress = progress
+	t.require(taskStatusFieldProgress)
+}
+
+// SetResult sets the Result field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetResult(result *GoogleProtobufAny) {
+	t.Result = result
+	t.require(taskStatusFieldResult)
+}
+
+// SetStartTime sets the StartTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetStartTime(startTime *time.Time) {
+	t.StartTime = startTime
+	t.require(taskStatusFieldStartTime)
+}
+
+// SetEstimate sets the Estimate field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetEstimate(estimate *GoogleProtobufAny) {
+	t.Estimate = estimate
+	t.require(taskStatusFieldEstimate)
+}
+
+// SetAllocation sets the Allocation field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetAllocation(allocation *Allocation) {
+	t.Allocation = allocation
+	t.require(taskStatusFieldAllocation)
+}
+
 func (t *TaskStatus) UnmarshalJSON(data []byte) error {
 	type embed TaskStatus
 	var unmarshaler = struct {
@@ -1205,7 +2179,8 @@ func (t *TaskStatus) MarshalJSON() ([]byte, error) {
 		embed:     embed(*t),
 		StartTime: internal.NewOptionalDateTime(t.StartTime),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (t *TaskStatus) String() string {
@@ -1283,6 +2258,12 @@ func (t TaskStatusStatus) Ptr() *TaskStatusStatus {
 }
 
 // Version of a Task.
+var (
+	taskVersionFieldTaskID            = big.NewInt(1 << 0)
+	taskVersionFieldDefinitionVersion = big.NewInt(1 << 1)
+	taskVersionFieldStatusVersion     = big.NewInt(1 << 2)
+)
+
 type TaskVersion struct {
 	// The unique ID for this Task.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
@@ -1290,6 +2271,9 @@ type TaskVersion struct {
 	DefinitionVersion *int `json:"definitionVersion,omitempty" url:"definitionVersion,omitempty"`
 	// Increments on changes to TaskStatus. 0 is unset, starts at 1 on creation.
 	StatusVersion *int `json:"statusVersion,omitempty" url:"statusVersion,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -1320,6 +2304,34 @@ func (t *TaskVersion) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *TaskVersion) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskVersion) SetTaskID(taskID *string) {
+	t.TaskID = taskID
+	t.require(taskVersionFieldTaskID)
+}
+
+// SetDefinitionVersion sets the DefinitionVersion field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskVersion) SetDefinitionVersion(definitionVersion *int) {
+	t.DefinitionVersion = definitionVersion
+	t.require(taskVersionFieldDefinitionVersion)
+}
+
+// SetStatusVersion sets the StatusVersion field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskVersion) SetStatusVersion(statusVersion *int) {
+	t.StatusVersion = statusVersion
+	t.require(taskVersionFieldStatusVersion)
+}
+
 func (t *TaskVersion) UnmarshalJSON(data []byte) error {
 	type unmarshaler TaskVersion
 	var value unmarshaler
@@ -1336,6 +2348,17 @@ func (t *TaskVersion) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (t *TaskVersion) MarshalJSON() ([]byte, error) {
+	type embed TaskVersion
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (t *TaskVersion) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
@@ -1349,9 +2372,16 @@ func (t *TaskVersion) String() string {
 }
 
 // A User Principal representing a human.
+var (
+	userFieldUserID = big.NewInt(1 << 0)
+)
+
 type User struct {
 	// The User ID associated with this User.
 	UserID *string `json:"userId,omitempty" url:"userId,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -1366,6 +2396,20 @@ func (u *User) GetUserID() *string {
 
 func (u *User) GetExtraProperties() map[string]interface{} {
 	return u.extraProperties
+}
+
+func (u *User) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetUserID sets the UserID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *User) SetUserID(userID *string) {
+	u.UserID = userID
+	u.require(userFieldUserID)
 }
 
 func (u *User) UnmarshalJSON(data []byte) error {
@@ -1384,6 +2428,17 @@ func (u *User) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (u *User) MarshalJSON() ([]byte, error) {
+	type embed User
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (u *User) String() string {
 	if len(u.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
@@ -1396,9 +2451,16 @@ func (u *User) String() string {
 	return fmt.Sprintf("%#v", u)
 }
 
+var (
+	taskQueryStatusFilterFieldStatus = big.NewInt(1 << 0)
+)
+
 type TaskQueryStatusFilter struct {
 	// Status of the Task to filter by, inclusive.
 	Status *TaskQueryStatusFilterStatus `json:"status,omitempty" url:"status,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -1415,6 +2477,20 @@ func (t *TaskQueryStatusFilter) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *TaskQueryStatusFilter) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQueryStatusFilter) SetStatus(status *TaskQueryStatusFilterStatus) {
+	t.Status = status
+	t.require(taskQueryStatusFilterFieldStatus)
+}
+
 func (t *TaskQueryStatusFilter) UnmarshalJSON(data []byte) error {
 	type unmarshaler TaskQueryStatusFilter
 	var value unmarshaler
@@ -1429,6 +2505,17 @@ func (t *TaskQueryStatusFilter) UnmarshalJSON(data []byte) error {
 	t.extraProperties = extraProperties
 	t.rawJSON = json.RawMessage(data)
 	return nil
+}
+
+func (t *TaskQueryStatusFilter) MarshalJSON() ([]byte, error) {
+	type embed TaskQueryStatusFilter
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (t *TaskQueryStatusFilter) String() string {
@@ -1506,11 +2593,19 @@ func (t TaskQueryStatusFilterStatus) Ptr() *TaskQueryStatusFilterStatus {
 }
 
 // If provided, only provides Tasks updated within the time range.
+var (
+	taskQueryUpdateTimeRangeFieldStartTime = big.NewInt(1 << 0)
+	taskQueryUpdateTimeRangeFieldEndTime   = big.NewInt(1 << 1)
+)
+
 type TaskQueryUpdateTimeRange struct {
 	// If provided, returns Tasks only updated after this time.
 	StartTime *string `json:"startTime,omitempty" url:"startTime,omitempty"`
 	// If provided, returns Tasks only updated before this time.
 	EndTime *string `json:"endTime,omitempty" url:"endTime,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -1534,6 +2629,27 @@ func (t *TaskQueryUpdateTimeRange) GetExtraProperties() map[string]interface{} {
 	return t.extraProperties
 }
 
+func (t *TaskQueryUpdateTimeRange) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetStartTime sets the StartTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQueryUpdateTimeRange) SetStartTime(startTime *string) {
+	t.StartTime = startTime
+	t.require(taskQueryUpdateTimeRangeFieldStartTime)
+}
+
+// SetEndTime sets the EndTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskQueryUpdateTimeRange) SetEndTime(endTime *string) {
+	t.EndTime = endTime
+	t.require(taskQueryUpdateTimeRangeFieldEndTime)
+}
+
 func (t *TaskQueryUpdateTimeRange) UnmarshalJSON(data []byte) error {
 	type unmarshaler TaskQueryUpdateTimeRange
 	var value unmarshaler
@@ -1550,6 +2666,17 @@ func (t *TaskQueryUpdateTimeRange) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (t *TaskQueryUpdateTimeRange) MarshalJSON() ([]byte, error) {
+	type embed TaskQueryUpdateTimeRange
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (t *TaskQueryUpdateTimeRange) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
@@ -1562,6 +2689,12 @@ func (t *TaskQueryUpdateTimeRange) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+var (
+	taskStatusUpdateFieldStatusVersion = big.NewInt(1 << 0)
+	taskStatusUpdateFieldNewStatus     = big.NewInt(1 << 1)
+	taskStatusUpdateFieldAuthor        = big.NewInt(1 << 2)
+)
+
 type TaskStatusUpdate struct {
 	// The status version of the task to update. This version number increments to indicate the task's
 	// current stage in its status lifecycle. Specifically, whenever a task's status updates, the status
@@ -1571,4 +2704,35 @@ type TaskStatusUpdate struct {
 	// The new status of the task.
 	NewStatus *TaskStatus `json:"newStatus,omitempty" url:"-"`
 	Author    *Principal  `json:"author,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (t *TaskStatusUpdate) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetStatusVersion sets the StatusVersion field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatusUpdate) SetStatusVersion(statusVersion *int) {
+	t.StatusVersion = statusVersion
+	t.require(taskStatusUpdateFieldStatusVersion)
+}
+
+// SetNewStatus sets the NewStatus field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatusUpdate) SetNewStatus(newStatus *TaskStatus) {
+	t.NewStatus = newStatus
+	t.require(taskStatusUpdateFieldNewStatus)
+}
+
+// SetAuthor sets the Author field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatusUpdate) SetAuthor(author *Principal) {
+	t.Author = author
+	t.require(taskStatusUpdateFieldAuthor)
 }

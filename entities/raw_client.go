@@ -4,21 +4,22 @@ package entities
 
 import (
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
-	core "github.com/anduril/lattice-sdk-go/v2/core"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
-	option "github.com/anduril/lattice-sdk-go/v2/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v3/v2"
+	core "github.com/anduril/lattice-sdk-go/v3/v2/core"
+	internal "github.com/anduril/lattice-sdk-go/v3/v2/internal"
+	option "github.com/anduril/lattice-sdk-go/v3/v2/option"
 	http "net/http"
 )
 
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -26,15 +27,14 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
 func (r *RawClient) PublishEntity(
 	ctx context.Context,
-	request *v2.Entity,
+	request *Lattice.Entity,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*Lattice.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -43,22 +43,10 @@ func (r *RawClient) PublishEntity(
 	)
 	endpointURL := baseURL + "/api/v1/entities"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.Entity
+	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -71,13 +59,13 @@ func (r *RawClient) PublishEntity(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*Lattice.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -89,7 +77,7 @@ func (r *RawClient) GetEntity(
 	// ID of the entity to return
 	entityID string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*Lattice.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -101,27 +89,10 @@ func (r *RawClient) GetEntity(
 		entityID,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.Entity
+	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -133,13 +104,13 @@ func (r *RawClient) GetEntity(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*Lattice.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -152,9 +123,9 @@ func (r *RawClient) OverrideEntity(
 	entityID string,
 	// fieldPath to override
 	fieldPath string,
-	request *v2.EntityOverride,
+	request *Lattice.EntityOverride,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*Lattice.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -167,28 +138,11 @@ func (r *RawClient) OverrideEntity(
 		fieldPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.Entity
+	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -201,13 +155,13 @@ func (r *RawClient) OverrideEntity(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*Lattice.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -221,7 +175,7 @@ func (r *RawClient) RemoveEntityOverride(
 	// The fieldPath to clear overrides from.
 	fieldPath string,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.Entity], error) {
+) (*core.Response[*Lattice.Entity], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -234,27 +188,10 @@ func (r *RawClient) RemoveEntityOverride(
 		fieldPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.Entity
+	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -266,13 +203,13 @@ func (r *RawClient) RemoveEntityOverride(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.Entity]{
+	return &core.Response[*Lattice.Entity]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -281,9 +218,9 @@ func (r *RawClient) RemoveEntityOverride(
 
 func (r *RawClient) LongPollEntityEvents(
 	ctx context.Context,
-	request *v2.EntityEventRequest,
+	request *Lattice.EntityEventRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.EntityEventResponse], error) {
+) (*core.Response[*Lattice.EntityEventResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -292,38 +229,11 @@ func (r *RawClient) LongPollEntityEvents(
 	)
 	endpointURL := baseURL + "/api/v1/entities/events"
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		408: func(apiError *core.APIError) error {
-			return &v2.RequestTimeoutError{
-				APIError: apiError,
-			}
-		},
-		429: func(apiError *core.APIError) error {
-			return &v2.TooManyRequestsError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.EntityEventResponse
+	var response *Lattice.EntityEventResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -336,13 +246,13 @@ func (r *RawClient) LongPollEntityEvents(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.EntityEventResponse]{
+	return &core.Response[*Lattice.EntityEventResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
