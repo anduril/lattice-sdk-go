@@ -5,8 +5,14 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v2/internal"
+	internal "github.com/anduril/lattice-sdk-go/v3/v2/internal"
+	big "math/big"
 	time "time"
+)
+
+var (
+	entityEventRequestFieldSessionToken = big.NewInt(1 << 0)
+	entityEventRequestFieldBatchSize    = big.NewInt(1 << 1)
 )
 
 type EntityEventRequest struct {
@@ -14,7 +20,36 @@ type EntityEventRequest struct {
 	SessionToken string `json:"sessionToken" url:"-"`
 	// Maximum size of response batch. Defaults to 100. Must be between 1 and 2000 (inclusive).
 	BatchSize *int `json:"batchSize,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (e *EntityEventRequest) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetSessionToken sets the SessionToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityEventRequest) SetSessionToken(sessionToken string) {
+	e.SessionToken = sessionToken
+	e.require(entityEventRequestFieldSessionToken)
+}
+
+// SetBatchSize sets the BatchSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityEventRequest) SetBatchSize(batchSize *int) {
+	e.BatchSize = batchSize
+	e.require(entityEventRequestFieldBatchSize)
+}
+
+var (
+	entityOverrideFieldEntity     = big.NewInt(1 << 0)
+	entityOverrideFieldProvenance = big.NewInt(1 << 1)
+)
 
 type EntityOverride struct {
 	// The entity containing the overridden fields. The service will extract the overridable fields from
@@ -22,7 +57,37 @@ type EntityOverride struct {
 	Entity *Entity `json:"entity,omitempty" url:"-"`
 	// Additional information about the source of the override.
 	Provenance *Provenance `json:"provenance,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 }
+
+func (e *EntityOverride) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetEntity sets the Entity field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityOverride) SetEntity(entity *Entity) {
+	e.Entity = entity
+	e.require(entityOverrideFieldEntity)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityOverride) SetProvenance(provenance *Provenance) {
+	e.Provenance = provenance
+	e.require(entityOverrideFieldProvenance)
+}
+
+var (
+	entityStreamRequestFieldHeartbeatIntervalMs = big.NewInt(1 << 0)
+	entityStreamRequestFieldPreExistingOnly     = big.NewInt(1 << 1)
+	entityStreamRequestFieldComponentsToInclude = big.NewInt(1 << 2)
+)
 
 type EntityStreamRequest struct {
 	// at what interval to send heartbeat events, defaults to 30s.
@@ -31,13 +96,53 @@ type EntityStreamRequest struct {
 	PreExistingOnly *bool `json:"preExistingOnly,omitempty" url:"-"`
 	// list of components to include, leave empty to include all components.
 	ComponentsToInclude []string `json:"componentsToInclude,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (e *EntityStreamRequest) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetHeartbeatIntervalMs sets the HeartbeatIntervalMs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityStreamRequest) SetHeartbeatIntervalMs(heartbeatIntervalMs *int) {
+	e.HeartbeatIntervalMs = heartbeatIntervalMs
+	e.require(entityStreamRequestFieldHeartbeatIntervalMs)
+}
+
+// SetPreExistingOnly sets the PreExistingOnly field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityStreamRequest) SetPreExistingOnly(preExistingOnly *bool) {
+	e.PreExistingOnly = preExistingOnly
+	e.require(entityStreamRequestFieldPreExistingOnly)
+}
+
+// SetComponentsToInclude sets the ComponentsToInclude field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityStreamRequest) SetComponentsToInclude(componentsToInclude []string) {
+	e.ComponentsToInclude = componentsToInclude
+	e.require(entityStreamRequestFieldComponentsToInclude)
 }
 
 // Event representing some type of entity change.
+var (
+	entityEventFieldEventType = big.NewInt(1 << 0)
+	entityEventFieldTime      = big.NewInt(1 << 1)
+	entityEventFieldEntity    = big.NewInt(1 << 2)
+)
+
 type EntityEvent struct {
 	EventType *EntityEventEventType `json:"eventType,omitempty" url:"eventType,omitempty"`
 	Time      *time.Time            `json:"time,omitempty" url:"time,omitempty"`
 	Entity    *Entity               `json:"entity,omitempty" url:"entity,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -66,6 +171,34 @@ func (e *EntityEvent) GetEntity() *Entity {
 
 func (e *EntityEvent) GetExtraProperties() map[string]interface{} {
 	return e.extraProperties
+}
+
+func (e *EntityEvent) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetEventType sets the EventType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityEvent) SetEventType(eventType *EntityEventEventType) {
+	e.EventType = eventType
+	e.require(entityEventFieldEventType)
+}
+
+// SetTime sets the Time field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityEvent) SetTime(time *time.Time) {
+	e.Time = time
+	e.require(entityEventFieldTime)
+}
+
+// SetEntity sets the Entity field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityEvent) SetEntity(entity *Entity) {
+	e.Entity = entity
+	e.require(entityEventFieldEntity)
 }
 
 func (e *EntityEvent) UnmarshalJSON(data []byte) error {
@@ -99,7 +232,8 @@ func (e *EntityEvent) MarshalJSON() ([]byte, error) {
 		embed: embed(*e),
 		Time:  internal.NewOptionalDateTime(e.Time),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (e *EntityEvent) String() string {
@@ -148,10 +282,18 @@ func (e EntityEventEventType) Ptr() *EntityEventEventType {
 	return &e
 }
 
+var (
+	entityEventResponseFieldSessionToken = big.NewInt(1 << 0)
+	entityEventResponseFieldEntityEvents = big.NewInt(1 << 1)
+)
+
 type EntityEventResponse struct {
 	// Long-poll session identifier. Use this token to resume polling on subsequent requests.
 	SessionToken *string        `json:"sessionToken,omitempty" url:"sessionToken,omitempty"`
 	EntityEvents []*EntityEvent `json:"entityEvents,omitempty" url:"entityEvents,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -175,6 +317,27 @@ func (e *EntityEventResponse) GetExtraProperties() map[string]interface{} {
 	return e.extraProperties
 }
 
+func (e *EntityEventResponse) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetSessionToken sets the SessionToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityEventResponse) SetSessionToken(sessionToken *string) {
+	e.SessionToken = sessionToken
+	e.require(entityEventResponseFieldSessionToken)
+}
+
+// SetEntityEvents sets the EntityEvents field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityEventResponse) SetEntityEvents(entityEvents []*EntityEvent) {
+	e.EntityEvents = entityEvents
+	e.require(entityEventResponseFieldEntityEvents)
+}
+
 func (e *EntityEventResponse) UnmarshalJSON(data []byte) error {
 	type unmarshaler EntityEventResponse
 	var value unmarshaler
@@ -191,6 +354,17 @@ func (e *EntityEventResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (e *EntityEventResponse) MarshalJSON() ([]byte, error) {
+	type embed EntityEventResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 func (e *EntityEventResponse) String() string {
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
@@ -203,10 +377,19 @@ func (e *EntityEventResponse) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+var (
+	entityStreamEventFieldEventType = big.NewInt(1 << 0)
+	entityStreamEventFieldTime      = big.NewInt(1 << 1)
+	entityStreamEventFieldEntity    = big.NewInt(1 << 2)
+)
+
 type EntityStreamEvent struct {
 	EventType *EntityEventEventType `json:"eventType,omitempty" url:"eventType,omitempty"`
 	Time      *time.Time            `json:"time,omitempty" url:"time,omitempty"`
 	Entity    *Entity               `json:"entity,omitempty" url:"entity,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -235,6 +418,34 @@ func (e *EntityStreamEvent) GetEntity() *Entity {
 
 func (e *EntityStreamEvent) GetExtraProperties() map[string]interface{} {
 	return e.extraProperties
+}
+
+func (e *EntityStreamEvent) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetEventType sets the EventType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityStreamEvent) SetEventType(eventType *EntityEventEventType) {
+	e.EventType = eventType
+	e.require(entityStreamEventFieldEventType)
+}
+
+// SetTime sets the Time field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityStreamEvent) SetTime(time *time.Time) {
+	e.Time = time
+	e.require(entityStreamEventFieldTime)
+}
+
+// SetEntity sets the Entity field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityStreamEvent) SetEntity(entity *Entity) {
+	e.Entity = entity
+	e.require(entityStreamEventFieldEntity)
 }
 
 func (e *EntityStreamEvent) UnmarshalJSON(data []byte) error {
@@ -268,7 +479,8 @@ func (e *EntityStreamEvent) MarshalJSON() ([]byte, error) {
 		embed: embed(*e),
 		Time:  internal.NewOptionalDateTime(e.Time),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (e *EntityStreamEvent) String() string {
@@ -283,9 +495,16 @@ func (e *EntityStreamEvent) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+var (
+	entityStreamHeartbeatFieldTimestamp = big.NewInt(1 << 0)
+)
+
 type EntityStreamHeartbeat struct {
 	// timestamp of the heartbeat
 	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -300,6 +519,20 @@ func (e *EntityStreamHeartbeat) GetTimestamp() *time.Time {
 
 func (e *EntityStreamHeartbeat) GetExtraProperties() map[string]interface{} {
 	return e.extraProperties
+}
+
+func (e *EntityStreamHeartbeat) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetTimestamp sets the Timestamp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityStreamHeartbeat) SetTimestamp(timestamp *time.Time) {
+	e.Timestamp = timestamp
+	e.require(entityStreamHeartbeatFieldTimestamp)
 }
 
 func (e *EntityStreamHeartbeat) UnmarshalJSON(data []byte) error {
@@ -333,7 +566,8 @@ func (e *EntityStreamHeartbeat) MarshalJSON() ([]byte, error) {
 		embed:     embed(*e),
 		Timestamp: internal.NewOptionalDateTime(e.Timestamp),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (e *EntityStreamHeartbeat) String() string {
@@ -348,9 +582,16 @@ func (e *EntityStreamHeartbeat) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+var (
+	heartbeatObjectFieldTimestamp = big.NewInt(1 << 0)
+)
+
 type HeartbeatObject struct {
 	// timestamp of the heartbeat
 	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
@@ -365,6 +606,20 @@ func (h *HeartbeatObject) GetTimestamp() *time.Time {
 
 func (h *HeartbeatObject) GetExtraProperties() map[string]interface{} {
 	return h.extraProperties
+}
+
+func (h *HeartbeatObject) require(field *big.Int) {
+	if h.explicitFields == nil {
+		h.explicitFields = big.NewInt(0)
+	}
+	h.explicitFields.Or(h.explicitFields, field)
+}
+
+// SetTimestamp sets the Timestamp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (h *HeartbeatObject) SetTimestamp(timestamp *time.Time) {
+	h.Timestamp = timestamp
+	h.require(heartbeatObjectFieldTimestamp)
 }
 
 func (h *HeartbeatObject) UnmarshalJSON(data []byte) error {
@@ -398,7 +653,8 @@ func (h *HeartbeatObject) MarshalJSON() ([]byte, error) {
 		embed:     embed(*h),
 		Timestamp: internal.NewOptionalDateTime(h.Timestamp),
 	}
-	return json.Marshal(marshaler)
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, h.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 func (h *HeartbeatObject) String() string {
