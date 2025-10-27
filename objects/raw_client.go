@@ -5,7 +5,7 @@ package objects
 import (
 	bytes "bytes"
 	context "context"
-	v2 "github.com/anduril/lattice-sdk-go/v2"
+	Lattice "github.com/anduril/lattice-sdk-go/v2"
 	core "github.com/anduril/lattice-sdk-go/v2/core"
 	internal "github.com/anduril/lattice-sdk-go/v2/internal"
 	option "github.com/anduril/lattice-sdk-go/v2/option"
@@ -16,11 +16,12 @@ import (
 type RawClient struct {
 	baseURL string
 	caller  *internal.Caller
-	header  http.Header
+	options *core.RequestOptions
 }
 
 func NewRawClient(options *core.RequestOptions) *RawClient {
 	return &RawClient{
+		options: options,
 		baseURL: options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
@@ -28,7 +29,6 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 				MaxAttempts: options.MaxAttempts,
 			},
 		),
-		header: options.ToHeader(),
 	}
 }
 
@@ -36,7 +36,7 @@ func (r *RawClient) GetObject(
 	ctx context.Context,
 	// The path of the object to fetch.
 	objectPath string,
-	request *v2.GetObjectRequest,
+	request *Lattice.GetObjectRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[io.Reader], error) {
 	options := core.NewRequestOptions(opts...)
@@ -50,35 +50,16 @@ func (r *RawClient) GetObject(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
 	if request.AcceptEncoding != nil {
 		headers.Add("Accept-Encoding", string(*request.AcceptEncoding))
 	}
-
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
-				APIError: apiError,
-			}
-		},
+	if request.Priority != nil {
+		headers.Add("Priority", *request.Priority)
 	}
+
 	response := bytes.NewBuffer(nil)
 	raw, err := r.caller.Call(
 		ctx,
@@ -91,7 +72,7 @@ func (r *RawClient) GetObject(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
@@ -110,7 +91,7 @@ func (r *RawClient) UploadObject(
 	objectPath string,
 	request io.Reader,
 	opts ...option.RequestOption,
-) (*core.Response[*v2.PathMetadata], error) {
+) (*core.Response[*Lattice.PathMetadata], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -122,37 +103,10 @@ func (r *RawClient) UploadObject(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		413: func(apiError *core.APIError) error {
-			return &v2.ContentTooLargeError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
-				APIError: apiError,
-			}
-		},
-		507: func(apiError *core.APIError) error {
-			return &v2.InsufficientStorageError{
-				APIError: apiError,
-			}
-		},
-	}
-	var response *v2.PathMetadata
+	var response *Lattice.PathMetadata
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -165,13 +119,13 @@ func (r *RawClient) UploadObject(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*v2.PathMetadata]{
+	return &core.Response[*Lattice.PathMetadata]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -195,31 +149,9 @@ func (r *RawClient) DeleteObject(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		404: func(apiError *core.APIError) error {
-			return &v2.NotFoundError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -230,7 +162,7 @@ func (r *RawClient) DeleteObject(
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
@@ -260,26 +192,9 @@ func (r *RawClient) GetObjectMetadata(
 		objectPath,
 	)
 	headers := internal.MergeHeaders(
-		r.header.Clone(),
+		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	errorCodes := internal.ErrorCodes{
-		400: func(apiError *core.APIError) error {
-			return &v2.BadRequestError{
-				APIError: apiError,
-			}
-		},
-		401: func(apiError *core.APIError) error {
-			return &v2.UnauthorizedError{
-				APIError: apiError,
-			}
-		},
-		500: func(apiError *core.APIError) error {
-			return &v2.InternalServerError{
-				APIError: apiError,
-			}
-		},
-	}
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -290,7 +205,7 @@ func (r *RawClient) GetObjectMetadata(
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
-			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		},
 	)
 	if err != nil {
