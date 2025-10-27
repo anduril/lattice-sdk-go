@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/anduril/lattice-sdk-go/v2/core"
+	"github.com/anduril/lattice-sdk-go/v3/core"
 )
 
 const (
