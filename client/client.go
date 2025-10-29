@@ -3,12 +3,12 @@
 package client
 
 import (
-	core "github.com/anduril/lattice-sdk-go/v3/core"
-	entities "github.com/anduril/lattice-sdk-go/v3/entities"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
-	objects "github.com/anduril/lattice-sdk-go/v3/objects"
-	option "github.com/anduril/lattice-sdk-go/v3/option"
-	tasks "github.com/anduril/lattice-sdk-go/v3/tasks"
+	core "github.com/anduril/lattice-sdk-go/v4/core"
+	entities "github.com/anduril/lattice-sdk-go/v4/entities"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	objects "github.com/anduril/lattice-sdk-go/v4/objects"
+	option "github.com/anduril/lattice-sdk-go/v4/option"
+	tasks "github.com/anduril/lattice-sdk-go/v4/tasks"
 )
 
 type Client struct {
