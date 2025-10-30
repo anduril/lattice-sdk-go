@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	big "math/big"
 	time "time"
 )
@@ -719,6 +719,91 @@ func (e *ExecuteRequest) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
+}
+
+// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+var (
+	googleProtobufAnyFieldType = big.NewInt(1 << 0)
+)
+
+type GoogleProtobufAny struct {
+	// The type of the serialized message.
+	Type *string `json:"@type,omitempty" url:"@type,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (g *GoogleProtobufAny) GetType() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Type
+}
+
+func (g *GoogleProtobufAny) GetExtraProperties() map[string]interface{} {
+	return g.ExtraProperties
+}
+
+func (g *GoogleProtobufAny) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GoogleProtobufAny) SetType(type_ *string) {
+	g.Type = type_
+	g.require(googleProtobufAnyFieldType)
+}
+
+func (g *GoogleProtobufAny) UnmarshalJSON(data []byte) error {
+	type embed GoogleProtobufAny
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*g = GoogleProtobufAny(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.ExtraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GoogleProtobufAny) MarshalJSON() ([]byte, error) {
+	type embed GoogleProtobufAny
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, g.ExtraProperties)
+}
+
+func (g *GoogleProtobufAny) String() string {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
 }
 
 // Owner designates the entity responsible for writes of Task data.

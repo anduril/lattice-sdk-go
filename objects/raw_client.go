@@ -5,10 +5,10 @@ package objects
 import (
 	bytes "bytes"
 	context "context"
-	Lattice "github.com/anduril/lattice-sdk-go/v3"
-	core "github.com/anduril/lattice-sdk-go/v3/core"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
-	option "github.com/anduril/lattice-sdk-go/v3/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v4"
+	core "github.com/anduril/lattice-sdk-go/v4/core"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	option "github.com/anduril/lattice-sdk-go/v4/option"
 	io "io"
 	http "net/http"
 )

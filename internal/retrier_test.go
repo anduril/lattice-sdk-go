@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/anduril/lattice-sdk-go/v3/core"
+	"github.com/anduril/lattice-sdk-go/v4/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
