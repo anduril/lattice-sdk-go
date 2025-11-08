@@ -32,8 +32,14 @@ func NewClient(options *core.RequestOptions) *Client {
 	}
 }
 
-// Submit a request to create a task and schedule it for delivery. Tasks, once delivered, will
-// be asynchronously updated by their destined agent.
+// Creates a new Task in the system with the specified parameters.
+//
+// This method initiates a new task with a unique ID (either provided or auto-generated),
+// sets the initial task state to STATUS_CREATED, and establishes task ownership. The task
+// can be assigned to a specific agent through the Relations field.
+//
+// Once created, a task enters the lifecycle workflow and can be tracked, updated, and managed
+// through other Tasks API endpoints.
 func (c *Client) CreateTask(
 	ctx context.Context,
 	request *Lattice.TaskCreation,
@@ -50,6 +56,14 @@ func (c *Client) CreateTask(
 	return response.Body, nil
 }
 
+// Retrieves a specific Task by its ID, with options to select a particular task version or view.
+//
+// This method returns detailed information about a task including its current status,
+// specification, relations, and other metadata. The response includes the complete Task object
+// with all associated fields.
+//
+// By default, the method returns the latest definition version of the task from the manager's
+// perspective.
 func (c *Client) GetTask(
 	ctx context.Context,
 	// ID of task to return
@@ -67,7 +81,17 @@ func (c *Client) GetTask(
 	return response.Body, nil
 }
 
-// Update the status of a task.
+// Updates the status of a Task as it progresses through its lifecycle.
+//
+// This method allows agents or operators to report the current state of a task,
+// which could include changes to task status, and error information.
+//
+// Each status update increments the task's status_version. When updating status,
+// clients must provide the current version to ensure consistency. The system rejects
+// updates with mismatched versions to prevent race conditions.
+//
+// Terminal states (`STATUS_DONE_OK` and `STATUS_DONE_NOT_OK`) are permanent; once a task
+// reaches these states, no further updates are allowed.
 func (c *Client) UpdateTaskStatus(
 	ctx context.Context,
 	// ID of task to update status of
@@ -87,7 +111,21 @@ func (c *Client) UpdateTaskStatus(
 	return response.Body, nil
 }
 
-// Query for tasks by a specified search criteria.
+// Searches for Tasks that match specified filtering criteria and returns matching tasks in paginated form.
+//
+// This method allows filtering tasks based on multiple criteria including:
+// - Parent task relationships
+// - Task status (with inclusive or exclusive filtering)
+// - Update time ranges
+// - Task view (manager or agent perspective)
+// - Task assignee
+// - Task type (via exact URL matches or prefix matching)
+//
+// Results are returned in pages. When more results are available than can be returned in a single
+// response, a page_token is provided that can be used in subsequent requests to retrieve the next
+// set of results.
+//
+// By default, this returns the latest task version for each matching task from the manager's perspective.
 func (c *Client) QueryTasks(
 	ctx context.Context,
 	request *Lattice.TaskQuery,
@@ -104,6 +142,23 @@ func (c *Client) QueryTasks(
 	return response.Body, nil
 }
 
+// Establishes a server streaming connection that delivers tasks to taskable agents for execution.
+//
+// This method creates a persistent connection from Tasks API to an agent, allowing the server
+// to push tasks to the agent as they become available. The agent receives a stream of tasks that
+// match its selector criteria (entity IDs).
+//
+// The stream delivers three types of requests:
+// - ExecuteRequest: Contains a new task for the agent to execute
+// - CancelRequest: Indicates a task should be canceled
+// - CompleteRequest: Indicates a task should be completed
+//
+// This is the primary method for taskable agents to receive and process tasks in real-time.
+// Agents should maintain this connection and process incoming tasks according to their capabilities.
+//
+// When an agent receives a task, it should update the task status using the UpdateStatus endpoint
+// to provide progress information back to Tasks API.
+//
 // This is a long polling API that will block until a new task is ready for delivery. If no new task is
 // available then the server will hold on to your request for up to 5 minutes, after that 5 minute timeout
 // period you will be expected to reinitiate a new request.
