@@ -5,14 +5,41 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	big "math/big"
 	time "time"
 )
 
 var (
+	deleteObjectRequestFieldObjectPath = big.NewInt(1 << 0)
+)
+
+type DeleteObjectRequest struct {
+	// The path of the object to delete.
+	ObjectPath string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (d *DeleteObjectRequest) require(field *big.Int) {
+	if d.explicitFields == nil {
+		d.explicitFields = big.NewInt(0)
+	}
+	d.explicitFields.Or(d.explicitFields, field)
+}
+
+// SetObjectPath sets the ObjectPath field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeleteObjectRequest) SetObjectPath(objectPath string) {
+	d.ObjectPath = objectPath
+	d.require(deleteObjectRequestFieldObjectPath)
+}
+
+var (
 	getObjectRequestFieldAcceptEncoding = big.NewInt(1 << 0)
 	getObjectRequestFieldPriority       = big.NewInt(1 << 1)
+	getObjectRequestFieldObjectPath     = big.NewInt(1 << 2)
 )
 
 type GetObjectRequest struct {
@@ -20,6 +47,8 @@ type GetObjectRequest struct {
 	AcceptEncoding *GetObjectRequestAcceptEncoding `json:"-" url:"-"`
 	// Indicates a client's preference for the priority of the response. The value is a structured header as defined in RFC 9218. If you do not set the header, Lattice uses the default priority set for the environment. Incremental delivery directives are not supported and will be ignored.
 	Priority *string `json:"-" url:"-"`
+	// The path of the object to fetch.
+	ObjectPath string `json:"-" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -44,6 +73,39 @@ func (g *GetObjectRequest) SetAcceptEncoding(acceptEncoding *GetObjectRequestAcc
 func (g *GetObjectRequest) SetPriority(priority *string) {
 	g.Priority = priority
 	g.require(getObjectRequestFieldPriority)
+}
+
+// SetObjectPath sets the ObjectPath field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetObjectRequest) SetObjectPath(objectPath string) {
+	g.ObjectPath = objectPath
+	g.require(getObjectRequestFieldObjectPath)
+}
+
+var (
+	getObjectMetadataRequestFieldObjectPath = big.NewInt(1 << 0)
+)
+
+type GetObjectMetadataRequest struct {
+	// The path of the object to query.
+	ObjectPath string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GetObjectMetadataRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetObjectPath sets the ObjectPath field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetObjectMetadataRequest) SetObjectPath(objectPath string) {
+	g.ObjectPath = objectPath
+	g.require(getObjectMetadataRequestFieldObjectPath)
 }
 
 var (

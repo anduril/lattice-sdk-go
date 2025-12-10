@@ -4,10 +4,10 @@ package tasks
 
 import (
 	context "context"
-	Lattice "github.com/anduril/lattice-sdk-go/v3"
-	core "github.com/anduril/lattice-sdk-go/v3/core"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
-	option "github.com/anduril/lattice-sdk-go/v3/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v4"
+	core "github.com/anduril/lattice-sdk-go/v4/core"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	option "github.com/anduril/lattice-sdk-go/v4/option"
 	http "net/http"
 )
 
@@ -75,8 +75,7 @@ func (r *RawClient) CreateTask(
 
 func (r *RawClient) GetTask(
 	ctx context.Context,
-	// ID of task to return
-	taskID string,
+	request *Lattice.GetTaskRequest,
 	opts ...option.RequestOption,
 ) (*core.Response[*Lattice.Task], error) {
 	options := core.NewRequestOptions(opts...)
@@ -87,7 +86,7 @@ func (r *RawClient) GetTask(
 	)
 	endpointURL := internal.EncodeURL(
 		baseURL+"/api/v1/tasks/%v",
-		taskID,
+		request.TaskID,
 	)
 	headers := internal.MergeHeaders(
 		r.options.ToHeader(),
@@ -120,8 +119,6 @@ func (r *RawClient) GetTask(
 
 func (r *RawClient) UpdateTaskStatus(
 	ctx context.Context,
-	// ID of task to update status of
-	taskID string,
 	request *Lattice.TaskStatusUpdate,
 	opts ...option.RequestOption,
 ) (*core.Response[*Lattice.Task], error) {
@@ -133,7 +130,7 @@ func (r *RawClient) UpdateTaskStatus(
 	)
 	endpointURL := internal.EncodeURL(
 		baseURL+"/api/v1/tasks/%v/status",
-		taskID,
+		request.TaskID,
 	)
 	headers := internal.MergeHeaders(
 		r.options.ToHeader(),

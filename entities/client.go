@@ -4,10 +4,10 @@ package entities
 
 import (
 	context "context"
-	Lattice "github.com/anduril/lattice-sdk-go/v3"
-	core "github.com/anduril/lattice-sdk-go/v3/core"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
-	option "github.com/anduril/lattice-sdk-go/v3/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v4"
+	core "github.com/anduril/lattice-sdk-go/v4/core"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	option "github.com/anduril/lattice-sdk-go/v4/option"
 	http "net/http"
 )
 
@@ -58,13 +58,12 @@ func (c *Client) PublishEntity(
 
 func (c *Client) GetEntity(
 	ctx context.Context,
-	// ID of the entity to return
-	entityID string,
+	request *Lattice.GetEntityRequest,
 	opts ...option.RequestOption,
 ) (*Lattice.Entity, error) {
 	response, err := c.WithRawResponse.GetEntity(
 		ctx,
-		entityID,
+		request,
 		opts...,
 	)
 	if err != nil {
@@ -82,17 +81,11 @@ func (c *Client) GetEntity(
 // concurrently for the same field path, the last writer wins.
 func (c *Client) OverrideEntity(
 	ctx context.Context,
-	// The unique ID of the entity to override
-	entityID string,
-	// fieldPath to override
-	fieldPath string,
 	request *Lattice.EntityOverride,
 	opts ...option.RequestOption,
 ) (*Lattice.Entity, error) {
 	response, err := c.WithRawResponse.OverrideEntity(
 		ctx,
-		entityID,
-		fieldPath,
 		request,
 		opts...,
 	)
@@ -105,16 +98,12 @@ func (c *Client) OverrideEntity(
 // This operation clears the override value from the specified field path on the entity.
 func (c *Client) RemoveEntityOverride(
 	ctx context.Context,
-	// The unique ID of the entity to undo an override from.
-	entityID string,
-	// The fieldPath to clear overrides from.
-	fieldPath string,
+	request *Lattice.RemoveEntityOverrideRequest,
 	opts ...option.RequestOption,
 ) (*Lattice.Entity, error) {
 	response, err := c.WithRawResponse.RemoveEntityOverride(
 		ctx,
-		entityID,
-		fieldPath,
+		request,
 		opts...,
 	)
 	if err != nil {
@@ -148,7 +137,25 @@ func (c *Client) LongPollEntityEvents(
 	return response.Body, nil
 }
 
-// Establishes a persistent connection to stream entity events as they occur.
+// Establishes a server-sent events (SSE) connection that streams entity data in real-time.
+// This is a one-way connection from server to client that follows the SSE protocol with text/event-stream content type.
+//
+// This endpoint enables clients to maintain a real-time view of the common operational picture (COP)
+// by first streaming all pre-existing entities that match filter criteria, then continuously delivering
+// updates as entities are created, modified, or deleted.
+//
+// The server first sends events with type PREEXISTING for all live entities matching the filter that existed before the stream was open,
+// then streams CREATE events for newly created entities, UPDATE events when existing entities change, and DELETED events when entities are removed. The stream remains open
+// indefinitely unless preExistingOnly is set to true.
+//
+// Heartbeat messages can be configured to maintain connection health and detect disconnects by setting the heartbeatIntervalMS
+// parameter. These heartbeats help keep the connection alive and allow clients to verify the server is still responsive.
+//
+// Clients can optimize bandwidth usage by specifying which entity components they need populated using the componentsToInclude parameter.
+// This allows receiving only relevant data instead of complete entities.
+//
+// The connection automatically recovers from temporary disconnections, resuming the stream where it left off. Unlike polling approaches,
+// this provides real-time updates with minimal latency and reduced server load.
 func (c *Client) StreamEntities(
 	ctx context.Context,
 	request *Lattice.EntityStreamRequest,

@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	big "math/big"
 	time "time"
 )
@@ -191,7 +191,7 @@ func (a *ActiveTarget) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// Represents an Agent in the COP.
+// Represents an agent capable of processing tasks.
 var (
 	agentFieldEntityID = big.NewInt(1 << 0)
 )
@@ -3123,9 +3123,9 @@ var (
 )
 
 type Entity struct {
-	// A Globally Unique Identifier (GUID) for your entity. If this field is empty, the Entity Manager API
+	// A Globally Unique Identifier (GUID) for your entity. This is a required
 	//
-	//	automatically generates an ID when it creates the entity.
+	//	field.
 	EntityID *string `json:"entityId,omitempty" url:"entityId,omitempty"`
 	// A human-readable entity description that's helpful for debugging purposes and human
 	//
@@ -3828,6 +3828,270 @@ func (e *Entity) String() string {
 }
 
 var (
+	entityManagerPoseFieldPos         = big.NewInt(1 << 0)
+	entityManagerPoseFieldOrientation = big.NewInt(1 << 1)
+)
+
+type EntityManagerPose struct {
+	// Geospatial location defined by this Pose.
+	Pos *Position `json:"pos,omitempty" url:"pos,omitempty"`
+	// The quaternion to transform a point in the Pose frame to the ENU frame. The Pose frame could be Body, Turret,
+	//
+	//	etc and is determined by the context in which this Pose is used.
+	//	The normal convention for defining orientation is to list the frames of transformation, for example
+	//	att_gimbal_to_enu is the quaternion which transforms a point in the gimbal frame to the body frame, but
+	//	in this case we truncate to att_enu because the Pose frame isn't defined. A potentially better name for this
+	//	field would have been att_pose_to_enu.
+	//
+	//	Implementations of this quaternion should left multiply this quaternion to transform a point from the Pose frame
+	//	to the enu frame.
+	Orientation *Quaternion `json:"orientation,omitempty" url:"orientation,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EntityManagerPose) GetPos() *Position {
+	if e == nil {
+		return nil
+	}
+	return e.Pos
+}
+
+func (e *EntityManagerPose) GetOrientation() *Quaternion {
+	if e == nil {
+		return nil
+	}
+	return e.Orientation
+}
+
+func (e *EntityManagerPose) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EntityManagerPose) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetPos sets the Pos field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerPose) SetPos(pos *Position) {
+	e.Pos = pos
+	e.require(entityManagerPoseFieldPos)
+}
+
+// SetOrientation sets the Orientation field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerPose) SetOrientation(orientation *Quaternion) {
+	e.Orientation = orientation
+	e.require(entityManagerPoseFieldOrientation)
+}
+
+func (e *EntityManagerPose) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityManagerPose
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntityManagerPose(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntityManagerPose) MarshalJSON() ([]byte, error) {
+	type embed EntityManagerPose
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (e *EntityManagerPose) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+// Symmetric 3d matrix only representing the upper right triangle.
+var (
+	entityManagerTMat3FieldMxx = big.NewInt(1 << 0)
+	entityManagerTMat3FieldMxy = big.NewInt(1 << 1)
+	entityManagerTMat3FieldMxz = big.NewInt(1 << 2)
+	entityManagerTMat3FieldMyy = big.NewInt(1 << 3)
+	entityManagerTMat3FieldMyz = big.NewInt(1 << 4)
+	entityManagerTMat3FieldMzz = big.NewInt(1 << 5)
+)
+
+type EntityManagerTMat3 struct {
+	Mxx *float64 `json:"mxx,omitempty" url:"mxx,omitempty"`
+	Mxy *float64 `json:"mxy,omitempty" url:"mxy,omitempty"`
+	Mxz *float64 `json:"mxz,omitempty" url:"mxz,omitempty"`
+	Myy *float64 `json:"myy,omitempty" url:"myy,omitempty"`
+	Myz *float64 `json:"myz,omitempty" url:"myz,omitempty"`
+	Mzz *float64 `json:"mzz,omitempty" url:"mzz,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *EntityManagerTMat3) GetMxx() *float64 {
+	if e == nil {
+		return nil
+	}
+	return e.Mxx
+}
+
+func (e *EntityManagerTMat3) GetMxy() *float64 {
+	if e == nil {
+		return nil
+	}
+	return e.Mxy
+}
+
+func (e *EntityManagerTMat3) GetMxz() *float64 {
+	if e == nil {
+		return nil
+	}
+	return e.Mxz
+}
+
+func (e *EntityManagerTMat3) GetMyy() *float64 {
+	if e == nil {
+		return nil
+	}
+	return e.Myy
+}
+
+func (e *EntityManagerTMat3) GetMyz() *float64 {
+	if e == nil {
+		return nil
+	}
+	return e.Myz
+}
+
+func (e *EntityManagerTMat3) GetMzz() *float64 {
+	if e == nil {
+		return nil
+	}
+	return e.Mzz
+}
+
+func (e *EntityManagerTMat3) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EntityManagerTMat3) require(field *big.Int) {
+	if e.explicitFields == nil {
+		e.explicitFields = big.NewInt(0)
+	}
+	e.explicitFields.Or(e.explicitFields, field)
+}
+
+// SetMxx sets the Mxx field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerTMat3) SetMxx(mxx *float64) {
+	e.Mxx = mxx
+	e.require(entityManagerTMat3FieldMxx)
+}
+
+// SetMxy sets the Mxy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerTMat3) SetMxy(mxy *float64) {
+	e.Mxy = mxy
+	e.require(entityManagerTMat3FieldMxy)
+}
+
+// SetMxz sets the Mxz field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerTMat3) SetMxz(mxz *float64) {
+	e.Mxz = mxz
+	e.require(entityManagerTMat3FieldMxz)
+}
+
+// SetMyy sets the Myy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerTMat3) SetMyy(myy *float64) {
+	e.Myy = myy
+	e.require(entityManagerTMat3FieldMyy)
+}
+
+// SetMyz sets the Myz field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerTMat3) SetMyz(myz *float64) {
+	e.Myz = myz
+	e.require(entityManagerTMat3FieldMyz)
+}
+
+// SetMzz sets the Mzz field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityManagerTMat3) SetMzz(mzz *float64) {
+	e.Mzz = mzz
+	e.require(entityManagerTMat3FieldMzz)
+}
+
+func (e *EntityManagerTMat3) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityManagerTMat3
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EntityManagerTMat3(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EntityManagerTMat3) MarshalJSON() ([]byte, error) {
+	type embed EntityManagerTMat3
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (e *EntityManagerTMat3) String() string {
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
+var (
 	enuFieldE = big.NewInt(1 << 0)
 	enuFieldN = big.NewInt(1 << 1)
 	enuFieldU = big.NewInt(1 << 2)
@@ -4196,7 +4460,7 @@ type FieldOfView struct {
 	//
 	//	the positive X axis in the sensor frame will be transformed into the ray along the sensor direction in the ENU
 	//	frame when transformed by the quaternion contained in this pose.
-	CenterRayPose *Pose `json:"centerRayPose,omitempty" url:"centerRayPose,omitempty"`
+	CenterRayPose *EntityManagerPose `json:"centerRayPose,omitempty" url:"centerRayPose,omitempty"`
 	// Horizontal field of view in radians.
 	HorizontalFov *float64 `json:"horizontalFov,omitempty" url:"horizontalFov,omitempty"`
 	// Vertical field of view in radians.
@@ -4244,7 +4508,7 @@ func (f *FieldOfView) GetProjectedCenterRay() *Position {
 	return f.ProjectedCenterRay
 }
 
-func (f *FieldOfView) GetCenterRayPose() *Pose {
+func (f *FieldOfView) GetCenterRayPose() *EntityManagerPose {
 	if f == nil {
 		return nil
 	}
@@ -4320,7 +4584,7 @@ func (f *FieldOfView) SetProjectedCenterRay(projectedCenterRay *Position) {
 
 // SetCenterRayPose sets the CenterRayPose field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (f *FieldOfView) SetCenterRayPose(centerRayPose *Pose) {
+func (f *FieldOfView) SetCenterRayPose(centerRayPose *EntityManagerPose) {
 	f.CenterRayPose = centerRayPose
 	f.require(fieldOfViewFieldCenterRayPose)
 }
@@ -5785,91 +6049,6 @@ func (g *GeoShape) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-var (
-	googleProtobufAnyFieldType = big.NewInt(1 << 0)
-)
-
-type GoogleProtobufAny struct {
-	// The type of the serialized message.
-	Type *string `json:"@type,omitempty" url:"@type,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	ExtraProperties map[string]interface{} `json:"-" url:"-"`
-
-	rawJSON json.RawMessage
-}
-
-func (g *GoogleProtobufAny) GetType() *string {
-	if g == nil {
-		return nil
-	}
-	return g.Type
-}
-
-func (g *GoogleProtobufAny) GetExtraProperties() map[string]interface{} {
-	return g.ExtraProperties
-}
-
-func (g *GoogleProtobufAny) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
-	}
-	g.explicitFields.Or(g.explicitFields, field)
-}
-
-// SetType sets the Type field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (g *GoogleProtobufAny) SetType(type_ *string) {
-	g.Type = type_
-	g.require(googleProtobufAnyFieldType)
-}
-
-func (g *GoogleProtobufAny) UnmarshalJSON(data []byte) error {
-	type embed GoogleProtobufAny
-	var unmarshaler = struct {
-		embed
-	}{
-		embed: embed(*g),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*g = GoogleProtobufAny(unmarshaler.embed)
-	extraProperties, err := internal.ExtractExtraProperties(data, *g)
-	if err != nil {
-		return err
-	}
-	g.ExtraProperties = extraProperties
-	g.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GoogleProtobufAny) MarshalJSON() ([]byte, error) {
-	type embed GoogleProtobufAny
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*g),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
-	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, g.ExtraProperties)
-}
-
-func (g *GoogleProtobufAny) String() string {
-	if len(g.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
 // A GroupChild relationship is a uni-directional relationship indicating that (1) this entity
 //
 //	represents an Entity Group and (2) the related entity is a child member of this group. The presence of this
@@ -7252,11 +7431,11 @@ type LocationUncertainty struct {
 	// Positional covariance represented by the upper triangle of the covariance matrix. It is valid to populate
 	//
 	//	only the diagonal of the matrix if the full covariance matrix is unknown.
-	PositionEnuCov *TMat3 `json:"positionEnuCov,omitempty" url:"positionEnuCov,omitempty"`
+	PositionEnuCov *EntityManagerTMat3 `json:"positionEnuCov,omitempty" url:"positionEnuCov,omitempty"`
 	// Velocity covariance represented by the upper triangle of the covariance matrix. It is valid to populate
 	//
 	//	only the diagonal of the matrix if the full covariance matrix is unknown.
-	VelocityEnuCov *TMat3 `json:"velocityEnuCov,omitempty" url:"velocityEnuCov,omitempty"`
+	VelocityEnuCov *EntityManagerTMat3 `json:"velocityEnuCov,omitempty" url:"velocityEnuCov,omitempty"`
 	// An ellipse that describes the certainty probability and error boundary for a given geolocation.
 	PositionErrorEllipse *ErrorEllipse `json:"positionErrorEllipse,omitempty" url:"positionErrorEllipse,omitempty"`
 
@@ -7267,14 +7446,14 @@ type LocationUncertainty struct {
 	rawJSON         json.RawMessage
 }
 
-func (l *LocationUncertainty) GetPositionEnuCov() *TMat3 {
+func (l *LocationUncertainty) GetPositionEnuCov() *EntityManagerTMat3 {
 	if l == nil {
 		return nil
 	}
 	return l.PositionEnuCov
 }
 
-func (l *LocationUncertainty) GetVelocityEnuCov() *TMat3 {
+func (l *LocationUncertainty) GetVelocityEnuCov() *EntityManagerTMat3 {
 	if l == nil {
 		return nil
 	}
@@ -7301,14 +7480,14 @@ func (l *LocationUncertainty) require(field *big.Int) {
 
 // SetPositionEnuCov sets the PositionEnuCov field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (l *LocationUncertainty) SetPositionEnuCov(positionEnuCov *TMat3) {
+func (l *LocationUncertainty) SetPositionEnuCov(positionEnuCov *EntityManagerTMat3) {
 	l.PositionEnuCov = positionEnuCov
 	l.require(locationUncertaintyFieldPositionEnuCov)
 }
 
 // SetVelocityEnuCov sets the VelocityEnuCov field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (l *LocationUncertainty) SetVelocityEnuCov(velocityEnuCov *TMat3) {
+func (l *LocationUncertainty) SetVelocityEnuCov(velocityEnuCov *EntityManagerTMat3) {
 	l.VelocityEnuCov = velocityEnuCov
 	l.require(locationUncertaintyFieldVelocityEnuCov)
 }
@@ -13269,20 +13448,19 @@ func (s *Signal) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
+// Contains status of entities.
 var (
-	statusFieldCode    = big.NewInt(1 << 0)
-	statusFieldMessage = big.NewInt(1 << 1)
-	statusFieldDetails = big.NewInt(1 << 2)
+	statusFieldPlatformActivity = big.NewInt(1 << 0)
+	statusFieldRole             = big.NewInt(1 << 1)
 )
 
 type Status struct {
-	// The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
-	Code *int `json:"code,omitempty" url:"code,omitempty"`
-	// A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
-	Message *string `json:"message,omitempty" url:"message,omitempty"`
-	// A list of messages that carry the error details.  There is a common set of message types for APIs to use.
-	Details []*GoogleProtobufAny `json:"details,omitempty" url:"details,omitempty"`
+	// A string that describes the activity that the entity is performing.
+	//
+	//	Examples include "RECONNAISSANCE", "INTERDICTION", "RETURN TO BASE (RTB)", "PREPARING FOR LAUNCH".
+	PlatformActivity *string `json:"platformActivity,omitempty" url:"platformActivity,omitempty"`
+	// A human-readable string that describes the role the entity is currently performing. E.g. "Team Member", "Commander".
+	Role *string `json:"role,omitempty" url:"role,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -13291,25 +13469,18 @@ type Status struct {
 	rawJSON         json.RawMessage
 }
 
-func (s *Status) GetCode() *int {
+func (s *Status) GetPlatformActivity() *string {
 	if s == nil {
 		return nil
 	}
-	return s.Code
+	return s.PlatformActivity
 }
 
-func (s *Status) GetMessage() *string {
+func (s *Status) GetRole() *string {
 	if s == nil {
 		return nil
 	}
-	return s.Message
-}
-
-func (s *Status) GetDetails() []*GoogleProtobufAny {
-	if s == nil {
-		return nil
-	}
-	return s.Details
+	return s.Role
 }
 
 func (s *Status) GetExtraProperties() map[string]interface{} {
@@ -13323,25 +13494,18 @@ func (s *Status) require(field *big.Int) {
 	s.explicitFields.Or(s.explicitFields, field)
 }
 
-// SetCode sets the Code field and marks it as non-optional;
+// SetPlatformActivity sets the PlatformActivity field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (s *Status) SetCode(code *int) {
-	s.Code = code
-	s.require(statusFieldCode)
+func (s *Status) SetPlatformActivity(platformActivity *string) {
+	s.PlatformActivity = platformActivity
+	s.require(statusFieldPlatformActivity)
 }
 
-// SetMessage sets the Message field and marks it as non-optional;
+// SetRole sets the Role field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (s *Status) SetMessage(message *string) {
-	s.Message = message
-	s.require(statusFieldMessage)
-}
-
-// SetDetails sets the Details field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (s *Status) SetDetails(details []*GoogleProtobufAny) {
-	s.Details = details
-	s.require(statusFieldDetails)
+func (s *Status) SetRole(role *string) {
+	s.Role = role
+	s.require(statusFieldRole)
 }
 
 func (s *Status) UnmarshalJSON(data []byte) error {
@@ -13643,165 +13807,6 @@ func (t *TMat2) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TMat2) String() string {
-	if len(t.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-// Symmetric 3d matrix only representing the upper right triangle.
-var (
-	tMat3FieldMxx = big.NewInt(1 << 0)
-	tMat3FieldMxy = big.NewInt(1 << 1)
-	tMat3FieldMxz = big.NewInt(1 << 2)
-	tMat3FieldMyy = big.NewInt(1 << 3)
-	tMat3FieldMyz = big.NewInt(1 << 4)
-	tMat3FieldMzz = big.NewInt(1 << 5)
-)
-
-type TMat3 struct {
-	Mxx *float64 `json:"mxx,omitempty" url:"mxx,omitempty"`
-	Mxy *float64 `json:"mxy,omitempty" url:"mxy,omitempty"`
-	Mxz *float64 `json:"mxz,omitempty" url:"mxz,omitempty"`
-	Myy *float64 `json:"myy,omitempty" url:"myy,omitempty"`
-	Myz *float64 `json:"myz,omitempty" url:"myz,omitempty"`
-	Mzz *float64 `json:"mzz,omitempty" url:"mzz,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (t *TMat3) GetMxx() *float64 {
-	if t == nil {
-		return nil
-	}
-	return t.Mxx
-}
-
-func (t *TMat3) GetMxy() *float64 {
-	if t == nil {
-		return nil
-	}
-	return t.Mxy
-}
-
-func (t *TMat3) GetMxz() *float64 {
-	if t == nil {
-		return nil
-	}
-	return t.Mxz
-}
-
-func (t *TMat3) GetMyy() *float64 {
-	if t == nil {
-		return nil
-	}
-	return t.Myy
-}
-
-func (t *TMat3) GetMyz() *float64 {
-	if t == nil {
-		return nil
-	}
-	return t.Myz
-}
-
-func (t *TMat3) GetMzz() *float64 {
-	if t == nil {
-		return nil
-	}
-	return t.Mzz
-}
-
-func (t *TMat3) GetExtraProperties() map[string]interface{} {
-	return t.extraProperties
-}
-
-func (t *TMat3) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
-	}
-	t.explicitFields.Or(t.explicitFields, field)
-}
-
-// SetMxx sets the Mxx field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (t *TMat3) SetMxx(mxx *float64) {
-	t.Mxx = mxx
-	t.require(tMat3FieldMxx)
-}
-
-// SetMxy sets the Mxy field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (t *TMat3) SetMxy(mxy *float64) {
-	t.Mxy = mxy
-	t.require(tMat3FieldMxy)
-}
-
-// SetMxz sets the Mxz field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (t *TMat3) SetMxz(mxz *float64) {
-	t.Mxz = mxz
-	t.require(tMat3FieldMxz)
-}
-
-// SetMyy sets the Myy field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (t *TMat3) SetMyy(myy *float64) {
-	t.Myy = myy
-	t.require(tMat3FieldMyy)
-}
-
-// SetMyz sets the Myz field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (t *TMat3) SetMyz(myz *float64) {
-	t.Myz = myz
-	t.require(tMat3FieldMyz)
-}
-
-// SetMzz sets the Mzz field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (t *TMat3) SetMzz(mzz *float64) {
-	t.Mzz = mzz
-	t.require(tMat3FieldMzz)
-}
-
-func (t *TMat3) UnmarshalJSON(data []byte) error {
-	type unmarshaler TMat3
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TMat3(value)
-	extraProperties, err := internal.ExtractExtraProperties(data, *t)
-	if err != nil {
-		return err
-	}
-	t.extraProperties = extraProperties
-	t.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TMat3) MarshalJSON() ([]byte, error) {
-	type embed TMat3
-	var marshaler = struct {
-		embed
-	}{
-		embed: embed(*t),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (t *TMat3) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
