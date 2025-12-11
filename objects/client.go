@@ -4,10 +4,10 @@ package objects
 
 import (
 	context "context"
-	Lattice "github.com/anduril/lattice-sdk-go/v3"
-	core "github.com/anduril/lattice-sdk-go/v3/core"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
-	option "github.com/anduril/lattice-sdk-go/v3/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v4"
+	core "github.com/anduril/lattice-sdk-go/v4/core"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	option "github.com/anduril/lattice-sdk-go/v4/option"
 	io "io"
 	http "net/http"
 )
@@ -39,7 +39,7 @@ func (c *Client) ListObjects(
 	ctx context.Context,
 	request *Lattice.ListObjectsRequest,
 	opts ...option.RequestOption,
-) (*core.Page[*Lattice.PathMetadata], error) {
+) (*core.Page[*string, *Lattice.PathMetadata, *Lattice.ListResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -55,7 +55,7 @@ func (c *Client) ListObjects(
 		c.options.ToHeader(),
 		options.ToHeader(),
 	)
-	prepareCall := func(pageRequest *internal.PageRequest[*string]) *internal.CallParams {
+	prepareCall := func(pageRequest *core.PageRequest[*string]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
 			queryParams.Set("pageToken", *pageRequest.Cursor)
 		}
@@ -75,14 +75,15 @@ func (c *Client) ListObjects(
 			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
 		}
 	}
-	readPageResponse := func(response *Lattice.ListResponse) *internal.PageResponse[*string, *Lattice.PathMetadata] {
+	readPageResponse := func(response *Lattice.ListResponse) *core.PageResponse[*string, *Lattice.PathMetadata, *Lattice.ListResponse] {
 		var zeroValue *string
 		next := response.GetNextPageToken()
 		results := response.GetPathMetadatas()
-		return &internal.PageResponse[*string, *Lattice.PathMetadata]{
-			Next:    next,
-			Results: results,
-			Done:    next == zeroValue,
+		return &core.PageResponse[*string, *Lattice.PathMetadata, *Lattice.ListResponse]{
+			Results:  results,
+			Response: response,
+			Next:     next,
+			Done:     next == zeroValue,
 		}
 	}
 	pager := internal.NewCursorPager(
@@ -96,14 +97,11 @@ func (c *Client) ListObjects(
 // Fetches an object from your environment using the objectPath path parameter.
 func (c *Client) GetObject(
 	ctx context.Context,
-	// The path of the object to fetch.
-	objectPath string,
 	request *Lattice.GetObjectRequest,
 	opts ...option.RequestOption,
 ) (io.Reader, error) {
 	response, err := c.WithRawResponse.GetObject(
 		ctx,
-		objectPath,
 		request,
 		opts...,
 	)
@@ -136,13 +134,12 @@ func (c *Client) UploadObject(
 // Deletes an object from your environment given the objectPath path parameter.
 func (c *Client) DeleteObject(
 	ctx context.Context,
-	// The path of the object to delete.
-	objectPath string,
+	request *Lattice.DeleteObjectRequest,
 	opts ...option.RequestOption,
 ) error {
 	_, err := c.WithRawResponse.DeleteObject(
 		ctx,
-		objectPath,
+		request,
 		opts...,
 	)
 	if err != nil {
@@ -154,13 +151,12 @@ func (c *Client) DeleteObject(
 // Returns metadata for a specified object path. Use this to fetch metadata such as object size (size_bytes), its expiry time (expiry_time), or its latest update timestamp (last_updated_at).
 func (c *Client) GetObjectMetadata(
 	ctx context.Context,
-	// The path of the object to query.
-	objectPath string,
+	request *Lattice.GetObjectMetadataRequest,
 	opts ...option.RequestOption,
 ) error {
 	_, err := c.WithRawResponse.GetObjectMetadata(
 		ctx,
-		objectPath,
+		request,
 		opts...,
 	)
 	if err != nil {

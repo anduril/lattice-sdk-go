@@ -5,6 +5,23 @@
 
 The Lattice SDK Go library provides convenient access to the Lattice SDK APIs from Go.
 
+## Table of Contents
+
+- [Documentation](#documentation)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Support](#support)
+- [Reference](#reference)
+- [Usage](#usage)
+- [Environments](#environments)
+- [Errors](#errors)
+- [Request Options](#request-options)
+- [Advanced](#advanced)
+  - [Response Headers](#response-headers)
+  - [Retries](#retries)
+  - [Timeouts](#timeouts)
+  - [Explicit Null](#explicit-null)
+
 ## Documentation
 
 API reference documentation is available [here](https://developer.anduril.com/).
@@ -39,9 +56,9 @@ Instantiate and use the client with the following:
 package example
 
 import (
-    client "github.com/anduril/lattice-sdk-go/v3/client"
-    option "github.com/anduril/lattice-sdk-go/v3/option"
-    Lattice "github.com/anduril/lattice-sdk-go/v3"
+    client "github.com/anduril/lattice-sdk-go/v4/client"
+    option "github.com/anduril/lattice-sdk-go/v4/option"
+    Lattice "github.com/anduril/lattice-sdk-go/v4"
     context "context"
 )
 
@@ -123,7 +140,8 @@ response, err := client.Entities.LongPollEntityEvents(
 ### Response Headers
 
 You can access the raw HTTP response data by using the `WithRawResponse` field on the client. This is useful
-when you need to examine the response headers received from the API call.
+when you need to examine the response headers received from the API call. (When the endpoint is paginated,
+the raw HTTP response data will be included automatically in the Page response object.)
 
 ```go
 response, err := client.Entities.WithRawResponse.LongPollEntityEvents(...)
@@ -131,6 +149,7 @@ if err != nil {
     return err
 }
 fmt.Printf("Got response headers: %v", response.Header)
+fmt.Printf("Got status code: %d", response.StatusCode)
 ```
 
 ### Retries

@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	big "math/big"
 	time "time"
 )
@@ -29,7 +29,7 @@ type TaskCreation struct {
 	DisplayName *string `json:"displayName,omitempty" url:"-"`
 	// Longer, free form human readable description of this Task.
 	Description *string `json:"description,omitempty" url:"-"`
-	// Full set of task parameters.
+	// The path for the Protobuf task definition, and the complete task data.
 	Specification *GoogleProtobufAny `json:"specification,omitempty" url:"-"`
 	Author        *Principal         `json:"author,omitempty" url:"-"`
 	// Any relationships associated with this Task, such as a parent Task or an assignee
@@ -111,6 +111,32 @@ func (t *TaskCreation) SetInitialEntities(initialEntities []*TaskEntity) {
 }
 
 var (
+	getTaskRequestFieldTaskID = big.NewInt(1 << 0)
+)
+
+type GetTaskRequest struct {
+	// ID of task to return
+	TaskID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GetTaskRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetTaskRequest) SetTaskID(taskID string) {
+	g.TaskID = taskID
+	g.require(getTaskRequestFieldTaskID)
+}
+
+var (
 	agentListenerFieldAgentSelector = big.NewInt(1 << 0)
 )
 
@@ -147,7 +173,7 @@ type TaskQuery struct {
 	// If set, returns results starting from the given pageToken.
 	PageToken *string `json:"pageToken,omitempty" url:"-"`
 	// If present matches Tasks with this parent Task ID.
-	// Note: this is mutually exclusive with all other query parameters, i.e., either provide parent Task ID, or
+	// Note: this is mutually exclusive with all other query parameters, for example, either provide parent task ID, or
 	// any of the remaining parameters, but not both.
 	ParentTaskID *string                `json:"parentTaskId,omitempty" url:"-"`
 	StatusFilter *TaskQueryStatusFilter `json:"statusFilter,omitempty" url:"-"`
@@ -193,6 +219,16 @@ func (t *TaskQuery) SetUpdateTimeRange(updateTimeRange *TaskQueryUpdateTimeRange
 	t.require(taskQueryFieldUpdateTimeRange)
 }
 
+// Response streamed to an agent containing task actions to perform.
+//
+// This message is streamed from Tasks API to agents and contains one of three
+// possible requests: execute a task, cancel a task, or complete a task. The agent
+// should process these requests according to its capabilities and report status
+// updates back to Tasks API using the UpdateStatus endpoint.
+//
+// Multiple responses may be sent for different tasks, and the agent should maintain
+// the connection to receive ongoing task requests. The connection may also be used
+// for heartbeat messages to ensure the agent is still responsive.
 var (
 	agentRequestFieldExecuteRequest  = big.NewInt(1 << 0)
 	agentRequestFieldCancelRequest   = big.NewInt(1 << 1)
@@ -303,13 +339,13 @@ func (a *AgentRequest) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// Allocation contains a list of agents allocated to a Task.
+// Allocation contains a list of agents allocated to a task.
 var (
 	allocationFieldActiveAgents = big.NewInt(1 << 0)
 )
 
 type Allocation struct {
-	// Agents actively being utilized in a Task.
+	// Agents actively being utilized in a task.
 	ActiveAgents []*Agent `json:"activeAgents,omitempty" url:"activeAgents,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -383,14 +419,16 @@ func (a *Allocation) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// Request to Cancel a Task.
+// The request to cancel a task.
+//
+//	Contains the task, and the assignee of the request to cancel the task.
 var (
 	cancelRequestFieldTaskID   = big.NewInt(1 << 0)
 	cancelRequestFieldAssignee = big.NewInt(1 << 1)
 )
 
 type CancelRequest struct {
-	// ID of the Task to cancel.
+	// The unique task ID of the task to cancel.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
 	// The assignee of the Task. Useful for agent routing where an endpoint owns multiple agents,
 	//
@@ -482,7 +520,9 @@ func (c *CancelRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// Request to Complete a Task.
+// The request to complete a task.
+//
+//	Contains the unique ID of the task to complete.
 var (
 	completeRequestFieldTaskID = big.NewInt(1 << 0)
 )
@@ -641,13 +681,15 @@ func (e *EntityIDsSelector) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// Request to execute a Task.
+// The request to execute a task.
+//
+//	Contains the unique ID of the task to execute.
 var (
 	executeRequestFieldTask = big.NewInt(1 << 0)
 )
 
 type ExecuteRequest struct {
-	// Task to execute.
+	// The task to execute.
 	Task *Task `json:"task,omitempty" url:"task,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -721,7 +763,92 @@ func (e *ExecuteRequest) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// Owner designates the entity responsible for writes of Task data.
+// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+var (
+	googleProtobufAnyFieldType = big.NewInt(1 << 0)
+)
+
+type GoogleProtobufAny struct {
+	// The type of the serialized message.
+	Type *string `json:"@type,omitempty" url:"@type,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	ExtraProperties map[string]interface{} `json:"-" url:"-"`
+
+	rawJSON json.RawMessage
+}
+
+func (g *GoogleProtobufAny) GetType() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Type
+}
+
+func (g *GoogleProtobufAny) GetExtraProperties() map[string]interface{} {
+	return g.ExtraProperties
+}
+
+func (g *GoogleProtobufAny) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetType sets the Type field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GoogleProtobufAny) SetType(type_ *string) {
+	g.Type = type_
+	g.require(googleProtobufAnyFieldType)
+}
+
+func (g *GoogleProtobufAny) UnmarshalJSON(data []byte) error {
+	type embed GoogleProtobufAny
+	var unmarshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*g = GoogleProtobufAny(unmarshaler.embed)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.ExtraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GoogleProtobufAny) MarshalJSON() ([]byte, error) {
+	type embed GoogleProtobufAny
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return internal.MarshalJSONWithExtraProperties(explicitMarshaler, g.ExtraProperties)
+}
+
+func (g *GoogleProtobufAny) String() string {
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
+// Owner designates the entity responsible for writes of task data.
 var (
 	ownerFieldEntityID = big.NewInt(1 << 0)
 )
@@ -801,7 +928,7 @@ func (o *Owner) String() string {
 	return fmt.Sprintf("%#v", o)
 }
 
-// A Principal is an entity that has authority over this Task.
+// A Principal is an entity that has authority over this task.
 var (
 	principalFieldSystem     = big.NewInt(1 << 0)
 	principalFieldUser       = big.NewInt(1 << 1)
@@ -931,16 +1058,18 @@ func (p *Principal) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// Relations describes the relationships of this Task, such as assignment, or if the Task has any parents.
+// Describes the relationships associated with this task: the system assigned to
+//
+//	execute the task, and the parent task, if one exists.
 var (
 	relationsFieldAssignee     = big.NewInt(1 << 0)
 	relationsFieldParentTaskID = big.NewInt(1 << 1)
 )
 
 type Relations struct {
-	// Who or what, if anyone, this Task is currently assigned to.
+	// The system, user, or team assigned to the task.
 	Assignee *Principal `json:"assignee,omitempty" url:"assignee,omitempty"`
-	// If this Task is a "sub-Task", what is its parent, none if empty.
+	// Identifies the parent task if the task is a sub-task.
 	ParentTaskID *string `json:"parentTaskId,omitempty" url:"parentTaskId,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -1028,13 +1157,13 @@ func (r *Relations) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// Any metadata associated with the replication of a Task.
+// Any metadata associated with the replication of a task.
 var (
 	replicationFieldStaleTime = big.NewInt(1 << 0)
 )
 
 type Replication struct {
-	// Time by which this Task should be assumed to be stale.
+	// The time by which this task should be assumed to be stale.
 	StaleTime *time.Time `json:"staleTime,omitempty" url:"staleTime,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -1131,7 +1260,7 @@ type System struct {
 	// Whether the System Principal (for example, an Asset) can own scheduling.
 	//
 	//	This means we bypass manager-owned scheduling and defer to the system
-	//	Principal to handle scheduling and give us status updates for the Task.
+	//	Principal to handle scheduling and give us status updates for the task.
 	//	Regardless of the value defined by the client, the Task Manager will
 	//	determine and set this value appropriately.
 	ManagesOwnScheduling *bool `json:"managesOwnScheduling,omitempty" url:"managesOwnScheduling,omitempty"`
@@ -1235,7 +1364,15 @@ func (s *System) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// A Task is something an agent can be asked to do.
+// A task represents a structured unit of work that can be assigned to an agent for execution.
+//
+//	Tasks are the fundamental building blocks of work assignment in the Lattice.
+//	Each task has a unique identifier, a specification defining what needs to be done,
+//	status information tracking its progress, and various metadata facilitating its lifecycle management.
+//
+//	Tasks can be related to each other, through parent-child relationships, assigned to
+//	specific agents, and tracked through a well-defined state machine from creation to completion.
+//	They support rich status reporting, including progress updates, error handling, and results.
 var (
 	taskFieldVersion             = big.NewInt(1 << 0)
 	taskFieldDisplayName         = big.NewInt(1 << 1)
@@ -1255,33 +1392,33 @@ var (
 )
 
 type Task struct {
-	// Version of this Task.
+	// Version of this task.
 	Version *TaskVersion `json:"version,omitempty" url:"version,omitempty"`
-	// DEPRECATED: Human readable display name for this Task, should be short (<100 chars).
+	// DEPRECATED: Human readable display name for this task, should be short (<100 chars).
 	DisplayName *string `json:"displayName,omitempty" url:"displayName,omitempty"`
-	// Full Task parameterization.
+	// The path for the Protobuf task definition, and the complete task data.
 	Specification *GoogleProtobufAny `json:"specification,omitempty" url:"specification,omitempty"`
-	// Records who created this Task. This field will not change after the Task has been created.
+	// Records who created this task. This field will not change after the task has been created.
 	CreatedBy *Principal `json:"createdBy,omitempty" url:"createdBy,omitempty"`
-	// Records who updated this Task last.
+	// Records who updated this task last.
 	LastUpdatedBy *Principal `json:"lastUpdatedBy,omitempty" url:"lastUpdatedBy,omitempty"`
 	// Records the time of last update.
 	LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty" url:"lastUpdateTime,omitempty"`
-	// The status of this Task.
+	// The status of this task.
 	Status *TaskStatus `json:"status,omitempty" url:"status,omitempty"`
-	// If the Task has been scheduled to execute, what time it should execute at.
+	// If the task has been scheduled to execute, what time it should execute at.
 	ScheduledTime *time.Time `json:"scheduledTime,omitempty" url:"scheduledTime,omitempty"`
-	// Any related Tasks associated with this, typically includes an assignee for this Task and/or a parent.
+	// Any related Tasks associated with this, typically includes an assignee for this task and/or a parent.
 	Relations *Relations `json:"relations,omitempty" url:"relations,omitempty"`
-	// Longer, free form human readable description of this Task
+	// Longer, free form human readable description of this task
 	Description *string `json:"description,omitempty" url:"description,omitempty"`
-	// If set, execution of this Task is managed elsewhere, not by Task Manager.
+	// If set, execution of this task is managed elsewhere, not by Task Manager.
 	//
-	//	In other words, Task manager will not attempt to update the assigned agent with execution instructions.
+	//	In other words, task manager will not attempt to update the assigned agent with execution instructions.
 	IsExecutedElsewhere *bool `json:"isExecutedElsewhere,omitempty" url:"isExecutedElsewhere,omitempty"`
-	// Time of Task creation.
+	// Time of task creation.
 	CreateTime *time.Time `json:"createTime,omitempty" url:"createTime,omitempty"`
-	// If populated, designates this to be a replicated Task.
+	// If populated, designates this to be a replicated task.
 	Replication *Replication `json:"replication,omitempty" url:"replication,omitempty"`
 	// If populated, indicates an initial set of entities that can be used to execute an entity aware task
 	//
@@ -1289,7 +1426,7 @@ type Task struct {
 	//	These will not be updated during execution. If a taskable agent needs continuous updates on the entities from the
 	//	COP, can call entity-manager, or use an AlternateId escape hatch.
 	InitialEntities []*TaskEntity `json:"initialEntities,omitempty" url:"initialEntities,omitempty"`
-	// The networked owner of this Task. It is used to ensure that linear writes occur on the node responsible
+	// The networked owner of this task. It is used to ensure that linear writes occur on the node responsible
 	//
 	//	for replication of task data to other nodes running Task Manager.
 	Owner *Owner `json:"owner,omitempty" url:"owner,omitempty"`
@@ -1577,14 +1714,18 @@ func (t *Task) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Wrapper of an entity passed in Tasking, used to hold an additional information, and as a future extension point.
+// An entity wrapper used in task definitions, with additional metadata.
+//
+//	TaskEntity wraps an entity reference with additional contextual information for task execution.
+//	This structure allows entities to be passed to tasks with supplementary metadata that aids
+//	in proper task execution, while also serving as an extension point for future capabilities.
 var (
 	taskEntityFieldEntity   = big.NewInt(1 << 0)
 	taskEntityFieldSnapshot = big.NewInt(1 << 1)
 )
 
 type TaskEntity struct {
-	// The wrapped entity-manager entity.
+	// The wrapped entity.
 	Entity *Entity `json:"entity,omitempty" url:"entity,omitempty"`
 	// Indicates that this entity was generated from a snapshot of a live entity.
 	Snapshot *bool `json:"snapshot,omitempty" url:"snapshot,omitempty"`
@@ -1674,7 +1815,11 @@ func (t *TaskEntity) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// TaskError contains an error code and message typically associated to a Task.
+// Error information associated with a task.
+//
+//	TaskError contains structured error details, including an error code, a human-readable
+//	message, and optional extended error information. This structure is used when a task
+//	encounters problems during its lifecycle.
 var (
 	taskErrorFieldCode         = big.NewInt(1 << 0)
 	taskErrorFieldMessage      = big.NewInt(1 << 1)
@@ -1682,7 +1827,7 @@ var (
 )
 
 type TaskError struct {
-	// Error code for Task error.
+	// Error code for task error.
 	Code *TaskErrorCode `json:"code,omitempty" url:"code,omitempty"`
 	// Descriptive human-readable string regarding this error.
 	Message *string `json:"message,omitempty" url:"message,omitempty"`
@@ -1788,7 +1933,7 @@ func (t *TaskError) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Error code for Task error.
+// Error code for task error.
 type TaskErrorCode string
 
 const (
@@ -1820,6 +1965,13 @@ func (t TaskErrorCode) Ptr() *TaskErrorCode {
 	return &t
 }
 
+// Response containing tasks that match the query criteria.
+//
+// This message returns a list of Task objects that satisfy the filter conditions
+// specified in the request. When there are more matching tasks than can be returned
+// in a single response, a page_token is provided to retrieve the next batch in
+// a subsequent request. An empty tasks list with no page_token indicates that
+// there are no more matching tasks.
 var (
 	taskQueryResultsFieldTasks         = big.NewInt(1 << 0)
 	taskQueryResultsFieldNextPageToken = big.NewInt(1 << 1)
@@ -1918,9 +2070,12 @@ func (t *TaskQueryResults) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// TaskStatus is contains information regarding the status of a Task at any given time. Can include related information
+// Comprehensive status information for a task at a given point in time.
 //
-//	such as any progress towards Task completion, or any associated results if Task completed.
+//	TaskStatus contains all status-related information for a task, including its current state,
+//	any error conditions, progress details, results, timing information, and resource allocations.
+//	This object evolves throughout a task's lifecycle, providing increasing detail as the task
+//	progresses from creation through execution to completion.
 var (
 	taskStatusFieldStatus     = big.NewInt(1 << 0)
 	taskStatusFieldTaskError  = big.NewInt(1 << 1)
@@ -1932,19 +2087,19 @@ var (
 )
 
 type TaskStatus struct {
-	// Status of the Task.
+	// Status of the task.
 	Status *TaskStatusStatus `json:"status,omitempty" url:"status,omitempty"`
-	// Any errors associated with the Task.
+	// Any errors associated with the task.
 	TaskError *TaskError `json:"taskError,omitempty" url:"taskError,omitempty"`
-	// Any incremental progress on the Task, should be from the tasks/v* /progress folder.
+	// Any incremental progress on the task, should be from the tasks/v* /progress folder.
 	Progress *GoogleProtobufAny `json:"progress,omitempty" url:"progress,omitempty"`
-	// Any final result of the Task, should be from tasks/v* /result folder.
+	// Any final result of the task, should be from tasks/v* /result folder.
 	Result *GoogleProtobufAny `json:"result,omitempty" url:"result,omitempty"`
-	// Time the Task began execution, may not be known even for executing Tasks.
+	// Time the task began execution, may not be known even for executing Tasks.
 	StartTime *time.Time `json:"startTime,omitempty" url:"startTime,omitempty"`
-	// Any estimate for how the Task will progress, should be from tasks/v* /estimates folder.
+	// Any estimate for how the task will progress, should be from tasks/v* /estimates folder.
 	Estimate *GoogleProtobufAny `json:"estimate,omitempty" url:"estimate,omitempty"`
-	// Any allocated agents of the Task.
+	// Any allocated agents of the task.
 	Allocation *Allocation `json:"allocation,omitempty" url:"allocation,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -2110,7 +2265,7 @@ func (t *TaskStatus) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Status of the Task.
+// Status of the task.
 type TaskStatusStatus string
 
 const (
@@ -2172,7 +2327,11 @@ func (t TaskStatusStatus) Ptr() *TaskStatusStatus {
 	return &t
 }
 
-// Version of a Task.
+// Versioning information for a task.
+//
+//	TaskVersion provides a unique identifier for each task, along with separate version counters
+//	for tracking changes to the task's definition and its status. This versioning system enables
+//	optimistic concurrency control, ensuring that updates from multiple sources don't conflict.
 var (
 	taskVersionFieldTaskID            = big.NewInt(1 << 0)
 	taskVersionFieldDefinitionVersion = big.NewInt(1 << 1)
@@ -2180,11 +2339,15 @@ var (
 )
 
 type TaskVersion struct {
-	// The unique ID for this Task.
+	// The unique identifier for this task, used to distinguish it from all other tasks in the system.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
-	// Increments on definition (i.e. not TaskStatus) change. 0 is unset, starts at 1 on creation.
+	// Counter that increments on changes to the task definition.
+	//
+	//	Unset (0) initially, starts at 1 on creation, and increments with each update to task fields.
 	DefinitionVersion *int `json:"definitionVersion,omitempty" url:"definitionVersion,omitempty"`
-	// Increments on changes to TaskStatus. 0 is unset, starts at 1 on creation.
+	// Counter that increments on changes to TaskStatus.
+	//
+	//	Unset (0) initially, starts at 1 on creation, and increments with each status update.
 	StatusVersion *int `json:"statusVersion,omitempty" url:"statusVersion,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -2605,12 +2768,15 @@ func (t *TaskQueryUpdateTimeRange) String() string {
 }
 
 var (
-	taskStatusUpdateFieldStatusVersion = big.NewInt(1 << 0)
-	taskStatusUpdateFieldNewStatus     = big.NewInt(1 << 1)
-	taskStatusUpdateFieldAuthor        = big.NewInt(1 << 2)
+	taskStatusUpdateFieldTaskID        = big.NewInt(1 << 0)
+	taskStatusUpdateFieldStatusVersion = big.NewInt(1 << 1)
+	taskStatusUpdateFieldNewStatus     = big.NewInt(1 << 2)
+	taskStatusUpdateFieldAuthor        = big.NewInt(1 << 3)
 )
 
 type TaskStatusUpdate struct {
+	// ID of task to update status of
+	TaskID string `json:"-" url:"-"`
 	// The status version of the task to update. This version number increments to indicate the task's
 	// current stage in its status lifecycle. Specifically, whenever a task's status updates, the status
 	// version increments by one. Any status updates received with a lower status version number than what
@@ -2629,6 +2795,13 @@ func (t *TaskStatusUpdate) require(field *big.Int) {
 		t.explicitFields = big.NewInt(0)
 	}
 	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatusUpdate) SetTaskID(taskID string) {
+	t.TaskID = taskID
+	t.require(taskStatusUpdateFieldTaskID)
 }
 
 // SetStatusVersion sets the StatusVersion field and marks it as non-optional;

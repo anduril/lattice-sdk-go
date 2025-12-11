@@ -5,10 +5,36 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v3/internal"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	big "math/big"
 	time "time"
 )
+
+var (
+	getEntityRequestFieldEntityID = big.NewInt(1 << 0)
+)
+
+type GetEntityRequest struct {
+	// ID of the entity to return
+	EntityID string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (g *GetEntityRequest) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetEntityID sets the EntityID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GetEntityRequest) SetEntityID(entityID string) {
+	g.EntityID = entityID
+	g.require(getEntityRequestFieldEntityID)
+}
 
 var (
 	entityEventRequestFieldSessionToken = big.NewInt(1 << 0)
@@ -47,11 +73,17 @@ func (e *EntityEventRequest) SetBatchSize(batchSize *int) {
 }
 
 var (
-	entityOverrideFieldEntity     = big.NewInt(1 << 0)
-	entityOverrideFieldProvenance = big.NewInt(1 << 1)
+	entityOverrideFieldEntityID   = big.NewInt(1 << 0)
+	entityOverrideFieldFieldPath  = big.NewInt(1 << 1)
+	entityOverrideFieldEntity     = big.NewInt(1 << 2)
+	entityOverrideFieldProvenance = big.NewInt(1 << 3)
 )
 
 type EntityOverride struct {
+	// The unique ID of the entity to override
+	EntityID string `json:"-" url:"-"`
+	// fieldPath to override
+	FieldPath string `json:"-" url:"-"`
 	// The entity containing the overridden fields. The service will extract the overridable fields from
 	// the object and ignore all other fields.
 	Entity *Entity `json:"entity,omitempty" url:"-"`
@@ -69,6 +101,20 @@ func (e *EntityOverride) require(field *big.Int) {
 	e.explicitFields.Or(e.explicitFields, field)
 }
 
+// SetEntityID sets the EntityID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityOverride) SetEntityID(entityID string) {
+	e.EntityID = entityID
+	e.require(entityOverrideFieldEntityID)
+}
+
+// SetFieldPath sets the FieldPath field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *EntityOverride) SetFieldPath(fieldPath string) {
+	e.FieldPath = fieldPath
+	e.require(entityOverrideFieldFieldPath)
+}
+
 // SetEntity sets the Entity field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
 func (e *EntityOverride) SetEntity(entity *Entity) {
@@ -81,6 +127,42 @@ func (e *EntityOverride) SetEntity(entity *Entity) {
 func (e *EntityOverride) SetProvenance(provenance *Provenance) {
 	e.Provenance = provenance
 	e.require(entityOverrideFieldProvenance)
+}
+
+var (
+	removeEntityOverrideRequestFieldEntityID  = big.NewInt(1 << 0)
+	removeEntityOverrideRequestFieldFieldPath = big.NewInt(1 << 1)
+)
+
+type RemoveEntityOverrideRequest struct {
+	// The unique ID of the entity to undo an override from.
+	EntityID string `json:"-" url:"-"`
+	// The fieldPath to clear overrides from.
+	FieldPath string `json:"-" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (r *RemoveEntityOverrideRequest) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetEntityID sets the EntityID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RemoveEntityOverrideRequest) SetEntityID(entityID string) {
+	r.EntityID = entityID
+	r.require(removeEntityOverrideRequestFieldEntityID)
+}
+
+// SetFieldPath sets the FieldPath field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RemoveEntityOverrideRequest) SetFieldPath(fieldPath string) {
+	r.FieldPath = fieldPath
+	r.require(removeEntityOverrideRequestFieldFieldPath)
 }
 
 var (
