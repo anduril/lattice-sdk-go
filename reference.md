@@ -1091,6 +1091,64 @@ client.Objects.GetObject(
 </dl>
 </details>
 
+<details><summary><code>client.Objects.UploadObject(ObjectPath, request) -> *Lattice.PathMetadata</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Uploads an object. The object must be 1 GiB or smaller.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Objects.UploadObject(
+        context.TODO(),
+        nil,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**objectPath:** `string` — Path of the Object that is to be uploaded.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Objects.DeleteObject(ObjectPath) -> error</code></summary>
 <dl>
 <dd>
