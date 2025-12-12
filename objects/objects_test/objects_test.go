@@ -103,6 +103,25 @@ func TestObjectsGetObjectWithWireMock(
 	VerifyRequestCount(t, "GET", "/api/v1/objects/objectPath", nil, 1)
 }
 
+func TestObjectsUploadObjectWithWireMock(
+	t *testing.T,
+) {
+	ResetWireMockRequests(t)
+	WireMockBaseURL := "http://localhost:8080"
+	client := client.NewClient(
+		option.WithBaseURL(
+			WireMockBaseURL,
+		),
+	)
+	_, invocationErr := client.Objects.UploadObject(
+		context.TODO(),
+		nil,
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "POST", "/api/v1/objects/{objectPath}", nil, 1)
+}
+
 func TestObjectsDeleteObjectWithWireMock(
 	t *testing.T,
 ) {
