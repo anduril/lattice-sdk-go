@@ -164,3 +164,23 @@ func TestTasksListenAsAgentWithWireMock(
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "POST", "/api/v1/agent/listen", nil, 1)
 }
+
+func TestTasksListenAsAgentStreamWithWireMock(
+	t *testing.T,
+) {
+	ResetWireMockRequests(t)
+	WireMockBaseURL := "http://localhost:8080"
+	client := client.NewClient(
+		option.WithBaseURL(
+			WireMockBaseURL,
+		),
+	)
+	request := &Lattice.AgentStreamRequest{}
+	_, invocationErr := client.Tasks.ListenAsAgentStream(
+		context.TODO(),
+		request,
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "POST", "/api/v1/agent/stream", nil, 1)
+}
