@@ -14,6 +14,7 @@ The Lattice SDK Go library provides convenient access to the Lattice SDK APIs fr
 - [Reference](#reference)
 - [Usage](#usage)
 - [Environments](#environments)
+- [Oauth](#oauth)
 - [Errors](#errors)
 - [Request Options](#request-options)
 - [Advanced](#advanced)
@@ -64,8 +65,9 @@ import (
 
 func do() {
     client := client.NewClient(
-        option.WithToken(
-            "<token>",
+        option.WithClientCredentials(
+            "<clientId>",
+            "<clientSecret>",
         ),
     )
     request := &Lattice.EntityEventRequest{
@@ -86,6 +88,31 @@ URL, which is particularly useful in test environments.
 ```go
 client := client.NewClient(
     option.WithBaseURL(Lattice.Environments.Default),
+)
+```
+
+## Oauth
+
+This SDK supports OAuth 2.0 authentication. You have two options for providing credentials:
+
+**Option 1: Client Credentials** - Provide your client ID and secret, and the SDK will automatically handle
+token fetching and refresh:
+
+**Option 2: Direct Token** - If you already have an access token (e.g., obtained through your own OAuth flow),
+you can provide it directly:
+
+```go
+// Option 1: Use client credentials (SDK will handle token fetching and refresh)
+client := client.NewClient(
+    option.WithClientCredentials(
+        "<YOUR_CLIENT_ID>",
+        "<YOUR_CLIENT_SECRET>",
+    ),
+)
+
+// Option 2: Use a pre-fetched token directly
+client := client.NewClient(
+    option.WithToken("<YOUR_ACCESS_TOKEN>"),
 )
 ```
 
