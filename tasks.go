@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -217,6 +217,64 @@ func (t *TaskQuery) SetStatusFilter(statusFilter *TaskQueryStatusFilter) {
 func (t *TaskQuery) SetUpdateTimeRange(updateTimeRange *TaskQueryUpdateTimeRange) {
 	t.UpdateTimeRange = updateTimeRange
 	t.require(taskQueryFieldUpdateTimeRange)
+}
+
+var (
+	taskStreamRequestFieldHeartbeatIntervalMs     = big.NewInt(1 << 0)
+	taskStreamRequestFieldRateLimit               = big.NewInt(1 << 1)
+	taskStreamRequestFieldExcludePreexistingTasks = big.NewInt(1 << 2)
+	taskStreamRequestFieldTaskType                = big.NewInt(1 << 3)
+)
+
+type TaskStreamRequest struct {
+	// The time interval, in milliseconds, that determines the frequency at which to send heartbeat events. Defaults to 30000 (30 seconds).
+	HeartbeatIntervalMs *int `json:"heartbeatIntervalMs,omitempty" url:"-"`
+	// The time interval, in milliseconds, after an update for a given task before another one will be sent for the same task.
+	// If set, value must be >= 250.
+	RateLimit *int `json:"rateLimit,omitempty" url:"-"`
+	// Optional flag to only include tasks created or updated after the stream is initiated, and not any previous preexisting tasks.
+	// If unset or false, the stream will include any new tasks and task updates, as well as all preexisting tasks.
+	ExcludePreexistingTasks *bool `json:"excludePreexistingTasks,omitempty" url:"-"`
+	// Optional filter that only returns tasks with specific types. If not provided, all task types will be streamed.
+	TaskType *TaskStreamRequestTaskType `json:"taskType,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (t *TaskStreamRequest) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetHeartbeatIntervalMs sets the HeartbeatIntervalMs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetHeartbeatIntervalMs(heartbeatIntervalMs *int) {
+	t.HeartbeatIntervalMs = heartbeatIntervalMs
+	t.require(taskStreamRequestFieldHeartbeatIntervalMs)
+}
+
+// SetRateLimit sets the RateLimit field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetRateLimit(rateLimit *int) {
+	t.RateLimit = rateLimit
+	t.require(taskStreamRequestFieldRateLimit)
+}
+
+// SetExcludePreexistingTasks sets the ExcludePreexistingTasks field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetExcludePreexistingTasks(excludePreexistingTasks *bool) {
+	t.ExcludePreexistingTasks = excludePreexistingTasks
+	t.require(taskStreamRequestFieldExcludePreexistingTasks)
+}
+
+// SetTaskType sets the TaskType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetTaskType(taskType *TaskStreamRequestTaskType) {
+	t.TaskType = taskType
+	t.require(taskStreamRequestFieldTaskType)
 }
 
 // Response streamed to an agent containing task actions to perform.
@@ -1245,6 +1303,163 @@ func (r *Replication) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
+var (
+	streamHeartbeatFieldData = big.NewInt(1 << 0)
+)
+
+type StreamHeartbeat struct {
+	Data *StreamHeartbeatData `json:"data" url:"data"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *StreamHeartbeat) GetData() *StreamHeartbeatData {
+	if s == nil {
+		return nil
+	}
+	return s.Data
+}
+
+func (s *StreamHeartbeat) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *StreamHeartbeat) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *StreamHeartbeat) SetData(data *StreamHeartbeatData) {
+	s.Data = data
+	s.require(streamHeartbeatFieldData)
+}
+
+func (s *StreamHeartbeat) UnmarshalJSON(data []byte) error {
+	type unmarshaler StreamHeartbeat
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = StreamHeartbeat(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *StreamHeartbeat) MarshalJSON() ([]byte, error) {
+	type embed StreamHeartbeat
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *StreamHeartbeat) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	streamHeartbeatDataFieldTimestamp = big.NewInt(1 << 0)
+)
+
+type StreamHeartbeatData struct {
+	// The timestamp at which the heartbeat message was sent.
+	Timestamp *string `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *StreamHeartbeatData) GetTimestamp() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Timestamp
+}
+
+func (s *StreamHeartbeatData) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *StreamHeartbeatData) require(field *big.Int) {
+	if s.explicitFields == nil {
+		s.explicitFields = big.NewInt(0)
+	}
+	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetTimestamp sets the Timestamp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *StreamHeartbeatData) SetTimestamp(timestamp *string) {
+	s.Timestamp = timestamp
+	s.require(streamHeartbeatDataFieldTimestamp)
+}
+
+func (s *StreamHeartbeatData) UnmarshalJSON(data []byte) error {
+	type unmarshaler StreamHeartbeatData
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = StreamHeartbeatData(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *StreamHeartbeatData) MarshalJSON() ([]byte, error) {
+	type embed StreamHeartbeatData
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *StreamHeartbeatData) String() string {
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
 // System Principal representing some autonomous system.
 var (
 	systemFieldServiceName          = big.NewInt(1 << 0)
@@ -1965,6 +2180,212 @@ func (t TaskErrorCode) Ptr() *TaskErrorCode {
 	return &t
 }
 
+// Contains information about a task event.
+var (
+	taskEventDataFieldTaskEvent = big.NewInt(1 << 0)
+)
+
+type TaskEventData struct {
+	// The task event that occurred.
+	TaskEvent *TaskEventDataTaskEvent `json:"taskEvent,omitempty" url:"taskEvent,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TaskEventData) GetTaskEvent() *TaskEventDataTaskEvent {
+	if t == nil {
+		return nil
+	}
+	return t.TaskEvent
+}
+
+func (t *TaskEventData) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TaskEventData) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTaskEvent sets the TaskEvent field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskEventData) SetTaskEvent(taskEvent *TaskEventDataTaskEvent) {
+	t.TaskEvent = taskEvent
+	t.require(taskEventDataFieldTaskEvent)
+}
+
+func (t *TaskEventData) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskEventData
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TaskEventData(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TaskEventData) MarshalJSON() ([]byte, error) {
+	type embed TaskEventData
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (t *TaskEventData) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+// The task event that occurred.
+var (
+	taskEventDataTaskEventFieldEventType = big.NewInt(1 << 0)
+	taskEventDataTaskEventFieldTask      = big.NewInt(1 << 1)
+)
+
+type TaskEventDataTaskEvent struct {
+	// The type of event that occurred for this task.
+	EventType *TaskEventDataTaskEventEventType `json:"eventType,omitempty" url:"eventType,omitempty"`
+	// The task associated with this event.
+	Task *Task `json:"task,omitempty" url:"task,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TaskEventDataTaskEvent) GetEventType() *TaskEventDataTaskEventEventType {
+	if t == nil {
+		return nil
+	}
+	return t.EventType
+}
+
+func (t *TaskEventDataTaskEvent) GetTask() *Task {
+	if t == nil {
+		return nil
+	}
+	return t.Task
+}
+
+func (t *TaskEventDataTaskEvent) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TaskEventDataTaskEvent) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetEventType sets the EventType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskEventDataTaskEvent) SetEventType(eventType *TaskEventDataTaskEventEventType) {
+	t.EventType = eventType
+	t.require(taskEventDataTaskEventFieldEventType)
+}
+
+// SetTask sets the Task field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskEventDataTaskEvent) SetTask(task *Task) {
+	t.Task = task
+	t.require(taskEventDataTaskEventFieldTask)
+}
+
+func (t *TaskEventDataTaskEvent) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskEventDataTaskEvent
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TaskEventDataTaskEvent(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TaskEventDataTaskEvent) MarshalJSON() ([]byte, error) {
+	type embed TaskEventDataTaskEvent
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (t *TaskEventDataTaskEvent) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+// The type of event that occurred for this task.
+type TaskEventDataTaskEventEventType string
+
+const (
+	TaskEventDataTaskEventEventTypeEventTypeInvalid     TaskEventDataTaskEventEventType = "EVENT_TYPE_INVALID"
+	TaskEventDataTaskEventEventTypeEventTypeCreated     TaskEventDataTaskEventEventType = "EVENT_TYPE_CREATED"
+	TaskEventDataTaskEventEventTypeEventTypeUpdate      TaskEventDataTaskEventEventType = "EVENT_TYPE_UPDATE"
+	TaskEventDataTaskEventEventTypeEventTypePreexisting TaskEventDataTaskEventEventType = "EVENT_TYPE_PREEXISTING"
+)
+
+func NewTaskEventDataTaskEventEventTypeFromString(s string) (TaskEventDataTaskEventEventType, error) {
+	switch s {
+	case "EVENT_TYPE_INVALID":
+		return TaskEventDataTaskEventEventTypeEventTypeInvalid, nil
+	case "EVENT_TYPE_CREATED":
+		return TaskEventDataTaskEventEventTypeEventTypeCreated, nil
+	case "EVENT_TYPE_UPDATE":
+		return TaskEventDataTaskEventEventTypeEventTypeUpdate, nil
+	case "EVENT_TYPE_PREEXISTING":
+		return TaskEventDataTaskEventEventTypeEventTypePreexisting, nil
+	}
+	var t TaskEventDataTaskEventEventType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TaskEventDataTaskEventEventType) Ptr() *TaskEventDataTaskEventEventType {
+	return &t
+}
+
 // Response containing tasks that match the query criteria.
 //
 // This message returns a list of Task objects that satisfy the filter conditions
@@ -2327,6 +2748,84 @@ func (t TaskStatusStatus) Ptr() *TaskStatusStatus {
 	return &t
 }
 
+var (
+	taskStreamEventFieldData = big.NewInt(1 << 0)
+)
+
+type TaskStreamEvent struct {
+	Data *TaskEventData `json:"data" url:"data"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TaskStreamEvent) GetData() *TaskEventData {
+	if t == nil {
+		return nil
+	}
+	return t.Data
+}
+
+func (t *TaskStreamEvent) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TaskStreamEvent) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamEvent) SetData(data *TaskEventData) {
+	t.Data = data
+	t.require(taskStreamEventFieldData)
+}
+
+func (t *TaskStreamEvent) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskStreamEvent
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TaskStreamEvent(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TaskStreamEvent) MarshalJSON() ([]byte, error) {
+	type embed TaskStreamEvent
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (t *TaskStreamEvent) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
 // Versioning information for a task.
 //
 //	TaskVersion provides a unique identifier for each task, along with separate version counters
@@ -2527,6 +3026,124 @@ func (u *User) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
+}
+
+// The stream event response.
+type StreamTasksResponse struct {
+	Event     string
+	Heartbeat *StreamHeartbeat
+	TaskEvent *TaskStreamEvent
+}
+
+func (s *StreamTasksResponse) GetEvent() string {
+	if s == nil {
+		return ""
+	}
+	return s.Event
+}
+
+func (s *StreamTasksResponse) GetHeartbeat() *StreamHeartbeat {
+	if s == nil {
+		return nil
+	}
+	return s.Heartbeat
+}
+
+func (s *StreamTasksResponse) GetTaskEvent() *TaskStreamEvent {
+	if s == nil {
+		return nil
+	}
+	return s.TaskEvent
+}
+
+func (s *StreamTasksResponse) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Event string `json:"event"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	s.Event = unmarshaler.Event
+	if unmarshaler.Event == "" {
+		return fmt.Errorf("%T did not include discriminant event", s)
+	}
+	switch unmarshaler.Event {
+	case "heartbeat":
+		value := new(StreamHeartbeat)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		s.Heartbeat = value
+	case "task_event":
+		value := new(TaskStreamEvent)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		s.TaskEvent = value
+	}
+	return nil
+}
+
+func (s StreamTasksResponse) MarshalJSON() ([]byte, error) {
+	if err := s.validate(); err != nil {
+		return nil, err
+	}
+	if s.Heartbeat != nil {
+		return internal.MarshalJSONWithExtraProperty(s.Heartbeat, "event", "heartbeat")
+	}
+	if s.TaskEvent != nil {
+		return internal.MarshalJSONWithExtraProperty(s.TaskEvent, "event", "task_event")
+	}
+	return nil, fmt.Errorf("type %T does not define a non-empty union type", s)
+}
+
+type StreamTasksResponseVisitor interface {
+	VisitHeartbeat(*StreamHeartbeat) error
+	VisitTaskEvent(*TaskStreamEvent) error
+}
+
+func (s *StreamTasksResponse) Accept(visitor StreamTasksResponseVisitor) error {
+	if s.Heartbeat != nil {
+		return visitor.VisitHeartbeat(s.Heartbeat)
+	}
+	if s.TaskEvent != nil {
+		return visitor.VisitTaskEvent(s.TaskEvent)
+	}
+	return fmt.Errorf("type %T does not define a non-empty union type", s)
+}
+
+func (s *StreamTasksResponse) validate() error {
+	if s == nil {
+		return fmt.Errorf("type %T is nil", s)
+	}
+	var fields []string
+	if s.Heartbeat != nil {
+		fields = append(fields, "heartbeat")
+	}
+	if s.TaskEvent != nil {
+		fields = append(fields, "task_event")
+	}
+	if len(fields) == 0 {
+		if s.Event != "" {
+			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", s, s.Event)
+		}
+		return fmt.Errorf("type %T is empty", s)
+	}
+	if len(fields) > 1 {
+		return fmt.Errorf("type %T defines values for %s, but only one value is allowed", s, fields)
+	}
+	if s.Event != "" {
+		field := fields[0]
+		if s.Event != field {
+			return fmt.Errorf(
+				"type %T defines a discriminant set to %q, but it does not match the %T field; either remove or update the discriminant to match",
+				s,
+				s.Event,
+				s,
+			)
+		}
+	}
+	return nil
 }
 
 var (
@@ -2756,6 +3373,227 @@ func (t *TaskQueryUpdateTimeRange) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskQueryUpdateTimeRange) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+// Optional filter that only returns tasks with specific types. If not provided, all task types will be streamed.
+type TaskStreamRequestTaskType struct {
+	TaskStreamRequestTaskTypeTaskTypeURLs   *TaskStreamRequestTaskTypeTaskTypeURLs
+	TaskStreamRequestTaskTypeTaskTypePrefix *TaskStreamRequestTaskTypeTaskTypePrefix
+
+	typ string
+}
+
+func (t *TaskStreamRequestTaskType) GetTaskStreamRequestTaskTypeTaskTypeURLs() *TaskStreamRequestTaskTypeTaskTypeURLs {
+	if t == nil {
+		return nil
+	}
+	return t.TaskStreamRequestTaskTypeTaskTypeURLs
+}
+
+func (t *TaskStreamRequestTaskType) GetTaskStreamRequestTaskTypeTaskTypePrefix() *TaskStreamRequestTaskTypeTaskTypePrefix {
+	if t == nil {
+		return nil
+	}
+	return t.TaskStreamRequestTaskTypeTaskTypePrefix
+}
+
+func (t *TaskStreamRequestTaskType) UnmarshalJSON(data []byte) error {
+	valueTaskStreamRequestTaskTypeTaskTypeURLs := new(TaskStreamRequestTaskTypeTaskTypeURLs)
+	if err := json.Unmarshal(data, &valueTaskStreamRequestTaskTypeTaskTypeURLs); err == nil {
+		t.typ = "TaskStreamRequestTaskTypeTaskTypeURLs"
+		t.TaskStreamRequestTaskTypeTaskTypeURLs = valueTaskStreamRequestTaskTypeTaskTypeURLs
+		return nil
+	}
+	valueTaskStreamRequestTaskTypeTaskTypePrefix := new(TaskStreamRequestTaskTypeTaskTypePrefix)
+	if err := json.Unmarshal(data, &valueTaskStreamRequestTaskTypeTaskTypePrefix); err == nil {
+		t.typ = "TaskStreamRequestTaskTypeTaskTypePrefix"
+		t.TaskStreamRequestTaskTypeTaskTypePrefix = valueTaskStreamRequestTaskTypeTaskTypePrefix
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t TaskStreamRequestTaskType) MarshalJSON() ([]byte, error) {
+	if t.typ == "TaskStreamRequestTaskTypeTaskTypeURLs" || t.TaskStreamRequestTaskTypeTaskTypeURLs != nil {
+		return json.Marshal(t.TaskStreamRequestTaskTypeTaskTypeURLs)
+	}
+	if t.typ == "TaskStreamRequestTaskTypeTaskTypePrefix" || t.TaskStreamRequestTaskTypeTaskTypePrefix != nil {
+		return json.Marshal(t.TaskStreamRequestTaskTypeTaskTypePrefix)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
+}
+
+type TaskStreamRequestTaskTypeVisitor interface {
+	VisitTaskStreamRequestTaskTypeTaskTypeURLs(*TaskStreamRequestTaskTypeTaskTypeURLs) error
+	VisitTaskStreamRequestTaskTypeTaskTypePrefix(*TaskStreamRequestTaskTypeTaskTypePrefix) error
+}
+
+func (t *TaskStreamRequestTaskType) Accept(visitor TaskStreamRequestTaskTypeVisitor) error {
+	if t.typ == "TaskStreamRequestTaskTypeTaskTypeURLs" || t.TaskStreamRequestTaskTypeTaskTypeURLs != nil {
+		return visitor.VisitTaskStreamRequestTaskTypeTaskTypeURLs(t.TaskStreamRequestTaskTypeTaskTypeURLs)
+	}
+	if t.typ == "TaskStreamRequestTaskTypeTaskTypePrefix" || t.TaskStreamRequestTaskTypeTaskTypePrefix != nil {
+		return visitor.VisitTaskStreamRequestTaskTypeTaskTypePrefix(t.TaskStreamRequestTaskTypeTaskTypePrefix)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
+}
+
+var (
+	taskStreamRequestTaskTypeTaskTypePrefixFieldTaskTypePrefix = big.NewInt(1 << 0)
+)
+
+type TaskStreamRequestTaskTypeTaskTypePrefix struct {
+	// Prefix string to match task types. Any task with a type that starts with this prefix will be included.
+	TaskTypePrefix string `json:"taskTypePrefix" url:"taskTypePrefix"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypePrefix) GetTaskTypePrefix() string {
+	if t == nil {
+		return ""
+	}
+	return t.TaskTypePrefix
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypePrefix) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypePrefix) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTaskTypePrefix sets the TaskTypePrefix field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequestTaskTypeTaskTypePrefix) SetTaskTypePrefix(taskTypePrefix string) {
+	t.TaskTypePrefix = taskTypePrefix
+	t.require(taskStreamRequestTaskTypeTaskTypePrefixFieldTaskTypePrefix)
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypePrefix) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskStreamRequestTaskTypeTaskTypePrefix
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TaskStreamRequestTaskTypeTaskTypePrefix(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypePrefix) MarshalJSON() ([]byte, error) {
+	type embed TaskStreamRequestTaskTypeTaskTypePrefix
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypePrefix) String() string {
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+var (
+	taskStreamRequestTaskTypeTaskTypeURLsFieldTaskTypeURLs = big.NewInt(1 << 0)
+)
+
+type TaskStreamRequestTaskTypeTaskTypeURLs struct {
+	// List of exact task type URLs to match.
+	TaskTypeURLs []string `json:"taskTypeUrls" url:"taskTypeUrls"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypeURLs) GetTaskTypeURLs() []string {
+	if t == nil {
+		return nil
+	}
+	return t.TaskTypeURLs
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypeURLs) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypeURLs) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTaskTypeURLs sets the TaskTypeURLs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequestTaskTypeTaskTypeURLs) SetTaskTypeURLs(taskTypeURLs []string) {
+	t.TaskTypeURLs = taskTypeURLs
+	t.require(taskStreamRequestTaskTypeTaskTypeURLsFieldTaskTypeURLs)
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypeURLs) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskStreamRequestTaskTypeTaskTypeURLs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TaskStreamRequestTaskTypeTaskTypeURLs(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypeURLs) MarshalJSON() ([]byte, error) {
+	type embed TaskStreamRequestTaskTypeTaskTypeURLs
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (t *TaskStreamRequestTaskTypeTaskTypeURLs) String() string {
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value

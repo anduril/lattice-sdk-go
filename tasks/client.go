@@ -4,10 +4,11 @@ package tasks
 
 import (
 	context "context"
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
+	http "net/http"
 )
 
 type Client struct {
@@ -136,6 +137,48 @@ func (c *Client) QueryTasks(
 		return nil, err
 	}
 	return response.Body, nil
+}
+
+// Establishes a server streaming connection that delivers task updates in real-time using Server-Sent Events (SSE).
+//
+// The stream delivers all existing non-terminal tasks when first connected, followed by real-time
+// updates for task creation and status changes. Additionally, heartbeat messages are sent periodically to maintain the connection.
+func (c *Client) StreamTasks(
+	ctx context.Context,
+	request *Lattice.TaskStreamRequest,
+	opts ...option.RequestOption,
+) (*core.Stream[Lattice.StreamTasksResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://example.developer.anduril.com",
+	)
+	endpointURL := baseURL + "/api/v1/tasks/stream"
+	headers := internal.MergeHeaders(
+		c.options.ToHeader(),
+		options.ToHeader(),
+	)
+	headers.Add("Accept", "text/event-stream")
+	headers.Add("Content-Type", "application/json")
+	streamer := internal.NewStreamer[Lattice.StreamTasksResponse](c.caller)
+	return streamer.Stream(
+		ctx,
+		&internal.StreamParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Prefix:          internal.DefaultSSEDataPrefix,
+			Terminator:      internal.DefaultSSETerminator,
+			Format:          core.StreamFormatSSE,
+			Request:         request,
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+		},
+	)
 }
 
 // Establishes a server streaming connection that delivers tasks to taskable agents for execution.

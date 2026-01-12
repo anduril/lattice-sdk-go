@@ -12,6 +12,9 @@ type RequestOption interface {
 	applyRequestOptions(*RequestOptions)
 }
 
+// TokenGetter is a function that returns an access token.
+type TokenGetter func() (string, error)
+
 // RequestOptions defines all of the possible request options.
 //
 // This type is primarily used by the generated code and is not meant
@@ -23,6 +26,9 @@ type RequestOptions struct {
 	BodyProperties  map[string]interface{}
 	QueryParameters url.Values
 	MaxAttempts     uint
+	tokenGetter     TokenGetter
+	ClientID        string
+	ClientSecret    string
 	Token           string
 }
 
@@ -49,15 +55,20 @@ func (r *RequestOptions) ToHeader() http.Header {
 	if r.Token != "" {
 		header.Set("Authorization", "Bearer "+r.Token)
 	}
+	if header.Get("Authorization") == "" && r.tokenGetter != nil {
+		if token, err := r.tokenGetter(); err == nil && token != "" {
+			header.Set("Authorization", "Bearer "+token)
+		}
+	}
 	return header
 }
 
 func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
-	headers.Set("X-Fern-SDK-Name", "github.com/anduril/lattice-sdk-go/v4")
-	headers.Set("X-Fern-SDK-Version", "v4.0.0")
-	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.0.0")
+	headers.Set("X-Fern-SDK-Name", "github.com/anduril/lattice-sdk-go/v5")
+	headers.Set("X-Fern-SDK-Version", "v5.0.0")
+	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/5.0.0")
 	return headers
 }
 
@@ -115,6 +126,35 @@ func (m *MaxAttemptsOption) applyRequestOptions(opts *RequestOptions) {
 	opts.MaxAttempts = m.MaxAttempts
 }
 
+// ClientIDOption implements the RequestOption interface.
+type ClientIDOption struct {
+	ClientID string
+}
+
+func (c *ClientIDOption) applyRequestOptions(opts *RequestOptions) {
+	opts.ClientID = c.ClientID
+}
+
+// ClientSecretOption implements the RequestOption interface.
+type ClientSecretOption struct {
+	ClientSecret string
+}
+
+func (c *ClientSecretOption) applyRequestOptions(opts *RequestOptions) {
+	opts.ClientSecret = c.ClientSecret
+}
+
+// ClientCredentialsOption implements the RequestOption interface.
+type ClientCredentialsOption struct {
+	ClientID     string
+	ClientSecret string
+}
+
+func (c *ClientCredentialsOption) applyRequestOptions(opts *RequestOptions) {
+	opts.ClientID = c.ClientID
+	opts.ClientSecret = c.ClientSecret
+}
+
 // TokenOption implements the RequestOption interface.
 type TokenOption struct {
 	Token string
@@ -122,4 +162,10 @@ type TokenOption struct {
 
 func (t *TokenOption) applyRequestOptions(opts *RequestOptions) {
 	opts.Token = t.Token
+}
+
+// SetTokenGetter sets the token getter function for OAuth.
+// This is an internal method and should not be called directly.
+func (r *RequestOptions) SetTokenGetter(getter TokenGetter) {
+	r.tokenGetter = getter
 }

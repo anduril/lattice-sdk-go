@@ -852,6 +852,98 @@ any of the remaining parameters, but not both.
 </dl>
 </details>
 
+<details><summary><code>client.Tasks.StreamTasks(request) -> Lattice.StreamTasksResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Establishes a server streaming connection that delivers task updates in real-time using Server-Sent Events (SSE).
+
+The stream delivers all existing non-terminal tasks when first connected, followed by real-time
+updates for task creation and status changes. Additionally, heartbeat messages are sent periodically to maintain the connection.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &Lattice.TaskStreamRequest{}
+client.Tasks.StreamTasks(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**heartbeatIntervalMs:** `*int` — The time interval, in milliseconds, that determines the frequency at which to send heartbeat events. Defaults to 30000 (30 seconds).
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**rateLimit:** `*int` 
+
+The time interval, in milliseconds, after an update for a given task before another one will be sent for the same task. 
+If set, value must be >= 250. 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**excludePreexistingTasks:** `*bool` 
+
+Optional flag to only include tasks created or updated after the stream is initiated, and not any previous preexisting tasks.
+If unset or false, the stream will include any new tasks and task updates, as well as all preexisting tasks.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**taskType:** `*Lattice.TaskStreamRequestTaskType` — Optional filter that only returns tasks with specific types. If not provided, all task types will be streamed.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Tasks.ListenAsAgent(request) -> *Lattice.AgentRequest</code></summary>
 <dl>
 <dd>
@@ -1091,6 +1183,64 @@ client.Objects.GetObject(
 </dl>
 </details>
 
+<details><summary><code>client.Objects.UploadObject(ObjectPath, request) -> *Lattice.PathMetadata</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Uploads an object. The object must be 1 GiB or smaller.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+client.Objects.UploadObject(
+        context.TODO(),
+        nil,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**objectPath:** `string` — Path of the Object that is to be uploaded.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Objects.DeleteObject(ObjectPath) -> error</code></summary>
 <dl>
 <dd>
@@ -1202,6 +1352,82 @@ client.Objects.GetObjectMetadata(
 <dd>
 
 **objectPath:** `string` — The path of the object to query.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## OAuth2
+<details><summary><code>client.OAuth2.GetToken(request) -> *Lattice.GetTokenResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Support the client credentials authorization flow
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &Lattice.GetTokenRequest{}
+client.OAuth2.GetToken(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**grantType:** `string` — The type of grant being requested
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**clientID:** `*string` — The client identifier
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**clientSecret:** `*string` — The client secret
     
 </dd>
 </dl>
