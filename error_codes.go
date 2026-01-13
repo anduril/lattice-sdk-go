@@ -3,8 +3,8 @@
 package Lattice
 
 import (
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 )
 
 var ErrorCodes internal.ErrorCodes = internal.ErrorCodes{
