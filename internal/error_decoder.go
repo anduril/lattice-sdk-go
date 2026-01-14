@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/anduril/lattice-sdk-go/v4/core"
+	"github.com/anduril/lattice-sdk-go/core"
 )
 
 // ErrorCodes maps HTTP status codes to error constructors.

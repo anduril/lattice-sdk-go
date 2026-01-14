@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/internal"
 	big "math/big"
 	time "time"
 )
@@ -269,6 +269,198 @@ func (a *Agent) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	agentStreamHeartbeatFieldEvent = big.NewInt(1 << 0)
+	agentStreamHeartbeatFieldData  = big.NewInt(1 << 1)
+)
+
+type AgentStreamHeartbeat struct {
+	Event AgentStreamHeartbeatEvent `json:"event" url:"event"`
+	Data  *AgentStreamHeartbeatData `json:"data" url:"data"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AgentStreamHeartbeat) GetEvent() AgentStreamHeartbeatEvent {
+	if a == nil {
+		return ""
+	}
+	return a.Event
+}
+
+func (a *AgentStreamHeartbeat) GetData() *AgentStreamHeartbeatData {
+	if a == nil {
+		return nil
+	}
+	return a.Data
+}
+
+func (a *AgentStreamHeartbeat) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AgentStreamHeartbeat) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetEvent sets the Event field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AgentStreamHeartbeat) SetEvent(event AgentStreamHeartbeatEvent) {
+	a.Event = event
+	a.require(agentStreamHeartbeatFieldEvent)
+}
+
+// SetData sets the Data field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AgentStreamHeartbeat) SetData(data *AgentStreamHeartbeatData) {
+	a.Data = data
+	a.require(agentStreamHeartbeatFieldData)
+}
+
+func (a *AgentStreamHeartbeat) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgentStreamHeartbeat
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AgentStreamHeartbeat(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AgentStreamHeartbeat) MarshalJSON() ([]byte, error) {
+	type embed AgentStreamHeartbeat
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AgentStreamHeartbeat) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	agentStreamHeartbeatDataFieldTimestamp = big.NewInt(1 << 0)
+)
+
+type AgentStreamHeartbeatData struct {
+	// The timestamp at which the heartbeat message was sent.
+	Timestamp *string `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AgentStreamHeartbeatData) GetTimestamp() *string {
+	if a == nil {
+		return nil
+	}
+	return a.Timestamp
+}
+
+func (a *AgentStreamHeartbeatData) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AgentStreamHeartbeatData) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetTimestamp sets the Timestamp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AgentStreamHeartbeatData) SetTimestamp(timestamp *string) {
+	a.Timestamp = timestamp
+	a.require(agentStreamHeartbeatDataFieldTimestamp)
+}
+
+func (a *AgentStreamHeartbeatData) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgentStreamHeartbeatData
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AgentStreamHeartbeatData(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AgentStreamHeartbeatData) MarshalJSON() ([]byte, error) {
+	type embed AgentStreamHeartbeatData
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AgentStreamHeartbeatData) String() string {
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AgentStreamHeartbeatEvent string
+
+const (
+	AgentStreamHeartbeatEventHeartbeat AgentStreamHeartbeatEvent = "heartbeat"
+)
+
+func NewAgentStreamHeartbeatEventFromString(s string) (AgentStreamHeartbeatEvent, error) {
+	switch s {
+	case "heartbeat":
+		return AgentStreamHeartbeatEventHeartbeat, nil
+	}
+	var t AgentStreamHeartbeatEvent
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AgentStreamHeartbeatEvent) Ptr() *AgentStreamHeartbeatEvent {
+	return &a
 }
 
 // An alert informs operators of critical events related to system performance and mission
@@ -943,6 +1135,100 @@ func (a *AngleOfArrival) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	badRequestErrorBodyFieldError            = big.NewInt(1 << 0)
+	badRequestErrorBodyFieldErrorDescription = big.NewInt(1 << 1)
+)
+
+type BadRequestErrorBody struct {
+	Error            string  `json:"error" url:"error"`
+	ErrorDescription *string `json:"error_description,omitempty" url:"error_description,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (b *BadRequestErrorBody) GetError() string {
+	if b == nil {
+		return ""
+	}
+	return b.Error
+}
+
+func (b *BadRequestErrorBody) GetErrorDescription() *string {
+	if b == nil {
+		return nil
+	}
+	return b.ErrorDescription
+}
+
+func (b *BadRequestErrorBody) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BadRequestErrorBody) require(field *big.Int) {
+	if b.explicitFields == nil {
+		b.explicitFields = big.NewInt(0)
+	}
+	b.explicitFields.Or(b.explicitFields, field)
+}
+
+// SetError sets the Error field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (b *BadRequestErrorBody) SetError(error_ string) {
+	b.Error = error_
+	b.require(badRequestErrorBodyFieldError)
+}
+
+// SetErrorDescription sets the ErrorDescription field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (b *BadRequestErrorBody) SetErrorDescription(errorDescription *string) {
+	b.ErrorDescription = errorDescription
+	b.require(badRequestErrorBodyFieldErrorDescription)
+}
+
+func (b *BadRequestErrorBody) UnmarshalJSON(data []byte) error {
+	type unmarshaler BadRequestErrorBody
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BadRequestErrorBody(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+	b.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BadRequestErrorBody) MarshalJSON() ([]byte, error) {
+	type embed BadRequestErrorBody
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*b),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, b.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (b *BadRequestErrorBody) String() string {
+	if len(b.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
 }
 
 // Describes the bandwidth of a signal
@@ -15053,6 +15339,100 @@ func (u *UInt32Range) MarshalJSON() ([]byte, error) {
 }
 
 func (u *UInt32Range) String() string {
+	if len(u.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(u); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", u)
+}
+
+var (
+	unauthorizedErrorBodyFieldError            = big.NewInt(1 << 0)
+	unauthorizedErrorBodyFieldErrorDescription = big.NewInt(1 << 1)
+)
+
+type UnauthorizedErrorBody struct {
+	Error            string  `json:"error" url:"error"`
+	ErrorDescription *string `json:"error_description,omitempty" url:"error_description,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (u *UnauthorizedErrorBody) GetError() string {
+	if u == nil {
+		return ""
+	}
+	return u.Error
+}
+
+func (u *UnauthorizedErrorBody) GetErrorDescription() *string {
+	if u == nil {
+		return nil
+	}
+	return u.ErrorDescription
+}
+
+func (u *UnauthorizedErrorBody) GetExtraProperties() map[string]interface{} {
+	return u.extraProperties
+}
+
+func (u *UnauthorizedErrorBody) require(field *big.Int) {
+	if u.explicitFields == nil {
+		u.explicitFields = big.NewInt(0)
+	}
+	u.explicitFields.Or(u.explicitFields, field)
+}
+
+// SetError sets the Error field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UnauthorizedErrorBody) SetError(error_ string) {
+	u.Error = error_
+	u.require(unauthorizedErrorBodyFieldError)
+}
+
+// SetErrorDescription sets the ErrorDescription field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (u *UnauthorizedErrorBody) SetErrorDescription(errorDescription *string) {
+	u.ErrorDescription = errorDescription
+	u.require(unauthorizedErrorBodyFieldErrorDescription)
+}
+
+func (u *UnauthorizedErrorBody) UnmarshalJSON(data []byte) error {
+	type unmarshaler UnauthorizedErrorBody
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*u = UnauthorizedErrorBody(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *u)
+	if err != nil {
+		return err
+	}
+	u.extraProperties = extraProperties
+	u.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (u *UnauthorizedErrorBody) MarshalJSON() ([]byte, error) {
+	type embed UnauthorizedErrorBody
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*u),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, u.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (u *UnauthorizedErrorBody) String() string {
 	if len(u.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
