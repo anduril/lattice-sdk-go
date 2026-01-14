@@ -3,7 +3,7 @@
 package option
 
 import (
-	core "github.com/anduril/lattice-sdk-go/v4/core"
+	core "github.com/anduril/lattice-sdk-go/core"
 	http "net/http"
 	url "net/url"
 )
@@ -63,7 +63,30 @@ func WithMaxAttempts(attempts uint) *core.MaxAttemptsOption {
 	}
 }
 
-// WithToken sets the 'Authorization: Bearer <token>' request header.
+// WithClientID sets the clientID auth request parameter.
+func WithClientID(clientID string) *core.ClientIDOption {
+	return &core.ClientIDOption{
+		ClientID: clientID,
+	}
+}
+
+// WithClientSecret sets the clientSecret auth request parameter.
+func WithClientSecret(clientSecret string) *core.ClientSecretOption {
+	return &core.ClientSecretOption{
+		ClientSecret: clientSecret,
+	}
+}
+
+// WithClientCredentials sets both the clientID and clientSecret auth request parameters.
+func WithClientCredentials(clientID string, clientSecret string) *core.ClientCredentialsOption {
+	return &core.ClientCredentialsOption{
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+	}
+}
+
+// WithToken sets the OAuth token directly, bypassing the client credentials flow.
+// Use this when you already have an access token.
 func WithToken(token string) *core.TokenOption {
 	return &core.TokenOption{
 		Token: token,
