@@ -5,7 +5,7 @@ package object
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v5/internal"
+	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	big "math/big"
 )
 
