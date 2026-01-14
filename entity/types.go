@@ -5,7 +5,7 @@ package entity
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/internal"
 	big "math/big"
 )
 
