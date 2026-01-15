@@ -3,9 +3,13 @@
 package client
 
 import (
+	context "context"
+	errors "errors"
+	Lattice "github.com/anduril/lattice-sdk-go/v4"
 	core "github.com/anduril/lattice-sdk-go/v4/core"
 	entities "github.com/anduril/lattice-sdk-go/v4/entities"
 	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	oauth "github.com/anduril/lattice-sdk-go/v4/oauth"
 	objects "github.com/anduril/lattice-sdk-go/v4/objects"
 	option "github.com/anduril/lattice-sdk-go/v4/option"
 	tasks "github.com/anduril/lattice-sdk-go/v4/tasks"
@@ -15,6 +19,7 @@ type Client struct {
 	Entities *entities.Client
 	Tasks    *tasks.Client
 	Objects  *objects.Client
+	Oauth    *oauth.Client
 
 	options *core.RequestOptions
 	baseURL string
@@ -23,10 +28,44 @@ type Client struct {
 
 func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
+	oauthTokenProvider := core.NewOAuthTokenProvider(
+		options.ClientID,
+		options.ClientSecret,
+	)
+	authOptions := *options
+	authClient := oauth.NewClient(
+		&authOptions,
+	)
+	options.SetTokenGetter(func() (string, error) {
+		return oauthTokenProvider.GetOrFetch(func() (string, int, error) {
+			response, err := authClient.GetToken(context.Background(), &Lattice.GetTokenRequest{
+				ClientID: Lattice.String(
+					options.ClientID,
+				),
+				ClientSecret: Lattice.String(
+					options.ClientSecret,
+				),
+			})
+			if err != nil {
+				return "", 0, err
+			}
+			if response.AccessToken == "" {
+				return "", 0, errors.New(
+					"oauth response missing access token",
+				)
+			}
+			expiresIn := core.DefaultExpirySeconds
+			if response.ExpiresIn != nil {
+				expiresIn = *response.ExpiresIn
+			}
+			return response.AccessToken, expiresIn, nil
+		})
+	})
 	return &Client{
 		Entities: entities.NewClient(options),
 		Tasks:    tasks.NewClient(options),
 		Objects:  objects.NewClient(options),
+		Oauth:    oauth.NewClient(options),
 		options:  options,
 		baseURL:  options.BaseURL,
 		caller: internal.NewCaller(
