@@ -57,9 +57,9 @@ Instantiate and use the client with the following:
 package example
 
 import (
-    client "github.com/anduril/lattice-sdk-go/v4/client"
-    option "github.com/anduril/lattice-sdk-go/v4/option"
-    Lattice "github.com/anduril/lattice-sdk-go/v4"
+    client "github.com/anduril/lattice-sdk-go/v5/client"
+    option "github.com/anduril/lattice-sdk-go/v5/option"
+    Lattice "github.com/anduril/lattice-sdk-go/v5"
     context "context"
 )
 
