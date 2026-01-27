@@ -71,9 +71,7 @@ func TestTasksCreateTaskWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.TaskCreation{}
 	_, invocationErr := client.Tasks.CreateTask(
@@ -97,9 +95,7 @@ func TestTasksGetTaskWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.GetTaskRequest{
 		TaskID: "taskId",
@@ -125,9 +121,7 @@ func TestTasksUpdateTaskStatusWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.TaskStatusUpdate{
 		TaskID: "taskId",
@@ -153,9 +147,7 @@ func TestTasksQueryTasksWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.TaskQuery{}
 	_, invocationErr := client.Tasks.QueryTasks(
@@ -170,6 +162,30 @@ func TestTasksQueryTasksWithWireMock(
 	VerifyRequestCount(t, "TestTasksQueryTasksWithWireMock", "POST", "/api/v1/tasks/query", nil, 1)
 }
 
+func TestTasksStreamTasksWithWireMock(
+	t *testing.T,
+) {
+	wiremockPort := os.Getenv("WIREMOCK_PORT")
+	if wiremockPort == "" {
+		wiremockPort = "8080"
+	}
+	WireMockBaseURL := "http://localhost:" + wiremockPort
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &Lattice.TaskStreamRequest{}
+	_, invocationErr := client.Tasks.StreamTasks(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestTasksStreamTasksWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestTasksStreamTasksWithWireMock", "POST", "/api/v1/tasks/stream", nil, 1)
+}
+
 func TestTasksListenAsAgentWithWireMock(
 	t *testing.T,
 ) {
@@ -179,9 +195,7 @@ func TestTasksListenAsAgentWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.AgentListener{}
 	_, invocationErr := client.Tasks.ListenAsAgent(
@@ -194,4 +208,28 @@ func TestTasksListenAsAgentWithWireMock(
 
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestTasksListenAsAgentWithWireMock", "POST", "/api/v1/agent/listen", nil, 1)
+}
+
+func TestTasksStreamAsAgentWithWireMock(
+	t *testing.T,
+) {
+	wiremockPort := os.Getenv("WIREMOCK_PORT")
+	if wiremockPort == "" {
+		wiremockPort = "8080"
+	}
+	WireMockBaseURL := "http://localhost:" + wiremockPort
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &Lattice.AgentStreamRequest{}
+	_, invocationErr := client.Tasks.StreamAsAgent(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestTasksStreamAsAgentWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestTasksStreamAsAgentWithWireMock", "POST", "/api/v1/agent/stream", nil, 1)
 }

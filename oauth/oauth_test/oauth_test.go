@@ -71,9 +71,7 @@ func TestOauthGetTokenWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.GetTokenRequest{}
 	_, invocationErr := client.Oauth.GetToken(

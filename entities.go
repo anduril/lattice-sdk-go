@@ -582,8 +582,8 @@ var (
 )
 
 type EntityStreamHeartbeat struct {
-	// timestamp of the heartbeat
-	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+	// The timestamp at which the heartbeat message was sent.
+	Timestamp *string `json:"timestamp,omitempty" url:"timestamp,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -592,7 +592,7 @@ type EntityStreamHeartbeat struct {
 	rawJSON         json.RawMessage
 }
 
-func (e *EntityStreamHeartbeat) GetTimestamp() *time.Time {
+func (e *EntityStreamHeartbeat) GetTimestamp() *string {
 	if e == nil {
 		return nil
 	}
@@ -612,24 +612,18 @@ func (e *EntityStreamHeartbeat) require(field *big.Int) {
 
 // SetTimestamp sets the Timestamp field and marks it as non-optional;
 // this prevents an empty or null value for this field from being omitted during serialization.
-func (e *EntityStreamHeartbeat) SetTimestamp(timestamp *time.Time) {
+func (e *EntityStreamHeartbeat) SetTimestamp(timestamp *string) {
 	e.Timestamp = timestamp
 	e.require(entityStreamHeartbeatFieldTimestamp)
 }
 
 func (e *EntityStreamHeartbeat) UnmarshalJSON(data []byte) error {
-	type embed EntityStreamHeartbeat
-	var unmarshaler = struct {
-		embed
-		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
-	}{
-		embed: embed(*e),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+	type unmarshaler EntityStreamHeartbeat
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*e = EntityStreamHeartbeat(unmarshaler.embed)
-	e.Timestamp = unmarshaler.Timestamp.TimePtr()
+	*e = EntityStreamHeartbeat(value)
 	extraProperties, err := internal.ExtractExtraProperties(data, *e)
 	if err != nil {
 		return err
@@ -643,10 +637,8 @@ func (e *EntityStreamHeartbeat) MarshalJSON() ([]byte, error) {
 	type embed EntityStreamHeartbeat
 	var marshaler = struct {
 		embed
-		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
 	}{
-		embed:     embed(*e),
-		Timestamp: internal.NewOptionalDateTime(e.Timestamp),
+		embed: embed(*e),
 	}
 	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
 	return json.Marshal(explicitMarshaler)
@@ -662,93 +654,6 @@ func (e *EntityStreamHeartbeat) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
-}
-
-var (
-	heartbeatObjectFieldTimestamp = big.NewInt(1 << 0)
-)
-
-type HeartbeatObject struct {
-	// timestamp of the heartbeat
-	Timestamp *time.Time `json:"timestamp,omitempty" url:"timestamp,omitempty"`
-
-	// Private bitmask of fields set to an explicit value and therefore not to be omitted
-	explicitFields *big.Int `json:"-" url:"-"`
-
-	extraProperties map[string]interface{}
-	rawJSON         json.RawMessage
-}
-
-func (h *HeartbeatObject) GetTimestamp() *time.Time {
-	if h == nil {
-		return nil
-	}
-	return h.Timestamp
-}
-
-func (h *HeartbeatObject) GetExtraProperties() map[string]interface{} {
-	return h.extraProperties
-}
-
-func (h *HeartbeatObject) require(field *big.Int) {
-	if h.explicitFields == nil {
-		h.explicitFields = big.NewInt(0)
-	}
-	h.explicitFields.Or(h.explicitFields, field)
-}
-
-// SetTimestamp sets the Timestamp field and marks it as non-optional;
-// this prevents an empty or null value for this field from being omitted during serialization.
-func (h *HeartbeatObject) SetTimestamp(timestamp *time.Time) {
-	h.Timestamp = timestamp
-	h.require(heartbeatObjectFieldTimestamp)
-}
-
-func (h *HeartbeatObject) UnmarshalJSON(data []byte) error {
-	type embed HeartbeatObject
-	var unmarshaler = struct {
-		embed
-		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
-	}{
-		embed: embed(*h),
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	*h = HeartbeatObject(unmarshaler.embed)
-	h.Timestamp = unmarshaler.Timestamp.TimePtr()
-	extraProperties, err := internal.ExtractExtraProperties(data, *h)
-	if err != nil {
-		return err
-	}
-	h.extraProperties = extraProperties
-	h.rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (h *HeartbeatObject) MarshalJSON() ([]byte, error) {
-	type embed HeartbeatObject
-	var marshaler = struct {
-		embed
-		Timestamp *internal.DateTime `json:"timestamp,omitempty"`
-	}{
-		embed:     embed(*h),
-		Timestamp: internal.NewOptionalDateTime(h.Timestamp),
-	}
-	explicitMarshaler := internal.HandleExplicitFields(marshaler, h.explicitFields)
-	return json.Marshal(explicitMarshaler)
-}
-
-func (h *HeartbeatObject) String() string {
-	if len(h.rawJSON) > 0 {
-		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := internal.StringifyJSON(h); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", h)
 }
 
 // The stream event response.
