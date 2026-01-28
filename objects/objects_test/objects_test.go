@@ -71,9 +71,7 @@ func TestObjectsListObjectsWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.ListObjectsRequest{}
 	_, invocationErr := client.Objects.ListObjects(
@@ -97,9 +95,7 @@ func TestObjectsGetObjectWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.GetObjectRequest{
 		ObjectPath: "objectPath",
@@ -125,9 +121,7 @@ func TestObjectsUploadObjectWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	_, invocationErr := client.Objects.UploadObject(
 		context.TODO(),
@@ -147,9 +141,7 @@ func TestObjectsDeleteObjectWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.DeleteObjectRequest{
 		ObjectPath: "objectPath",
@@ -175,9 +167,7 @@ func TestObjectsGetObjectMetadataWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.GetObjectMetadataRequest{
 		ObjectPath: "objectPath",

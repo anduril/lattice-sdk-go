@@ -6589,6 +6589,85 @@ func (h HealthHealthStatus) Ptr() *HealthHealthStatus {
 	return &h
 }
 
+var (
+	heartbeatObjectFieldTimestamp = big.NewInt(1 << 0)
+)
+
+type HeartbeatObject struct {
+	// The timestamp at which the heartbeat message was sent.
+	Timestamp *string `json:"timestamp,omitempty" url:"timestamp,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (h *HeartbeatObject) GetTimestamp() *string {
+	if h == nil {
+		return nil
+	}
+	return h.Timestamp
+}
+
+func (h *HeartbeatObject) GetExtraProperties() map[string]interface{} {
+	return h.extraProperties
+}
+
+func (h *HeartbeatObject) require(field *big.Int) {
+	if h.explicitFields == nil {
+		h.explicitFields = big.NewInt(0)
+	}
+	h.explicitFields.Or(h.explicitFields, field)
+}
+
+// SetTimestamp sets the Timestamp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (h *HeartbeatObject) SetTimestamp(timestamp *string) {
+	h.Timestamp = timestamp
+	h.require(heartbeatObjectFieldTimestamp)
+}
+
+func (h *HeartbeatObject) UnmarshalJSON(data []byte) error {
+	type unmarshaler HeartbeatObject
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*h = HeartbeatObject(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *h)
+	if err != nil {
+		return err
+	}
+	h.extraProperties = extraProperties
+	h.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (h *HeartbeatObject) MarshalJSON() ([]byte, error) {
+	type embed HeartbeatObject
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*h),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, h.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (h *HeartbeatObject) String() string {
+	if len(h.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(h); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", h)
+}
+
 // Describes whether something is a high value target or not.
 var (
 	highValueTargetFieldIsHighValueTarget  = big.NewInt(1 << 0)

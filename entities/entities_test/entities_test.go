@@ -71,9 +71,7 @@ func TestEntitiesPublishEntityWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.Entity{}
 	_, invocationErr := client.Entities.PublishEntity(
@@ -97,9 +95,7 @@ func TestEntitiesGetEntityWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.GetEntityRequest{
 		EntityID: "entityId",
@@ -125,9 +121,7 @@ func TestEntitiesOverrideEntityWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.EntityOverride{
 		EntityID:  "entityId",
@@ -154,9 +148,7 @@ func TestEntitiesRemoveEntityOverrideWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.RemoveEntityOverrideRequest{
 		EntityID:  "entityId",
@@ -183,9 +175,7 @@ func TestEntitiesLongPollEntityEventsWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.EntityEventRequest{
 		SessionToken: "sessionToken",
@@ -211,9 +201,7 @@ func TestEntitiesStreamEntitiesWithWireMock(
 	}
 	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
-		option.WithBaseURL(
-			WireMockBaseURL,
-		),
+		option.WithBaseURL(WireMockBaseURL),
 	)
 	request := &Lattice.EntityStreamRequest{}
 	_, invocationErr := client.Entities.StreamEntities(
