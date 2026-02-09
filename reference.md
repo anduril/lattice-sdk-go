@@ -1181,6 +1181,14 @@ client.Objects.ListObjects(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**maxPageSize:** `*int` — Sets the maximum number of items that should be returned on a single page.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
