@@ -113,6 +113,7 @@ var (
 	listObjectsRequestFieldSinceTimestamp   = big.NewInt(1 << 1)
 	listObjectsRequestFieldPageToken        = big.NewInt(1 << 2)
 	listObjectsRequestFieldAllObjectsInMesh = big.NewInt(1 << 3)
+	listObjectsRequestFieldMaxPageSize      = big.NewInt(1 << 4)
 )
 
 type ListObjectsRequest struct {
@@ -124,6 +125,8 @@ type ListObjectsRequest struct {
 	PageToken *string `json:"-" url:"pageToken,omitempty"`
 	// Lists objects across all environment nodes in a Lattice Mesh.
 	AllObjectsInMesh *bool `json:"-" url:"allObjectsInMesh,omitempty"`
+	// Sets the maximum number of items that should be returned on a single page.
+	MaxPageSize *int `json:"-" url:"maxPageSize,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -162,6 +165,13 @@ func (l *ListObjectsRequest) SetPageToken(pageToken *string) {
 func (l *ListObjectsRequest) SetAllObjectsInMesh(allObjectsInMesh *bool) {
 	l.AllObjectsInMesh = allObjectsInMesh
 	l.require(listObjectsRequestFieldAllObjectsInMesh)
+}
+
+// SetMaxPageSize sets the MaxPageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListObjectsRequest) SetMaxPageSize(maxPageSize *int) {
+	l.MaxPageSize = maxPageSize
+	l.require(listObjectsRequestFieldMaxPageSize)
 }
 
 var (

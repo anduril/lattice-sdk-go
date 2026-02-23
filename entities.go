@@ -72,6 +72,27 @@ func (e *EntityEventRequest) SetBatchSize(batchSize *int) {
 	e.require(entityEventRequestFieldBatchSize)
 }
 
+func (e *EntityEventRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityEventRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*e = EntityEventRequest(body)
+	return nil
+}
+
+func (e *EntityEventRequest) MarshalJSON() ([]byte, error) {
+	type embed EntityEventRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 var (
 	entityOverrideFieldEntityID   = big.NewInt(1 << 0)
 	entityOverrideFieldFieldPath  = big.NewInt(1 << 1)
@@ -127,6 +148,27 @@ func (e *EntityOverride) SetEntity(entity *Entity) {
 func (e *EntityOverride) SetProvenance(provenance *Provenance) {
 	e.Provenance = provenance
 	e.require(entityOverrideFieldProvenance)
+}
+
+func (e *EntityOverride) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityOverride
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*e = EntityOverride(body)
+	return nil
+}
+
+func (e *EntityOverride) MarshalJSON() ([]byte, error) {
+	type embed EntityOverride
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 var (
@@ -209,6 +251,27 @@ func (e *EntityStreamRequest) SetPreExistingOnly(preExistingOnly *bool) {
 func (e *EntityStreamRequest) SetComponentsToInclude(componentsToInclude []string) {
 	e.ComponentsToInclude = componentsToInclude
 	e.require(entityStreamRequestFieldComponentsToInclude)
+}
+
+func (e *EntityStreamRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityStreamRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*e = EntityStreamRequest(body)
+	return nil
+}
+
+func (e *EntityStreamRequest) MarshalJSON() ([]byte, error) {
+	type embed EntityStreamRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 // Event representing some type of entity change.

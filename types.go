@@ -5038,23 +5038,23 @@ var (
 )
 
 type Fuel struct {
-	// unique fuel identifier
+	// Unique fuel identifier
 	FuelID *string `json:"fuelId,omitempty" url:"fuelId,omitempty"`
-	// long form name of the fuel source.
+	// Long form name of the fuel source.
 	Name *string `json:"name,omitempty" url:"name,omitempty"`
-	// timestamp the information was reported
+	// Timestamp the information was reported
 	ReportedDate *time.Time `json:"reportedDate,omitempty" url:"reportedDate,omitempty"`
-	// amount of gallons on hand
+	// Amount of gallons on hand
 	AmountGallons *int `json:"amountGallons,omitempty" url:"amountGallons,omitempty"`
-	// how much the asset is allowed to have available (in gallons)
+	// How much the asset is allowed to have available (in gallons)
 	MaxAuthorizedCapacityGallons *int `json:"maxAuthorizedCapacityGallons,omitempty" url:"maxAuthorizedCapacityGallons,omitempty"`
-	// minimum required for operations (in gallons)
+	// Minimum required for operations (in gallons)
 	OperationalRequirementGallons *int `json:"operationalRequirementGallons,omitempty" url:"operationalRequirementGallons,omitempty"`
-	// fuel in a single asset may have different levels of classification
+	// Fuel in a single asset may have different levels of classification
 	//
-	//	use case: fuel for a SECRET asset while diesel fuel may be UNCLASSIFIED
+	//	Use case: fuel for a SECRET asset while diesel fuel may be UNCLASSIFIED
 	DataClassification *Classification `json:"dataClassification,omitempty" url:"dataClassification,omitempty"`
-	// source of information
+	// Source of information
 	DataSource *string `json:"dataSource,omitempty" url:"dataSource,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -9140,6 +9140,120 @@ func (m *ModeS) MarshalJSON() ([]byte, error) {
 }
 
 func (m *ModeS) String() string {
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+// Munition describes an entity's munitions stores
+var (
+	munitionFieldMunitionID    = big.NewInt(1 << 0)
+	munitionFieldName          = big.NewInt(1 << 1)
+	munitionFieldQuantityUnits = big.NewInt(1 << 2)
+)
+
+type Munition struct {
+	// Unique munition identifier
+	MunitionID *string `json:"munitionId,omitempty" url:"munitionId,omitempty"`
+	// Long form name of the munition
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// Number of units
+	QuantityUnits *int `json:"quantityUnits,omitempty" url:"quantityUnits,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *Munition) GetMunitionID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.MunitionID
+}
+
+func (m *Munition) GetName() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Name
+}
+
+func (m *Munition) GetQuantityUnits() *int {
+	if m == nil {
+		return nil
+	}
+	return m.QuantityUnits
+}
+
+func (m *Munition) GetExtraProperties() map[string]interface{} {
+	return m.extraProperties
+}
+
+func (m *Munition) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetMunitionID sets the MunitionID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *Munition) SetMunitionID(munitionID *string) {
+	m.MunitionID = munitionID
+	m.require(munitionFieldMunitionID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *Munition) SetName(name *string) {
+	m.Name = name
+	m.require(munitionFieldName)
+}
+
+// SetQuantityUnits sets the QuantityUnits field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *Munition) SetQuantityUnits(quantityUnits *int) {
+	m.QuantityUnits = quantityUnits
+	m.require(munitionFieldQuantityUnits)
+}
+
+func (m *Munition) UnmarshalJSON(data []byte) error {
+	type unmarshaler Munition
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = Munition(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *Munition) MarshalJSON() ([]byte, error) {
+	type embed Munition
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*m),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (m *Munition) String() string {
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -13722,17 +13836,26 @@ func (s *Status) String() string {
 
 // Represents the state of supplies associated with an entity (available but not in condition to use immediately)
 var (
-	suppliesFieldFuel = big.NewInt(1 << 0)
+	suppliesFieldMunitions = big.NewInt(1 << 0)
+	suppliesFieldFuel      = big.NewInt(1 << 1)
 )
 
 type Supplies struct {
-	Fuel []*Fuel `json:"fuel,omitempty" url:"fuel,omitempty"`
+	Munitions []*Munition `json:"munitions,omitempty" url:"munitions,omitempty"`
+	Fuel      []*Fuel     `json:"fuel,omitempty" url:"fuel,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
+}
+
+func (s *Supplies) GetMunitions() []*Munition {
+	if s == nil {
+		return nil
+	}
+	return s.Munitions
 }
 
 func (s *Supplies) GetFuel() []*Fuel {
@@ -13751,6 +13874,13 @@ func (s *Supplies) require(field *big.Int) {
 		s.explicitFields = big.NewInt(0)
 	}
 	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetMunitions sets the Munitions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *Supplies) SetMunitions(munitions []*Munition) {
+	s.Munitions = munitions
+	s.require(suppliesFieldMunitions)
 }
 
 // SetFuel sets the Fuel field and marks it as non-optional;
