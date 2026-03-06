@@ -751,6 +751,85 @@ is known are considered stale and ignored.
 </dl>
 </details>
 
+<details><summary><code>client.Tasks.CancelTask(TaskID, request) -> *Lattice.Task</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Cancels a task by marking it for cancellation in the system.
+
+This method initiates task cancellation based on the task's current state:
+- If the task has not been sent to an agent, it cancels immediately and transitions the task
+  to a terminal state (`STATUS_DONE_NOT_OK` with `ERROR_CODE_CANCELLED`).
+- If the task has already been sent to an agent, the cancellation request is routed to the agent with a delivery status of `DELIVERY_STATUS_PENDING_CANCEL`.
+  The agent is responsible for determining whether cancellation is possible and updating
+  the task status accordingly via the `UpdateStatus` endpoint:
+  - If the task can be cancelled, the agent should update the task status to `STATUS_DONE_NOT_OK`.
+  - If the task cannot be cancelled, the agent should attach an error to the task stating why cancellation is not possible using `UpdateStatus`
+    or the returned task object.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &Lattice.TaskCancellation{
+        TaskID: "taskId",
+    }
+client.Tasks.CancelTask(
+        context.TODO(),
+        request,
+    )
+}
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**taskID:** `string` — The ID of task to cancel
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**author:** `*Lattice.Principal` — Who or what is requesting to cancel this task.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Tasks.QueryTasks(request) -> *Lattice.TaskQueryResults</code></summary>
 <dl>
 <dd>
@@ -1181,6 +1260,14 @@ client.Objects.ListObjects(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**maxPageSize:** `*int` — Sets the maximum number of items that should be returned on a single page.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -1295,7 +1382,8 @@ Uploads an object. The object must be 1 GiB or smaller.
 ```go
 client.Objects.UploadObject(
         context.TODO(),
-        nil,
+        "<objectPath>",
+        request,
     )
 }
 ```

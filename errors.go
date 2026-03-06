@@ -5,6 +5,8 @@ package Lattice
 import (
 	json "encoding/json"
 	core "github.com/anduril/lattice-sdk-go/v4/core"
+	entity "github.com/anduril/lattice-sdk-go/v4/entity"
+	object "github.com/anduril/lattice-sdk-go/v4/object"
 )
 
 // Bad request
@@ -34,11 +36,11 @@ func (b *BadRequestError) Unwrap() error {
 // Content too large
 type ContentTooLargeError struct {
 	*core.APIError
-	Body interface{}
+	Body *object.Error
 }
 
 func (c *ContentTooLargeError) UnmarshalJSON(data []byte) error {
-	var body interface{}
+	var body *object.Error
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -58,11 +60,11 @@ func (c *ContentTooLargeError) Unwrap() error {
 // Insuccifient Storage
 type InsufficientStorageError struct {
 	*core.APIError
-	Body interface{}
+	Body *object.Error
 }
 
 func (i *InsufficientStorageError) UnmarshalJSON(data []byte) error {
-	var body interface{}
+	var body *object.Error
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -132,11 +134,11 @@ func (n *NotFoundError) Unwrap() error {
 // new session must be initiated to receive entity events.
 type RequestTimeoutError struct {
 	*core.APIError
-	Body interface{}
+	Body *entity.Error
 }
 
 func (r *RequestTimeoutError) UnmarshalJSON(data []byte) error {
-	var body interface{}
+	var body *entity.Error
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -156,11 +158,11 @@ func (r *RequestTimeoutError) Unwrap() error {
 // Server is out of resources or reaching rate limiting or quota and cannot accept the request at this time.
 type TooManyRequestsError struct {
 	*core.APIError
-	Body interface{}
+	Body *entity.Error
 }
 
 func (t *TooManyRequestsError) UnmarshalJSON(data []byte) error {
-	var body interface{}
+	var body *entity.Error
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}

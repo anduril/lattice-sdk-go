@@ -138,6 +138,32 @@ func TestTasksUpdateTaskStatusWithWireMock(
 	VerifyRequestCount(t, "TestTasksUpdateTaskStatusWithWireMock", "PUT", "/api/v1/tasks/taskId/status", nil, 1)
 }
 
+func TestTasksCancelTaskWithWireMock(
+	t *testing.T,
+) {
+	wiremockPort := os.Getenv("WIREMOCK_PORT")
+	if wiremockPort == "" {
+		wiremockPort = "8080"
+	}
+	WireMockBaseURL := "http://localhost:" + wiremockPort
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &Lattice.TaskCancellation{
+		TaskID: "taskId",
+	}
+	_, invocationErr := client.Tasks.CancelTask(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestTasksCancelTaskWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestTasksCancelTaskWithWireMock", "PUT", "/api/v1/tasks/taskId/cancel", nil, 1)
+}
+
 func TestTasksQueryTasksWithWireMock(
 	t *testing.T,
 ) {

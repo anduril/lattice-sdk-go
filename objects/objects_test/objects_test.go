@@ -123,13 +123,20 @@ func TestObjectsUploadObjectWithWireMock(
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
+	request := bytes.NewReader(
+		[]byte(""),
+	)
 	_, invocationErr := client.Objects.UploadObject(
 		context.TODO(),
-		nil,
+		"<objectPath>",
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestObjectsUploadObjectWithWireMock"}},
+		),
 	)
 
 	require.NoError(t, invocationErr, "Client method call should succeed")
-	VerifyRequestCount(t, "TestObjectsUploadObjectWithWireMock", "POST", "/api/v1/objects/{objectPath}", nil, 1)
+	VerifyRequestCount(t, "TestObjectsUploadObjectWithWireMock", "POST", "/api/v1/objects/%3CobjectPath%3E", nil, 1)
 }
 
 func TestObjectsDeleteObjectWithWireMock(

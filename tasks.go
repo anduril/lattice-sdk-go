@@ -11,6 +11,63 @@ import (
 )
 
 var (
+	taskCancellationFieldTaskID = big.NewInt(1 << 0)
+	taskCancellationFieldAuthor = big.NewInt(1 << 1)
+)
+
+type TaskCancellation struct {
+	// The ID of task to cancel
+	TaskID string `json:"-" url:"-"`
+	// Who or what is requesting to cancel this task.
+	Author *Principal `json:"author,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (t *TaskCancellation) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCancellation) SetTaskID(taskID string) {
+	t.TaskID = taskID
+	t.require(taskCancellationFieldTaskID)
+}
+
+// SetAuthor sets the Author field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCancellation) SetAuthor(author *Principal) {
+	t.Author = author
+	t.require(taskCancellationFieldAuthor)
+}
+
+func (t *TaskCancellation) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskCancellation
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*t = TaskCancellation(body)
+	return nil
+}
+
+func (t *TaskCancellation) MarshalJSON() ([]byte, error) {
+	type embed TaskCancellation
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	taskCreationFieldTaskID              = big.NewInt(1 << 0)
 	taskCreationFieldDisplayName         = big.NewInt(1 << 1)
 	taskCreationFieldDescription         = big.NewInt(1 << 2)
@@ -110,6 +167,27 @@ func (t *TaskCreation) SetInitialEntities(initialEntities []*TaskEntity) {
 	t.require(taskCreationFieldInitialEntities)
 }
 
+func (t *TaskCreation) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskCreation
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*t = TaskCreation(body)
+	return nil
+}
+
+func (t *TaskCreation) MarshalJSON() ([]byte, error) {
+	type embed TaskCreation
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 var (
 	getTaskRequestFieldTaskID = big.NewInt(1 << 0)
 )
@@ -160,6 +238,27 @@ func (a *AgentListener) require(field *big.Int) {
 func (a *AgentListener) SetAgentSelector(agentSelector *EntityIDsSelector) {
 	a.AgentSelector = agentSelector
 	a.require(agentListenerFieldAgentSelector)
+}
+
+func (a *AgentListener) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgentListener
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = AgentListener(body)
+	return nil
+}
+
+func (a *AgentListener) MarshalJSON() ([]byte, error) {
+	type embed AgentListener
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 var (
@@ -219,6 +318,27 @@ func (t *TaskQuery) SetUpdateTimeRange(updateTimeRange *TaskQueryUpdateTimeRange
 	t.require(taskQueryFieldUpdateTimeRange)
 }
 
+func (t *TaskQuery) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskQuery
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*t = TaskQuery(body)
+	return nil
+}
+
+func (t *TaskQuery) MarshalJSON() ([]byte, error) {
+	type embed TaskQuery
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 var (
 	agentStreamRequestFieldAgentSelector       = big.NewInt(1 << 0)
 	agentStreamRequestFieldHeartbeatIntervalMs = big.NewInt(1 << 1)
@@ -253,6 +373,27 @@ func (a *AgentStreamRequest) SetAgentSelector(agentSelector *EntityIDsSelector) 
 func (a *AgentStreamRequest) SetHeartbeatIntervalMs(heartbeatIntervalMs *int) {
 	a.HeartbeatIntervalMs = heartbeatIntervalMs
 	a.require(agentStreamRequestFieldHeartbeatIntervalMs)
+}
+
+func (a *AgentStreamRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler AgentStreamRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*a = AgentStreamRequest(body)
+	return nil
+}
+
+func (a *AgentStreamRequest) MarshalJSON() ([]byte, error) {
+	type embed AgentStreamRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 var (
@@ -313,6 +454,27 @@ func (t *TaskStreamRequest) SetTaskType(taskType *TaskStreamRequestTaskType) {
 	t.require(taskStreamRequestFieldTaskType)
 }
 
+func (t *TaskStreamRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskStreamRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*t = TaskStreamRequest(body)
+	return nil
+}
+
+func (t *TaskStreamRequest) MarshalJSON() ([]byte, error) {
+	type embed TaskStreamRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 // Response streamed to an agent containing task actions to perform.
 //
 // This message is streamed from Tasks API to agents and contains one of three
@@ -363,6 +525,9 @@ func (a *AgentRequest) GetCompleteRequest() *CompleteRequest {
 }
 
 func (a *AgentRequest) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -422,6 +587,9 @@ func (a *AgentRequest) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AgentRequest) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -473,6 +641,9 @@ func (a *AgentStreamEvent) GetCompleteRequest() *CompleteRequest {
 }
 
 func (a *AgentStreamEvent) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -532,6 +703,9 @@ func (a *AgentStreamEvent) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AgentStreamEvent) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -584,6 +758,9 @@ func (a *AgentTaskRequest) GetCompleteRequest() *CompleteRequest {
 }
 
 func (a *AgentTaskRequest) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -643,6 +820,9 @@ func (a *AgentTaskRequest) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AgentTaskRequest) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -678,6 +858,9 @@ func (a *Allocation) GetActiveAgents() []*Agent {
 }
 
 func (a *Allocation) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -723,6 +906,9 @@ func (a *Allocation) MarshalJSON() ([]byte, error) {
 }
 
 func (a *Allocation) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -740,6 +926,7 @@ func (a *Allocation) String() string {
 var (
 	cancelRequestFieldTaskID   = big.NewInt(1 << 0)
 	cancelRequestFieldAssignee = big.NewInt(1 << 1)
+	cancelRequestFieldAuthor   = big.NewInt(1 << 2)
 )
 
 type CancelRequest struct {
@@ -749,6 +936,8 @@ type CancelRequest struct {
 	//
 	//	especially onBehalfOf assignees.
 	Assignee *Principal `json:"assignee,omitempty" url:"assignee,omitempty"`
+	// The principal that requested to cancel the task.
+	Author *Principal `json:"author,omitempty" url:"author,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -771,7 +960,17 @@ func (c *CancelRequest) GetAssignee() *Principal {
 	return c.Assignee
 }
 
+func (c *CancelRequest) GetAuthor() *Principal {
+	if c == nil {
+		return nil
+	}
+	return c.Author
+}
+
 func (c *CancelRequest) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -794,6 +993,13 @@ func (c *CancelRequest) SetTaskID(taskID *string) {
 func (c *CancelRequest) SetAssignee(assignee *Principal) {
 	c.Assignee = assignee
 	c.require(cancelRequestFieldAssignee)
+}
+
+// SetAuthor sets the Author field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CancelRequest) SetAuthor(author *Principal) {
+	c.Author = author
+	c.require(cancelRequestFieldAuthor)
 }
 
 func (c *CancelRequest) UnmarshalJSON(data []byte) error {
@@ -824,6 +1030,9 @@ func (c *CancelRequest) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CancelRequest) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -861,6 +1070,9 @@ func (c *CompleteRequest) GetTaskID() *string {
 }
 
 func (c *CompleteRequest) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -906,6 +1118,9 @@ func (c *CompleteRequest) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CompleteRequest) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -915,6 +1130,409 @@ func (c *CompleteRequest) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+// DeliveryConstraints defines when Lattice should deliver the task to the agent.
+var (
+	deliveryConstraintsFieldDeliverAfter  = big.NewInt(1 << 0)
+	deliveryConstraintsFieldDeliverBefore = big.NewInt(1 << 1)
+)
+
+type DeliveryConstraints struct {
+	// Optional earliest time the task can attempt to be delivered.
+	DeliverAfter *time.Time `json:"deliverAfter,omitempty" url:"deliverAfter,omitempty"`
+	// The latest time by which the task should be delivered.
+	//
+	//	If this deadline passes without successful delivery of the task, then the task will time
+	//	out with DELIVERY_ERROR_CODE_TIMEOUT.
+	//	This field is only required for tasks with retry strategies.
+	DeliverBefore *time.Time `json:"deliverBefore,omitempty" url:"deliverBefore,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (d *DeliveryConstraints) GetDeliverAfter() *time.Time {
+	if d == nil {
+		return nil
+	}
+	return d.DeliverAfter
+}
+
+func (d *DeliveryConstraints) GetDeliverBefore() *time.Time {
+	if d == nil {
+		return nil
+	}
+	return d.DeliverBefore
+}
+
+func (d *DeliveryConstraints) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
+	return d.extraProperties
+}
+
+func (d *DeliveryConstraints) require(field *big.Int) {
+	if d.explicitFields == nil {
+		d.explicitFields = big.NewInt(0)
+	}
+	d.explicitFields.Or(d.explicitFields, field)
+}
+
+// SetDeliverAfter sets the DeliverAfter field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryConstraints) SetDeliverAfter(deliverAfter *time.Time) {
+	d.DeliverAfter = deliverAfter
+	d.require(deliveryConstraintsFieldDeliverAfter)
+}
+
+// SetDeliverBefore sets the DeliverBefore field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryConstraints) SetDeliverBefore(deliverBefore *time.Time) {
+	d.DeliverBefore = deliverBefore
+	d.require(deliveryConstraintsFieldDeliverBefore)
+}
+
+func (d *DeliveryConstraints) UnmarshalJSON(data []byte) error {
+	type embed DeliveryConstraints
+	var unmarshaler = struct {
+		embed
+		DeliverAfter  *internal.DateTime `json:"deliverAfter,omitempty"`
+		DeliverBefore *internal.DateTime `json:"deliverBefore,omitempty"`
+	}{
+		embed: embed(*d),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*d = DeliveryConstraints(unmarshaler.embed)
+	d.DeliverAfter = unmarshaler.DeliverAfter.TimePtr()
+	d.DeliverBefore = unmarshaler.DeliverBefore.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+	d.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryConstraints) MarshalJSON() ([]byte, error) {
+	type embed DeliveryConstraints
+	var marshaler = struct {
+		embed
+		DeliverAfter  *internal.DateTime `json:"deliverAfter,omitempty"`
+		DeliverBefore *internal.DateTime `json:"deliverBefore,omitempty"`
+	}{
+		embed:         embed(*d),
+		DeliverAfter:  internal.NewOptionalDateTime(d.DeliverAfter),
+		DeliverBefore: internal.NewOptionalDateTime(d.DeliverBefore),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, d.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (d *DeliveryConstraints) String() string {
+	if d == nil {
+		return "<nil>"
+	}
+	if len(d.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// DeliveryError contains an error code and message associated with task delivery.
+var (
+	deliveryErrorFieldCode    = big.NewInt(1 << 0)
+	deliveryErrorFieldMessage = big.NewInt(1 << 1)
+)
+
+type DeliveryError struct {
+	// Error code for Delivery error.
+	Code *DeliveryErrorCode `json:"code,omitempty" url:"code,omitempty"`
+	// Descriptive human-readable string regarding this delivery error.
+	Message *string `json:"message,omitempty" url:"message,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (d *DeliveryError) GetCode() *DeliveryErrorCode {
+	if d == nil {
+		return nil
+	}
+	return d.Code
+}
+
+func (d *DeliveryError) GetMessage() *string {
+	if d == nil {
+		return nil
+	}
+	return d.Message
+}
+
+func (d *DeliveryError) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
+	return d.extraProperties
+}
+
+func (d *DeliveryError) require(field *big.Int) {
+	if d.explicitFields == nil {
+		d.explicitFields = big.NewInt(0)
+	}
+	d.explicitFields.Or(d.explicitFields, field)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryError) SetCode(code *DeliveryErrorCode) {
+	d.Code = code
+	d.require(deliveryErrorFieldCode)
+}
+
+// SetMessage sets the Message field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryError) SetMessage(message *string) {
+	d.Message = message
+	d.require(deliveryErrorFieldMessage)
+}
+
+func (d *DeliveryError) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeliveryError
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeliveryError(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+	d.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryError) MarshalJSON() ([]byte, error) {
+	type embed DeliveryError
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*d),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, d.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (d *DeliveryError) String() string {
+	if d == nil {
+		return "<nil>"
+	}
+	if len(d.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// Error code for Delivery error.
+type DeliveryErrorCode string
+
+const (
+	DeliveryErrorCodeDeliveryErrorCodeInvalid     DeliveryErrorCode = "DELIVERY_ERROR_CODE_INVALID"
+	DeliveryErrorCodeDeliveryErrorCodeUnavailable DeliveryErrorCode = "DELIVERY_ERROR_CODE_UNAVAILABLE"
+	DeliveryErrorCodeDeliveryErrorCodeTimeout     DeliveryErrorCode = "DELIVERY_ERROR_CODE_TIMEOUT"
+	DeliveryErrorCodeDeliveryErrorCodeRejected    DeliveryErrorCode = "DELIVERY_ERROR_CODE_REJECTED"
+)
+
+func NewDeliveryErrorCodeFromString(s string) (DeliveryErrorCode, error) {
+	switch s {
+	case "DELIVERY_ERROR_CODE_INVALID":
+		return DeliveryErrorCodeDeliveryErrorCodeInvalid, nil
+	case "DELIVERY_ERROR_CODE_UNAVAILABLE":
+		return DeliveryErrorCodeDeliveryErrorCodeUnavailable, nil
+	case "DELIVERY_ERROR_CODE_TIMEOUT":
+		return DeliveryErrorCodeDeliveryErrorCodeTimeout, nil
+	case "DELIVERY_ERROR_CODE_REJECTED":
+		return DeliveryErrorCodeDeliveryErrorCodeRejected, nil
+	}
+	var t DeliveryErrorCode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeliveryErrorCode) Ptr() *DeliveryErrorCode {
+	return &d
+}
+
+// Defines the current state of a task's delivery.
+var (
+	deliveryStateFieldStatus              = big.NewInt(1 << 0)
+	deliveryStateFieldError               = big.NewInt(1 << 1)
+	deliveryStateFieldDeliveryConstraints = big.NewInt(1 << 2)
+)
+
+type DeliveryState struct {
+	// The current status of the delivery.
+	Status *DeliveryStateStatus `json:"status,omitempty" url:"status,omitempty"`
+	// Errors associated with the delivery, if any.
+	Error *DeliveryError `json:"error,omitempty" url:"error,omitempty"`
+	// Optional scheduling constraints for Lattice delivery of the task.
+	DeliveryConstraints *DeliveryConstraints `json:"deliveryConstraints,omitempty" url:"deliveryConstraints,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (d *DeliveryState) GetStatus() *DeliveryStateStatus {
+	if d == nil {
+		return nil
+	}
+	return d.Status
+}
+
+func (d *DeliveryState) GetError() *DeliveryError {
+	if d == nil {
+		return nil
+	}
+	return d.Error
+}
+
+func (d *DeliveryState) GetDeliveryConstraints() *DeliveryConstraints {
+	if d == nil {
+		return nil
+	}
+	return d.DeliveryConstraints
+}
+
+func (d *DeliveryState) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
+	return d.extraProperties
+}
+
+func (d *DeliveryState) require(field *big.Int) {
+	if d.explicitFields == nil {
+		d.explicitFields = big.NewInt(0)
+	}
+	d.explicitFields.Or(d.explicitFields, field)
+}
+
+// SetStatus sets the Status field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryState) SetStatus(status *DeliveryStateStatus) {
+	d.Status = status
+	d.require(deliveryStateFieldStatus)
+}
+
+// SetError sets the Error field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryState) SetError(error_ *DeliveryError) {
+	d.Error = error_
+	d.require(deliveryStateFieldError)
+}
+
+// SetDeliveryConstraints sets the DeliveryConstraints field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryState) SetDeliveryConstraints(deliveryConstraints *DeliveryConstraints) {
+	d.DeliveryConstraints = deliveryConstraints
+	d.require(deliveryStateFieldDeliveryConstraints)
+}
+
+func (d *DeliveryState) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeliveryState
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeliveryState(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+	d.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryState) MarshalJSON() ([]byte, error) {
+	type embed DeliveryState
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*d),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, d.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (d *DeliveryState) String() string {
+	if d == nil {
+		return "<nil>"
+	}
+	if len(d.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// The current status of the delivery.
+type DeliveryStateStatus string
+
+const (
+	DeliveryStateStatusDeliveryStatusInvalid         DeliveryStateStatus = "DELIVERY_STATUS_INVALID"
+	DeliveryStateStatusDeliveryStatusDelivered       DeliveryStateStatus = "DELIVERY_STATUS_DELIVERED"
+	DeliveryStateStatusDeliveryStatusPendingExecute  DeliveryStateStatus = "DELIVERY_STATUS_PENDING_EXECUTE"
+	DeliveryStateStatusDeliveryStatusPendingCancel   DeliveryStateStatus = "DELIVERY_STATUS_PENDING_CANCEL"
+	DeliveryStateStatusDeliveryStatusPendingComplete DeliveryStateStatus = "DELIVERY_STATUS_PENDING_COMPLETE"
+)
+
+func NewDeliveryStateStatusFromString(s string) (DeliveryStateStatus, error) {
+	switch s {
+	case "DELIVERY_STATUS_INVALID":
+		return DeliveryStateStatusDeliveryStatusInvalid, nil
+	case "DELIVERY_STATUS_DELIVERED":
+		return DeliveryStateStatusDeliveryStatusDelivered, nil
+	case "DELIVERY_STATUS_PENDING_EXECUTE":
+		return DeliveryStateStatusDeliveryStatusPendingExecute, nil
+	case "DELIVERY_STATUS_PENDING_CANCEL":
+		return DeliveryStateStatusDeliveryStatusPendingCancel, nil
+	case "DELIVERY_STATUS_PENDING_COMPLETE":
+		return DeliveryStateStatusDeliveryStatusPendingComplete, nil
+	}
+	var t DeliveryStateStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DeliveryStateStatus) Ptr() *DeliveryStateStatus {
+	return &d
 }
 
 var (
@@ -940,6 +1558,9 @@ func (e *EntityIDsSelector) GetEntityIDs() []string {
 }
 
 func (e *EntityIDsSelector) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -985,6 +1606,9 @@ func (e *EntityIDsSelector) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntityIDsSelector) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -1022,6 +1646,9 @@ func (e *ExecuteRequest) GetTask() *Task {
 }
 
 func (e *ExecuteRequest) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -1067,6 +1694,9 @@ func (e *ExecuteRequest) MarshalJSON() ([]byte, error) {
 }
 
 func (e *ExecuteRequest) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -1076,6 +1706,92 @@ func (e *ExecuteRequest) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", e)
+}
+
+// Defaults to an interval of 5 seconds. If the DeliverBefore field in the task's DeliveryConstraints isn't populated, Lattice does not retry delivery and instead logs a warning.
+var (
+	fixedRetryFieldRetryInterval = big.NewInt(1 << 0)
+)
+
+type FixedRetry struct {
+	// Specifies the interval between retries. A default interval of 5 seconds is used if this field is not set.
+	RetryInterval *string `json:"retryInterval,omitempty" url:"retryInterval,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (f *FixedRetry) GetRetryInterval() *string {
+	if f == nil {
+		return nil
+	}
+	return f.RetryInterval
+}
+
+func (f *FixedRetry) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
+	return f.extraProperties
+}
+
+func (f *FixedRetry) require(field *big.Int) {
+	if f.explicitFields == nil {
+		f.explicitFields = big.NewInt(0)
+	}
+	f.explicitFields.Or(f.explicitFields, field)
+}
+
+// SetRetryInterval sets the RetryInterval field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (f *FixedRetry) SetRetryInterval(retryInterval *string) {
+	f.RetryInterval = retryInterval
+	f.require(fixedRetryFieldRetryInterval)
+}
+
+func (f *FixedRetry) UnmarshalJSON(data []byte) error {
+	type unmarshaler FixedRetry
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*f = FixedRetry(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
+	}
+	f.extraProperties = extraProperties
+	f.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (f *FixedRetry) MarshalJSON() ([]byte, error) {
+	type embed FixedRetry
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*f),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, f.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (f *FixedRetry) String() string {
+	if f == nil {
+		return "<nil>"
+	}
+	if len(f.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(f); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", f)
 }
 
 // Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
@@ -1103,6 +1819,9 @@ func (g *GoogleProtobufAny) GetType() *string {
 }
 
 func (g *GoogleProtobufAny) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.ExtraProperties
 }
 
@@ -1152,6 +1871,9 @@ func (g *GoogleProtobufAny) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GoogleProtobufAny) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -1187,6 +1909,9 @@ func (o *Owner) GetEntityID() *string {
 }
 
 func (o *Owner) GetExtraProperties() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
 	return o.extraProperties
 }
 
@@ -1232,6 +1957,9 @@ func (o *Owner) MarshalJSON() ([]byte, error) {
 }
 
 func (o *Owner) String() string {
+	if o == nil {
+		return "<nil>"
+	}
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
 			return value
@@ -1296,6 +2024,9 @@ func (p *Principal) GetOnBehalfOf() *Principal {
 }
 
 func (p *Principal) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -1362,6 +2093,9 @@ func (p *Principal) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Principal) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -1409,6 +2143,9 @@ func (r *Relations) GetParentTaskID() *string {
 }
 
 func (r *Relations) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -1461,6 +2198,9 @@ func (r *Relations) MarshalJSON() ([]byte, error) {
 }
 
 func (r *Relations) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -1496,6 +2236,9 @@ func (r *Replication) GetStaleTime() *time.Time {
 }
 
 func (r *Replication) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -1549,6 +2292,94 @@ func (r *Replication) MarshalJSON() ([]byte, error) {
 }
 
 func (r *Replication) String() string {
+	if r == nil {
+		return "<nil>"
+	}
+	if len(r.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
+}
+
+// Sets an optional try strategy for tasks. Use this option to control how Lattice attempts to retry delivery of tasks to assets with intermittent access or network connectivity to your environment.
+var (
+	retryStrategyFieldFixedRetryStrategy = big.NewInt(1 << 0)
+)
+
+type RetryStrategy struct {
+	FixedRetryStrategy *FixedRetry `json:"fixedRetryStrategy,omitempty" url:"fixedRetryStrategy,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (r *RetryStrategy) GetFixedRetryStrategy() *FixedRetry {
+	if r == nil {
+		return nil
+	}
+	return r.FixedRetryStrategy
+}
+
+func (r *RetryStrategy) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
+	return r.extraProperties
+}
+
+func (r *RetryStrategy) require(field *big.Int) {
+	if r.explicitFields == nil {
+		r.explicitFields = big.NewInt(0)
+	}
+	r.explicitFields.Or(r.explicitFields, field)
+}
+
+// SetFixedRetryStrategy sets the FixedRetryStrategy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (r *RetryStrategy) SetFixedRetryStrategy(fixedRetryStrategy *FixedRetry) {
+	r.FixedRetryStrategy = fixedRetryStrategy
+	r.require(retryStrategyFieldFixedRetryStrategy)
+}
+
+func (r *RetryStrategy) UnmarshalJSON(data []byte) error {
+	type unmarshaler RetryStrategy
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RetryStrategy(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+	r.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RetryStrategy) MarshalJSON() ([]byte, error) {
+	type embed RetryStrategy
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*r),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, r.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (r *RetryStrategy) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -1583,6 +2414,9 @@ func (s *StreamHeartbeat) GetTimestamp() *string {
 }
 
 func (s *StreamHeartbeat) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -1628,6 +2462,9 @@ func (s *StreamHeartbeat) MarshalJSON() ([]byte, error) {
 }
 
 func (s *StreamHeartbeat) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -1688,6 +2525,9 @@ func (s *System) GetManagesOwnScheduling() *bool {
 }
 
 func (s *System) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -1747,6 +2587,9 @@ func (s *System) MarshalJSON() ([]byte, error) {
 }
 
 func (s *System) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -1783,6 +2626,8 @@ var (
 	taskFieldReplication         = big.NewInt(1 << 12)
 	taskFieldInitialEntities     = big.NewInt(1 << 13)
 	taskFieldOwner               = big.NewInt(1 << 14)
+	taskFieldRetryStrategy       = big.NewInt(1 << 15)
+	taskFieldDeliveryState       = big.NewInt(1 << 16)
 )
 
 type Task struct {
@@ -1824,6 +2669,10 @@ type Task struct {
 	//
 	//	for replication of task data to other nodes running Task Manager.
 	Owner *Owner `json:"owner,omitempty" url:"owner,omitempty"`
+	// Sets an optional try strategy for tasks. Use this option to control how Lattice attempts to retry delivery of tasks to assets with intermittent access or network connectivity to your environment.
+	RetryStrategy *RetryStrategy `json:"retryStrategy,omitempty" url:"retryStrategy,omitempty"`
+	// The current delivery state of a task.
+	DeliveryState *DeliveryState `json:"deliveryState,omitempty" url:"deliveryState,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1937,7 +2786,24 @@ func (t *Task) GetOwner() *Owner {
 	return t.Owner
 }
 
+func (t *Task) GetRetryStrategy() *RetryStrategy {
+	if t == nil {
+		return nil
+	}
+	return t.RetryStrategy
+}
+
+func (t *Task) GetDeliveryState() *DeliveryState {
+	if t == nil {
+		return nil
+	}
+	return t.DeliveryState
+}
+
 func (t *Task) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2053,6 +2919,20 @@ func (t *Task) SetOwner(owner *Owner) {
 	t.require(taskFieldOwner)
 }
 
+// SetRetryStrategy sets the RetryStrategy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetRetryStrategy(retryStrategy *RetryStrategy) {
+	t.RetryStrategy = retryStrategy
+	t.require(taskFieldRetryStrategy)
+}
+
+// SetDeliveryState sets the DeliveryState field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetDeliveryState(deliveryState *DeliveryState) {
+	t.DeliveryState = deliveryState
+	t.require(taskFieldDeliveryState)
+}
+
 func (t *Task) UnmarshalJSON(data []byte) error {
 	type embed Task
 	var unmarshaler = struct {
@@ -2097,6 +2977,9 @@ func (t *Task) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Task) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -2146,6 +3029,9 @@ func (t *TaskEntity) GetSnapshot() *bool {
 }
 
 func (t *TaskEntity) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2198,6 +3084,9 @@ func (t *TaskEntity) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskEntity) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -2257,6 +3146,9 @@ func (t *TaskError) GetErrorDetails() *GoogleProtobufAny {
 }
 
 func (t *TaskError) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2316,6 +3208,9 @@ func (t *TaskError) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskError) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -2383,6 +3278,9 @@ func (t *TaskEventData) GetTaskEvent() *TaskEventDataTaskEvent {
 }
 
 func (t *TaskEventData) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2428,6 +3326,9 @@ func (t *TaskEventData) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskEventData) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -2473,6 +3374,9 @@ func (t *TaskEventDataTaskEvent) GetTask() *Task {
 }
 
 func (t *TaskEventDataTaskEvent) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2525,6 +3429,9 @@ func (t *TaskEventDataTaskEvent) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskEventDataTaskEvent) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -2607,6 +3514,9 @@ func (t *TaskQueryResults) GetNextPageToken() *string {
 }
 
 func (t *TaskQueryResults) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2659,6 +3569,9 @@ func (t *TaskQueryResults) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskQueryResults) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -2759,6 +3672,9 @@ func (t *TaskStatus) GetAllocation() *Allocation {
 }
 
 func (t *TaskStatus) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2854,6 +3770,9 @@ func (t *TaskStatus) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskStatus) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -2950,6 +3869,9 @@ func (t *TaskStreamEvent) GetTaskEvent() *TaskEventDataTaskEvent {
 }
 
 func (t *TaskStreamEvent) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -2995,6 +3917,9 @@ func (t *TaskStreamEvent) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskStreamEvent) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -3058,6 +3983,9 @@ func (t *TaskVersion) GetStatusVersion() *int {
 }
 
 func (t *TaskVersion) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -3117,6 +4045,9 @@ func (t *TaskVersion) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskVersion) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -3152,6 +4083,9 @@ func (u *User) GetUserID() *string {
 }
 
 func (u *User) GetExtraProperties() map[string]interface{} {
+	if u == nil {
+		return nil
+	}
 	return u.extraProperties
 }
 
@@ -3197,6 +4131,9 @@ func (u *User) MarshalJSON() ([]byte, error) {
 }
 
 func (u *User) String() string {
+	if u == nil {
+		return "<nil>"
+	}
 	if len(u.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
@@ -3467,6 +4404,9 @@ func (t *TaskQueryStatusFilter) GetStatus() *TaskQueryStatusFilterStatus {
 }
 
 func (t *TaskQueryStatusFilter) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -3512,6 +4452,9 @@ func (t *TaskQueryStatusFilter) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskQueryStatusFilter) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -3619,6 +4562,9 @@ func (t *TaskQueryUpdateTimeRange) GetEndTime() *string {
 }
 
 func (t *TaskQueryUpdateTimeRange) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -3671,6 +4617,9 @@ func (t *TaskQueryUpdateTimeRange) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskQueryUpdateTimeRange) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -3768,6 +4717,9 @@ func (t *TaskStreamRequestTaskTypeTaskTypePrefix) GetTaskTypePrefix() string {
 }
 
 func (t *TaskStreamRequestTaskTypeTaskTypePrefix) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -3813,6 +4765,9 @@ func (t *TaskStreamRequestTaskTypeTaskTypePrefix) MarshalJSON() ([]byte, error) 
 }
 
 func (t *TaskStreamRequestTaskTypeTaskTypePrefix) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -3847,6 +4802,9 @@ func (t *TaskStreamRequestTaskTypeTaskTypeURLs) GetTaskTypeURLs() []string {
 }
 
 func (t *TaskStreamRequestTaskTypeTaskTypeURLs) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -3892,6 +4850,9 @@ func (t *TaskStreamRequestTaskTypeTaskTypeURLs) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskStreamRequestTaskTypeTaskTypeURLs) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -3959,4 +4920,25 @@ func (t *TaskStatusUpdate) SetNewStatus(newStatus *TaskStatus) {
 func (t *TaskStatusUpdate) SetAuthor(author *Principal) {
 	t.Author = author
 	t.require(taskStatusUpdateFieldAuthor)
+}
+
+func (t *TaskStatusUpdate) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskStatusUpdate
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*t = TaskStatusUpdate(body)
+	return nil
+}
+
+func (t *TaskStatusUpdate) MarshalJSON() ([]byte, error) {
+	type embed TaskStatusUpdate
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
