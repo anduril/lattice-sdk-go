@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/internal"
 	big "math/big"
 	time "time"
 )
@@ -44,6 +44,9 @@ func (a *AcmDetails) GetAcmDescription() *string {
 }
 
 func (a *AcmDetails) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -96,6 +99,9 @@ func (a *AcmDetails) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AcmDetails) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -142,6 +148,9 @@ type ActiveTarget struct {
 }
 
 func (a *ActiveTarget) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -180,6 +189,9 @@ func (a *ActiveTarget) MarshalJSON() ([]byte, error) {
 }
 
 func (a *ActiveTarget) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -215,6 +227,9 @@ func (a *Agent) GetEntityID() *string {
 }
 
 func (a *Agent) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -260,6 +275,9 @@ func (a *Agent) MarshalJSON() ([]byte, error) {
 }
 
 func (a *Agent) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -342,6 +360,9 @@ func (a *Alert) GetActiveConditions() []*AlertCondition {
 }
 
 func (a *Alert) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -423,6 +444,9 @@ func (a *Alert) MarshalJSON() ([]byte, error) {
 }
 
 func (a *Alert) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -473,6 +497,9 @@ func (a *AlertCondition) GetDescription() *string {
 }
 
 func (a *AlertCondition) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -525,6 +552,9 @@ func (a *AlertCondition) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AlertCondition) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -598,6 +628,9 @@ func (a *Aliases) GetName() *string {
 }
 
 func (a *Aliases) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -650,6 +683,9 @@ func (a *Aliases) MarshalJSON() ([]byte, error) {
 }
 
 func (a *Aliases) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -693,6 +729,9 @@ func (a *AlternateID) GetType() *AlternateIDType {
 }
 
 func (a *AlternateID) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -745,6 +784,9 @@ func (a *AlternateID) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AlternateID) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -882,6 +924,9 @@ func (a *AngleOfArrival) GetBearingElevationCovarianceRad2() *TMat2 {
 }
 
 func (a *AngleOfArrival) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
 	return a.extraProperties
 }
 
@@ -934,6 +979,9 @@ func (a *AngleOfArrival) MarshalJSON() ([]byte, error) {
 }
 
 func (a *AngleOfArrival) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	if len(a.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
 			return value
@@ -976,6 +1024,9 @@ func (b *BadRequestErrorBody) GetErrorDescription() *string {
 }
 
 func (b *BadRequestErrorBody) GetExtraProperties() map[string]interface{} {
+	if b == nil {
+		return nil
+	}
 	return b.extraProperties
 }
 
@@ -1028,6 +1079,9 @@ func (b *BadRequestErrorBody) MarshalJSON() ([]byte, error) {
 }
 
 func (b *BadRequestErrorBody) String() string {
+	if b == nil {
+		return "<nil>"
+	}
 	if len(b.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
 			return value
@@ -1062,6 +1116,9 @@ func (b *Bandwidth) GetBandwidthHz() *float64 {
 }
 
 func (b *Bandwidth) GetExtraProperties() map[string]interface{} {
+	if b == nil {
+		return nil
+	}
 	return b.extraProperties
 }
 
@@ -1107,6 +1164,9 @@ func (b *Bandwidth) MarshalJSON() ([]byte, error) {
 }
 
 func (b *Bandwidth) String() string {
+	if b == nil {
+		return "<nil>"
+	}
 	if len(b.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
 			return value
@@ -1150,6 +1210,9 @@ func (b *BandwidthRange) GetMaximumBandwidth() *Bandwidth {
 }
 
 func (b *BandwidthRange) GetExtraProperties() map[string]interface{} {
+	if b == nil {
+		return nil
+	}
 	return b.extraProperties
 }
 
@@ -1202,6 +1265,9 @@ func (b *BandwidthRange) MarshalJSON() ([]byte, error) {
 }
 
 func (b *BandwidthRange) String() string {
+	if b == nil {
+		return "<nil>"
+	}
 	if len(b.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(b.rawJSON); err == nil {
 			return value
@@ -1251,6 +1317,9 @@ func (c *Classification) GetFields() []*FieldClassificationInformation {
 }
 
 func (c *Classification) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -1303,6 +1372,9 @@ func (c *Classification) MarshalJSON() ([]byte, error) {
 }
 
 func (c *Classification) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -1353,6 +1425,9 @@ func (c *ClassificationInformation) GetCaveats() []string {
 }
 
 func (c *ClassificationInformation) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -1405,6 +1480,9 @@ func (c *ClassificationInformation) MarshalJSON() ([]byte, error) {
 }
 
 func (c *ClassificationInformation) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -1515,6 +1593,9 @@ func (c *Color) GetAlpha() *float64 {
 }
 
 func (c *Color) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -1581,6 +1662,9 @@ func (c *Color) MarshalJSON() ([]byte, error) {
 }
 
 func (c *Color) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -1658,6 +1742,9 @@ func (c *ComponentHealth) GetUpdateTime() *time.Time {
 }
 
 func (c *ComponentHealth) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -1739,6 +1826,9 @@ func (c *ComponentHealth) MarshalJSON() ([]byte, error) {
 }
 
 func (c *ComponentHealth) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -1819,6 +1909,9 @@ func (c *ComponentMessage) GetMessage() *string {
 }
 
 func (c *ComponentMessage) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -1871,6 +1964,9 @@ func (c *ComponentMessage) MarshalJSON() ([]byte, error) {
 }
 
 func (c *ComponentMessage) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -1942,6 +2038,9 @@ func (c *ControlAreaDetails) GetType() *ControlAreaDetailsType {
 }
 
 func (c *ControlAreaDetails) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -1987,6 +2086,9 @@ func (c *ControlAreaDetails) MarshalJSON() ([]byte, error) {
 }
 
 func (c *ControlAreaDetails) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -2095,6 +2197,9 @@ func (c *Correlation) GetDecorrelation() *Decorrelation {
 }
 
 func (c *Correlation) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -2161,6 +2266,9 @@ func (c *Correlation) MarshalJSON() ([]byte, error) {
 }
 
 func (c *Correlation) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -2229,6 +2337,9 @@ func (c *CorrelationMembership) GetMetadata() *CorrelationMetadata {
 }
 
 func (c *CorrelationMembership) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -2295,6 +2406,9 @@ func (c *CorrelationMembership) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CorrelationMembership) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -2356,6 +2470,9 @@ func (c *CorrelationMetadata) GetType() *CorrelationMetadataType {
 }
 
 func (c *CorrelationMetadata) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -2415,6 +2532,9 @@ func (c *CorrelationMetadata) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CorrelationMetadata) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -2526,6 +2646,9 @@ func (c *CronWindow) GetDurationMillis() *string {
 }
 
 func (c *CronWindow) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -2578,6 +2701,9 @@ func (c *CronWindow) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CronWindow) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -2612,6 +2738,9 @@ func (d *DecorrelatedAll) GetMetadata() *CorrelationMetadata {
 }
 
 func (d *DecorrelatedAll) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
 	return d.extraProperties
 }
 
@@ -2657,6 +2786,9 @@ func (d *DecorrelatedAll) MarshalJSON() ([]byte, error) {
 }
 
 func (d *DecorrelatedAll) String() string {
+	if d == nil {
+		return "<nil>"
+	}
 	if len(d.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
 			return value
@@ -2701,6 +2833,9 @@ func (d *DecorrelatedSingle) GetMetadata() *CorrelationMetadata {
 }
 
 func (d *DecorrelatedSingle) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
 	return d.extraProperties
 }
 
@@ -2753,6 +2888,9 @@ func (d *DecorrelatedSingle) MarshalJSON() ([]byte, error) {
 }
 
 func (d *DecorrelatedSingle) String() string {
+	if d == nil {
+		return "<nil>"
+	}
 	if len(d.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
 			return value
@@ -2803,6 +2941,9 @@ func (d *Decorrelation) GetDecorrelatedEntities() []*DecorrelatedSingle {
 }
 
 func (d *Decorrelation) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
 	return d.extraProperties
 }
 
@@ -2855,6 +2996,9 @@ func (d *Decorrelation) MarshalJSON() ([]byte, error) {
 }
 
 func (d *Decorrelation) String() string {
+	if d == nil {
+		return "<nil>"
+	}
 	if len(d.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
 			return value
@@ -2889,6 +3033,9 @@ func (d *Dimensions) GetLengthM() *float64 {
 }
 
 func (d *Dimensions) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
 	return d.extraProperties
 }
 
@@ -2934,6 +3081,9 @@ func (d *Dimensions) MarshalJSON() ([]byte, error) {
 }
 
 func (d *Dimensions) String() string {
+	if d == nil {
+		return "<nil>"
+	}
 	if len(d.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
 			return value
@@ -2971,6 +3121,9 @@ func (e *Echelon) GetArmyEchelon() *EchelonArmyEchelon {
 }
 
 func (e *Echelon) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -3016,6 +3169,9 @@ func (e *Echelon) MarshalJSON() ([]byte, error) {
 }
 
 func (e *Echelon) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -3109,6 +3265,9 @@ func (e *EmitterNotation) GetConfidence() *float64 {
 }
 
 func (e *EmitterNotation) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -3161,6 +3320,9 @@ func (e *EmitterNotation) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EmitterNotation) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -3594,6 +3756,9 @@ func (e *Entity) GetSymbology() *Symbology {
 }
 
 func (e *Entity) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -3910,6 +4075,9 @@ func (e *Entity) MarshalJSON() ([]byte, error) {
 }
 
 func (e *Entity) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -3963,6 +4131,9 @@ func (e *EntityManagerPose) GetOrientation() *Quaternion {
 }
 
 func (e *EntityManagerPose) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -4015,6 +4186,9 @@ func (e *EntityManagerPose) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntityManagerPose) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -4094,6 +4268,9 @@ func (e *EntityManagerTMat3) GetMzz() *float64 {
 }
 
 func (e *EntityManagerTMat3) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -4174,6 +4351,9 @@ func (e *EntityManagerTMat3) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntityManagerTMat3) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -4225,6 +4405,9 @@ func (e *Enu) GetU() *float64 {
 }
 
 func (e *Enu) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -4284,6 +4467,9 @@ func (e *Enu) MarshalJSON() ([]byte, error) {
 }
 
 func (e *Enu) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -4349,6 +4535,9 @@ func (e *ErrorEllipse) GetOrientationD() *float64 {
 }
 
 func (e *ErrorEllipse) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -4415,6 +4604,9 @@ func (e *ErrorEllipse) MarshalJSON() ([]byte, error) {
 }
 
 func (e *ErrorEllipse) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -4462,6 +4654,9 @@ func (f *FieldClassificationInformation) GetClassificationInformation() *Classif
 }
 
 func (f *FieldClassificationInformation) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
 	return f.extraProperties
 }
 
@@ -4514,6 +4709,9 @@ func (f *FieldClassificationInformation) MarshalJSON() ([]byte, error) {
 }
 
 func (f *FieldClassificationInformation) String() string {
+	if f == nil {
+		return "<nil>"
+	}
 	if len(f.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
 			return value
@@ -4638,6 +4836,9 @@ func (f *FieldOfView) GetMode() *FieldOfViewMode {
 }
 
 func (f *FieldOfView) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
 	return f.extraProperties
 }
 
@@ -4739,6 +4940,9 @@ func (f *FieldOfView) MarshalJSON() ([]byte, error) {
 }
 
 func (f *FieldOfView) String() string {
+	if f == nil {
+		return "<nil>"
+	}
 	if len(f.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
 			return value
@@ -4799,6 +5003,9 @@ type Fixed struct {
 }
 
 func (f *Fixed) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
 	return f.extraProperties
 }
 
@@ -4837,6 +5044,9 @@ func (f *Fixed) MarshalJSON() ([]byte, error) {
 }
 
 func (f *Fixed) String() string {
+	if f == nil {
+		return "<nil>"
+	}
 	if len(f.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
 			return value
@@ -4872,6 +5082,9 @@ func (f *Frequency) GetFrequencyHz() *Measurement {
 }
 
 func (f *Frequency) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
 	return f.extraProperties
 }
 
@@ -4917,6 +5130,9 @@ func (f *Frequency) MarshalJSON() ([]byte, error) {
 }
 
 func (f *Frequency) String() string {
+	if f == nil {
+		return "<nil>"
+	}
 	if len(f.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
 			return value
@@ -4962,6 +5178,9 @@ func (f *FrequencyRange) GetMaximumFrequencyHz() *Frequency {
 }
 
 func (f *FrequencyRange) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
 	return f.extraProperties
 }
 
@@ -5014,6 +5233,9 @@ func (f *FrequencyRange) MarshalJSON() ([]byte, error) {
 }
 
 func (f *FrequencyRange) String() string {
+	if f == nil {
+		return "<nil>"
+	}
 	if len(f.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
 			return value
@@ -5038,23 +5260,23 @@ var (
 )
 
 type Fuel struct {
-	// unique fuel identifier
+	// Unique fuel identifier
 	FuelID *string `json:"fuelId,omitempty" url:"fuelId,omitempty"`
-	// long form name of the fuel source.
+	// Long form name of the fuel source.
 	Name *string `json:"name,omitempty" url:"name,omitempty"`
-	// timestamp the information was reported
+	// Timestamp the information was reported
 	ReportedDate *time.Time `json:"reportedDate,omitempty" url:"reportedDate,omitempty"`
-	// amount of gallons on hand
+	// Amount of gallons on hand
 	AmountGallons *int `json:"amountGallons,omitempty" url:"amountGallons,omitempty"`
-	// how much the asset is allowed to have available (in gallons)
+	// How much the asset is allowed to have available (in gallons)
 	MaxAuthorizedCapacityGallons *int `json:"maxAuthorizedCapacityGallons,omitempty" url:"maxAuthorizedCapacityGallons,omitempty"`
-	// minimum required for operations (in gallons)
+	// Minimum required for operations (in gallons)
 	OperationalRequirementGallons *int `json:"operationalRequirementGallons,omitempty" url:"operationalRequirementGallons,omitempty"`
-	// fuel in a single asset may have different levels of classification
+	// Fuel in a single asset may have different levels of classification
 	//
-	//	use case: fuel for a SECRET asset while diesel fuel may be UNCLASSIFIED
+	//	Use case: fuel for a SECRET asset while diesel fuel may be UNCLASSIFIED
 	DataClassification *Classification `json:"dataClassification,omitempty" url:"dataClassification,omitempty"`
-	// source of information
+	// Source of information
 	DataSource *string `json:"dataSource,omitempty" url:"dataSource,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -5121,6 +5343,9 @@ func (f *Fuel) GetDataSource() *string {
 }
 
 func (f *Fuel) GetExtraProperties() map[string]interface{} {
+	if f == nil {
+		return nil
+	}
 	return f.extraProperties
 }
 
@@ -5223,6 +5448,9 @@ func (f *Fuel) MarshalJSON() ([]byte, error) {
 }
 
 func (f *Fuel) String() string {
+	if f == nil {
+		return "<nil>"
+	}
 	if len(f.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(f.rawJSON); err == nil {
 			return value
@@ -5275,6 +5503,9 @@ func (g *GeoDetails) GetAcm() *AcmDetails {
 }
 
 func (g *GeoDetails) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -5334,6 +5565,9 @@ func (g *GeoDetails) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoDetails) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -5442,6 +5676,9 @@ func (g *GeoEllipse) GetHeightM() *float64 {
 }
 
 func (g *GeoEllipse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -5508,6 +5745,9 @@ func (g *GeoEllipse) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoEllipse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -5566,6 +5806,9 @@ func (g *GeoEllipsoid) GetUpAxisM() *float64 {
 }
 
 func (g *GeoEllipsoid) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -5625,6 +5868,9 @@ func (g *GeoEllipsoid) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoEllipsoid) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -5661,6 +5907,9 @@ func (g *GeoLine) GetPositions() []*Position {
 }
 
 func (g *GeoLine) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -5706,6 +5955,9 @@ func (g *GeoLine) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoLine) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -5742,6 +5994,9 @@ func (g *GeoPoint) GetPosition() *Position {
 }
 
 func (g *GeoPoint) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -5787,6 +6042,9 @@ func (g *GeoPoint) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoPoint) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -5837,6 +6095,9 @@ func (g *GeoPolygon) GetIsRectangle() *bool {
 }
 
 func (g *GeoPolygon) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -5889,6 +6150,9 @@ func (g *GeoPolygon) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoPolygon) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -5937,6 +6201,9 @@ func (g *GeoPolygonPosition) GetHeightM() *float64 {
 }
 
 func (g *GeoPolygonPosition) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -5989,6 +6256,9 @@ func (g *GeoPolygonPosition) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoPolygonPosition) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -6059,6 +6329,9 @@ func (g *GeoShape) GetEllipsoid() *GeoEllipsoid {
 }
 
 func (g *GeoShape) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -6132,6 +6405,9 @@ func (g *GeoShape) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoShape) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -6157,6 +6433,9 @@ type GroupChild struct {
 }
 
 func (g *GroupChild) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -6195,6 +6474,9 @@ func (g *GroupChild) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GroupChild) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -6238,6 +6520,9 @@ func (g *GroupDetails) GetEchelon() *Echelon {
 }
 
 func (g *GroupDetails) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -6290,6 +6575,9 @@ func (g *GroupDetails) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GroupDetails) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -6315,6 +6603,9 @@ type GroupParent struct {
 }
 
 func (g *GroupParent) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -6353,6 +6644,9 @@ func (g *GroupParent) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GroupParent) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
@@ -6436,6 +6730,9 @@ func (h *Health) GetActiveAlerts() []*Alert {
 }
 
 func (h *Health) GetExtraProperties() map[string]interface{} {
+	if h == nil {
+		return nil
+	}
 	return h.extraProperties
 }
 
@@ -6517,6 +6814,9 @@ func (h *Health) MarshalJSON() ([]byte, error) {
 }
 
 func (h *Health) String() string {
+	if h == nil {
+		return "<nil>"
+	}
 	if len(h.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
 			return value
@@ -6612,6 +6912,9 @@ func (h *HeartbeatObject) GetTimestamp() *string {
 }
 
 func (h *HeartbeatObject) GetExtraProperties() map[string]interface{} {
+	if h == nil {
+		return nil
+	}
 	return h.extraProperties
 }
 
@@ -6657,6 +6960,9 @@ func (h *HeartbeatObject) MarshalJSON() ([]byte, error) {
 }
 
 func (h *HeartbeatObject) String() string {
+	if h == nil {
+		return "<nil>"
+	}
 	if len(h.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
 			return value
@@ -6727,6 +7033,9 @@ func (h *HighValueTarget) GetIsHighPayoffTarget() *bool {
 }
 
 func (h *HighValueTarget) GetExtraProperties() map[string]interface{} {
+	if h == nil {
+		return nil
+	}
 	return h.extraProperties
 }
 
@@ -6793,6 +7102,9 @@ func (h *HighValueTarget) MarshalJSON() ([]byte, error) {
 }
 
 func (h *HighValueTarget) String() string {
+	if h == nil {
+		return "<nil>"
+	}
 	if len(h.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
 			return value
@@ -6839,6 +7151,9 @@ func (h *HighValueTargetMatch) GetHighValueTargetDescriptionID() *string {
 }
 
 func (h *HighValueTargetMatch) GetExtraProperties() map[string]interface{} {
+	if h == nil {
+		return nil
+	}
 	return h.extraProperties
 }
 
@@ -6891,6 +7206,9 @@ func (h *HighValueTargetMatch) MarshalJSON() ([]byte, error) {
 }
 
 func (h *HighValueTargetMatch) String() string {
+	if h == nil {
+		return "<nil>"
+	}
 	if len(h.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(h.rawJSON); err == nil {
 			return value
@@ -6974,6 +7292,9 @@ func (i *Indicators) GetStarred() *bool {
 }
 
 func (i *Indicators) GetExtraProperties() map[string]interface{} {
+	if i == nil {
+		return nil
+	}
 	return i.extraProperties
 }
 
@@ -7054,6 +7375,9 @@ func (i *Indicators) MarshalJSON() ([]byte, error) {
 }
 
 func (i *Indicators) String() string {
+	if i == nil {
+		return "<nil>"
+	}
 	if len(i.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
 			return value
@@ -7109,6 +7433,9 @@ func (l *LineOfBearing) GetMaxRangeM() *Measurement {
 }
 
 func (l *LineOfBearing) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
 }
 
@@ -7168,6 +7495,9 @@ func (l *LineOfBearing) MarshalJSON() ([]byte, error) {
 }
 
 func (l *LineOfBearing) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -7202,6 +7532,9 @@ func (l *LinearRing) GetPositions() []*GeoPolygonPosition {
 }
 
 func (l *LinearRing) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
 }
 
@@ -7247,6 +7580,9 @@ func (l *LinearRing) MarshalJSON() ([]byte, error) {
 }
 
 func (l *LinearRing) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -7320,6 +7656,9 @@ func (l *Lla) GetAltitudeReference() *LlaAltitudeReference {
 }
 
 func (l *Lla) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
 }
 
@@ -7393,6 +7732,9 @@ func (l *Lla) MarshalJSON() ([]byte, error) {
 }
 
 func (l *Lla) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -7509,6 +7851,9 @@ func (l *Location) GetAttitudeEnu() *Quaternion {
 }
 
 func (l *Location) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
 }
 
@@ -7582,6 +7927,9 @@ func (l *Location) MarshalJSON() ([]byte, error) {
 }
 
 func (l *Location) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -7641,6 +7989,9 @@ func (l *LocationUncertainty) GetPositionErrorEllipse() *ErrorEllipse {
 }
 
 func (l *LocationUncertainty) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
 }
 
@@ -7700,6 +8051,9 @@ func (l *LocationUncertainty) MarshalJSON() ([]byte, error) {
 }
 
 func (l *LocationUncertainty) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -7813,6 +8167,9 @@ func (m *MeanKeplerianElements) GetGm() *float64 {
 }
 
 func (m *MeanKeplerianElements) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -7922,6 +8279,9 @@ func (m *MeanKeplerianElements) MarshalJSON() ([]byte, error) {
 }
 
 func (m *MeanKeplerianElements) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -7967,6 +8327,9 @@ func (m *Measurement) GetSigma() *float64 {
 }
 
 func (m *Measurement) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -8019,6 +8382,9 @@ func (m *Measurement) MarshalJSON() ([]byte, error) {
 }
 
 func (m *Measurement) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -8053,6 +8419,9 @@ func (m *Media) GetMedia() []*MediaItem {
 }
 
 func (m *Media) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -8098,6 +8467,9 @@ func (m *Media) MarshalJSON() ([]byte, error) {
 }
 
 func (m *Media) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -8141,6 +8513,9 @@ func (m *MediaItem) GetRelativePath() *string {
 }
 
 func (m *MediaItem) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -8193,6 +8568,9 @@ func (m *MediaItem) MarshalJSON() ([]byte, error) {
 }
 
 func (m *MediaItem) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -8242,6 +8620,9 @@ type MergedFrom struct {
 }
 
 func (m *MergedFrom) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -8280,6 +8661,9 @@ func (m *MergedFrom) MarshalJSON() ([]byte, error) {
 }
 
 func (m *MergedFrom) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -8313,6 +8697,9 @@ func (m *MilStd2525C) GetSidc() *string {
 }
 
 func (m *MilStd2525C) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -8358,6 +8745,9 @@ func (m *MilStd2525C) MarshalJSON() ([]byte, error) {
 }
 
 func (m *MilStd2525C) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -8410,6 +8800,9 @@ func (m *MilView) GetNationality() *MilViewNationality {
 }
 
 func (m *MilView) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -8469,6 +8862,9 @@ func (m *MilView) MarshalJSON() ([]byte, error) {
 }
 
 func (m *MilView) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -8953,6 +9349,9 @@ func (m *Mode5) GetMode5PlatformID() *int {
 }
 
 func (m *Mode5) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -9012,6 +9411,9 @@ func (m *Mode5) MarshalJSON() ([]byte, error) {
 }
 
 func (m *Mode5) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -9088,6 +9490,9 @@ func (m *ModeS) GetAddress() *int {
 }
 
 func (m *ModeS) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
 	return m.extraProperties
 }
 
@@ -9140,6 +9545,129 @@ func (m *ModeS) MarshalJSON() ([]byte, error) {
 }
 
 func (m *ModeS) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+// Munition describes an entity's munitions stores
+var (
+	munitionFieldMunitionID    = big.NewInt(1 << 0)
+	munitionFieldName          = big.NewInt(1 << 1)
+	munitionFieldQuantityUnits = big.NewInt(1 << 2)
+)
+
+type Munition struct {
+	// Unique munition identifier
+	MunitionID *string `json:"munitionId,omitempty" url:"munitionId,omitempty"`
+	// Long form name of the munition
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
+	// Number of units
+	QuantityUnits *int `json:"quantityUnits,omitempty" url:"quantityUnits,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *Munition) GetMunitionID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.MunitionID
+}
+
+func (m *Munition) GetName() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Name
+}
+
+func (m *Munition) GetQuantityUnits() *int {
+	if m == nil {
+		return nil
+	}
+	return m.QuantityUnits
+}
+
+func (m *Munition) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
+	return m.extraProperties
+}
+
+func (m *Munition) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetMunitionID sets the MunitionID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *Munition) SetMunitionID(munitionID *string) {
+	m.MunitionID = munitionID
+	m.require(munitionFieldMunitionID)
+}
+
+// SetName sets the Name field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *Munition) SetName(name *string) {
+	m.Name = name
+	m.require(munitionFieldName)
+}
+
+// SetQuantityUnits sets the QuantityUnits field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *Munition) SetQuantityUnits(quantityUnits *int) {
+	m.QuantityUnits = quantityUnits
+	m.require(munitionFieldQuantityUnits)
+}
+
+func (m *Munition) UnmarshalJSON(data []byte) error {
+	type unmarshaler Munition
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*m = Munition(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *Munition) MarshalJSON() ([]byte, error) {
+	type embed Munition
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*m),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (m *Munition) String() string {
+	if m == nil {
+		return "<nil>"
+	}
 	if len(m.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
 			return value
@@ -9161,6 +9689,9 @@ type NonPrimaryMembership struct {
 }
 
 func (n *NonPrimaryMembership) GetExtraProperties() map[string]interface{} {
+	if n == nil {
+		return nil
+	}
 	return n.extraProperties
 }
 
@@ -9199,6 +9730,9 @@ func (n *NonPrimaryMembership) MarshalJSON() ([]byte, error) {
 }
 
 func (n *NonPrimaryMembership) String() string {
+	if n == nil {
+		return "<nil>"
+	}
 	if len(n.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(n.rawJSON); err == nil {
 			return value
@@ -9254,6 +9788,9 @@ func (o *Ontology) GetTemplate() *OntologyTemplate {
 }
 
 func (o *Ontology) GetExtraProperties() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
 	return o.extraProperties
 }
 
@@ -9313,6 +9850,9 @@ func (o *Ontology) MarshalJSON() ([]byte, error) {
 }
 
 func (o *Ontology) String() string {
+	if o == nil {
+		return "<nil>"
+	}
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
 			return value
@@ -9382,6 +9922,9 @@ func (o *Orbit) GetOrbitMeanElements() *OrbitMeanElements {
 }
 
 func (o *Orbit) GetExtraProperties() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
 	return o.extraProperties
 }
 
@@ -9427,6 +9970,9 @@ func (o *Orbit) MarshalJSON() ([]byte, error) {
 }
 
 func (o *Orbit) String() string {
+	if o == nil {
+		return "<nil>"
+	}
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
 			return value
@@ -9479,6 +10025,9 @@ func (o *OrbitMeanElements) GetTleParameters() *TleParameters {
 }
 
 func (o *OrbitMeanElements) GetExtraProperties() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
 	return o.extraProperties
 }
 
@@ -9538,6 +10087,9 @@ func (o *OrbitMeanElements) MarshalJSON() ([]byte, error) {
 }
 
 func (o *OrbitMeanElements) String() string {
+	if o == nil {
+		return "<nil>"
+	}
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
 			return value
@@ -9621,6 +10173,9 @@ func (o *OrbitMeanElementsMetadata) GetMeanElementTheory() *OrbitMeanElementsMet
 }
 
 func (o *OrbitMeanElementsMetadata) GetExtraProperties() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
 	return o.extraProperties
 }
 
@@ -9713,6 +10268,9 @@ func (o *OrbitMeanElementsMetadata) MarshalJSON() ([]byte, error) {
 }
 
 func (o *OrbitMeanElementsMetadata) String() string {
+	if o == nil {
+		return "<nil>"
+	}
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
 			return value
@@ -9858,6 +10416,9 @@ func (o *Override) GetRequestTimestamp() *time.Time {
 }
 
 func (o *Override) GetExtraProperties() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
 	return o.extraProperties
 }
 
@@ -9953,6 +10514,9 @@ func (o *Override) MarshalJSON() ([]byte, error) {
 }
 
 func (o *Override) String() string {
+	if o == nil {
+		return "<nil>"
+	}
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
 			return value
@@ -10050,6 +10614,9 @@ func (o *Overrides) GetOverride() []*Override {
 }
 
 func (o *Overrides) GetExtraProperties() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
 	return o.extraProperties
 }
 
@@ -10095,6 +10662,9 @@ func (o *Overrides) MarshalJSON() ([]byte, error) {
 }
 
 func (o *Overrides) String() string {
+	if o == nil {
+		return "<nil>"
+	}
 	if len(o.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(o.rawJSON); err == nil {
 			return value
@@ -10129,6 +10699,9 @@ func (p *Payload) GetConfig() *PayloadConfiguration {
 }
 
 func (p *Payload) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -10174,6 +10747,9 @@ func (p *Payload) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Payload) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -10250,6 +10826,9 @@ func (p *PayloadConfiguration) GetPayloadDescription() *string {
 }
 
 func (p *PayloadConfiguration) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -10323,6 +10902,9 @@ func (p *PayloadConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PayloadConfiguration) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -10429,6 +11011,9 @@ func (p *Payloads) GetPayloadConfigurations() []*Payload {
 }
 
 func (p *Payloads) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -10474,6 +11059,9 @@ func (p *Payloads) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Payloads) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -10537,6 +11125,9 @@ func (p *Pose) GetAttEnu() *Quaternion {
 }
 
 func (p *Pose) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -10589,6 +11180,9 @@ func (p *Pose) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Pose) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -10688,6 +11282,9 @@ func (p *Position) GetPressureDepthMeters() *float64 {
 }
 
 func (p *Position) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -10768,6 +11365,9 @@ func (p *Position) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Position) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -10869,6 +11469,9 @@ func (p *PowerLevel) GetConsumptionRateLPerS() *float64 {
 }
 
 func (p *PowerLevel) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -10956,6 +11559,9 @@ func (p *PowerLevel) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PowerLevel) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11035,6 +11641,9 @@ func (p *PowerSource) GetOffloadable() *bool {
 }
 
 func (p *PowerSource) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -11108,6 +11717,9 @@ func (p *PowerSource) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PowerSource) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11209,6 +11821,9 @@ func (p *PowerState) GetSourceIDToState() map[string]*PowerSource {
 }
 
 func (p *PowerState) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -11254,6 +11869,9 @@ func (p *PowerState) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PowerState) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11288,6 +11906,9 @@ func (p *PrimaryCorrelation) GetSecondaryEntityIDs() []string {
 }
 
 func (p *PrimaryCorrelation) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -11333,6 +11954,9 @@ func (p *PrimaryCorrelation) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PrimaryCorrelation) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11354,6 +11978,9 @@ type PrimaryMembership struct {
 }
 
 func (p *PrimaryMembership) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -11392,6 +12019,9 @@ func (p *PrimaryMembership) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PrimaryMembership) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11459,6 +12089,9 @@ func (p *ProjectedFrustum) GetBottomLeft() *Position {
 }
 
 func (p *ProjectedFrustum) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -11525,6 +12158,9 @@ func (p *ProjectedFrustum) MarshalJSON() ([]byte, error) {
 }
 
 func (p *ProjectedFrustum) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11603,6 +12239,9 @@ func (p *Provenance) GetSourceDescription() *string {
 }
 
 func (p *Provenance) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -11684,6 +12323,9 @@ func (p *Provenance) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Provenance) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11718,6 +12360,9 @@ func (p *PulseRepetitionInterval) GetPulseRepetitionIntervalS() *Measurement {
 }
 
 func (p *PulseRepetitionInterval) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -11763,6 +12408,9 @@ func (p *PulseRepetitionInterval) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PulseRepetitionInterval) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
@@ -11824,6 +12472,9 @@ func (q *Quaternion) GetW() *float64 {
 }
 
 func (q *Quaternion) GetExtraProperties() map[string]interface{} {
+	if q == nil {
+		return nil
+	}
 	return q.extraProperties
 }
 
@@ -11890,6 +12541,9 @@ func (q *Quaternion) MarshalJSON() ([]byte, error) {
 }
 
 func (q *Quaternion) String() string {
+	if q == nil {
+		return "<nil>"
+	}
 	if len(q.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(q.rawJSON); err == nil {
 			return value
@@ -11955,6 +12609,9 @@ func (r *RangeRings) GetRingLineColor() *Color {
 }
 
 func (r *RangeRings) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -12021,6 +12678,9 @@ func (r *RangeRings) MarshalJSON() ([]byte, error) {
 }
 
 func (r *RangeRings) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -12076,6 +12736,9 @@ func (r *Relationship) GetRelationshipType() *RelationshipType {
 }
 
 func (r *Relationship) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -12135,6 +12798,9 @@ func (r *Relationship) MarshalJSON() ([]byte, error) {
 }
 
 func (r *Relationship) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -12205,6 +12871,9 @@ func (r *RelationshipType) GetActiveTarget() *ActiveTarget {
 }
 
 func (r *RelationshipType) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -12278,6 +12947,9 @@ func (r *RelationshipType) MarshalJSON() ([]byte, error) {
 }
 
 func (r *RelationshipType) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -12312,6 +12984,9 @@ func (r *Relationships) GetRelationships() []*Relationship {
 }
 
 func (r *Relationships) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -12357,6 +13032,9 @@ func (r *Relationships) MarshalJSON() ([]byte, error) {
 }
 
 func (r *Relationships) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -12402,6 +13080,9 @@ func (r *RfConfiguration) GetBandwidthRangeHz() []*BandwidthRange {
 }
 
 func (r *RfConfiguration) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -12454,6 +13135,9 @@ func (r *RfConfiguration) MarshalJSON() ([]byte, error) {
 }
 
 func (r *RfConfiguration) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -12498,6 +13182,9 @@ func (r *RouteDetails) GetEstimatedArrivalTime() *time.Time {
 }
 
 func (r *RouteDetails) GetExtraProperties() map[string]interface{} {
+	if r == nil {
+		return nil
+	}
 	return r.extraProperties
 }
 
@@ -12558,6 +13245,9 @@ func (r *RouteDetails) MarshalJSON() ([]byte, error) {
 }
 
 func (r *RouteDetails) String() string {
+	if r == nil {
+		return "<nil>"
+	}
 	if len(r.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(r.rawJSON); err == nil {
 			return value
@@ -12601,6 +13291,9 @@ func (s *ScanCharacteristics) GetScanPeriodS() *float64 {
 }
 
 func (s *ScanCharacteristics) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -12653,6 +13346,9 @@ func (s *ScanCharacteristics) MarshalJSON() ([]byte, error) {
 }
 
 func (s *ScanCharacteristics) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -12775,6 +13471,9 @@ func (s *Schedule) GetScheduleType() *ScheduleScheduleType {
 }
 
 func (s *Schedule) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -12834,6 +13533,9 @@ func (s *Schedule) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Schedule) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -12894,6 +13596,9 @@ func (s *Schedules) GetSchedules() []*Schedule {
 }
 
 func (s *Schedules) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -12939,6 +13644,9 @@ func (s *Schedules) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Schedules) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -12983,6 +13691,9 @@ func (s *SecondaryCorrelation) GetMetadata() *CorrelationMetadata {
 }
 
 func (s *SecondaryCorrelation) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -13035,6 +13746,9 @@ func (s *SecondaryCorrelation) MarshalJSON() ([]byte, error) {
 }
 
 func (s *SecondaryCorrelation) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -13129,6 +13843,9 @@ func (s *Sensor) GetFieldsOfView() []*FieldOfView {
 }
 
 func (s *Sensor) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -13224,6 +13941,9 @@ func (s *Sensor) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Sensor) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -13336,6 +14056,9 @@ func (s *Sensors) GetSensors() []*Sensor {
 }
 
 func (s *Sensors) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -13381,6 +14104,9 @@ func (s *Sensors) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Sensors) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -13502,6 +14228,9 @@ func (s *Signal) GetScanCharacteristics() *ScanCharacteristics {
 }
 
 func (s *Signal) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -13610,6 +14339,9 @@ func (s *Signal) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Signal) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -13657,6 +14389,9 @@ func (s *Status) GetRole() *string {
 }
 
 func (s *Status) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -13709,6 +14444,9 @@ func (s *Status) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Status) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -13722,17 +14460,26 @@ func (s *Status) String() string {
 
 // Represents the state of supplies associated with an entity (available but not in condition to use immediately)
 var (
-	suppliesFieldFuel = big.NewInt(1 << 0)
+	suppliesFieldMunitions = big.NewInt(1 << 0)
+	suppliesFieldFuel      = big.NewInt(1 << 1)
 )
 
 type Supplies struct {
-	Fuel []*Fuel `json:"fuel,omitempty" url:"fuel,omitempty"`
+	Munitions []*Munition `json:"munitions,omitempty" url:"munitions,omitempty"`
+	Fuel      []*Fuel     `json:"fuel,omitempty" url:"fuel,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
+}
+
+func (s *Supplies) GetMunitions() []*Munition {
+	if s == nil {
+		return nil
+	}
+	return s.Munitions
 }
 
 func (s *Supplies) GetFuel() []*Fuel {
@@ -13743,6 +14490,9 @@ func (s *Supplies) GetFuel() []*Fuel {
 }
 
 func (s *Supplies) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -13751,6 +14501,13 @@ func (s *Supplies) require(field *big.Int) {
 		s.explicitFields = big.NewInt(0)
 	}
 	s.explicitFields.Or(s.explicitFields, field)
+}
+
+// SetMunitions sets the Munitions field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *Supplies) SetMunitions(munitions []*Munition) {
+	s.Munitions = munitions
+	s.require(suppliesFieldMunitions)
 }
 
 // SetFuel sets the Fuel field and marks it as non-optional;
@@ -13788,6 +14545,9 @@ func (s *Supplies) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Supplies) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -13822,6 +14582,9 @@ func (s *Symbology) GetMilStd2525C() *MilStd2525C {
 }
 
 func (s *Symbology) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
 	return s.extraProperties
 }
 
@@ -13867,6 +14630,9 @@ func (s *Symbology) MarshalJSON() ([]byte, error) {
 }
 
 func (s *Symbology) String() string {
+	if s == nil {
+		return "<nil>"
+	}
 	if len(s.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
 			return value
@@ -13921,6 +14687,9 @@ func (t *TMat2) GetMyy() *float64 {
 }
 
 func (t *TMat2) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -13980,6 +14749,9 @@ func (t *TMat2) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TMat2) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14025,6 +14797,9 @@ func (t *TargetPriority) GetThreat() *Threat {
 }
 
 func (t *TargetPriority) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14077,6 +14852,9 @@ func (t *TargetPriority) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TargetPriority) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14111,6 +14889,9 @@ func (t *TaskCatalog) GetTaskDefinitions() []*TaskDefinition {
 }
 
 func (t *TaskCatalog) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14156,6 +14937,9 @@ func (t *TaskCatalog) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskCatalog) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14191,6 +14975,9 @@ func (t *TaskDefinition) GetTaskSpecificationURL() *string {
 }
 
 func (t *TaskDefinition) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14236,6 +15023,9 @@ func (t *TaskDefinition) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TaskDefinition) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14280,6 +15070,9 @@ func (t *Team) GetMembers() []*Agent {
 }
 
 func (t *Team) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14332,6 +15125,9 @@ func (t *Team) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Team) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14367,6 +15163,9 @@ func (t *Threat) GetIsThreat() *bool {
 }
 
 func (t *Threat) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14412,6 +15211,9 @@ func (t *Threat) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Threat) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14538,6 +15340,9 @@ func (t *TleParameters) GetAgom() *float64 {
 }
 
 func (t *TleParameters) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14646,6 +15451,9 @@ func (t *TleParameters) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TleParameters) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14741,6 +15549,9 @@ func (t *Tracked) GetLineOfBearing() *LineOfBearing {
 }
 
 func (t *Tracked) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14829,6 +15640,9 @@ func (t *Tracked) MarshalJSON() ([]byte, error) {
 }
 
 func (t *Tracked) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -14878,6 +15692,9 @@ func (t *TrackedBy) GetLastMeasurementTimestamp() *time.Time {
 }
 
 func (t *TrackedBy) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -14938,6 +15755,9 @@ func (t *TrackedBy) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TrackedBy) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -15023,6 +15843,9 @@ func (t *TransponderCodes) GetModeS() *ModeS {
 }
 
 func (t *TransponderCodes) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
 	return t.extraProperties
 }
 
@@ -15103,6 +15926,9 @@ func (t *TransponderCodes) MarshalJSON() ([]byte, error) {
 }
 
 func (t *TransponderCodes) String() string {
+	if t == nil {
+		return "<nil>"
+	}
 	if len(t.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
 			return value
@@ -15174,6 +16000,9 @@ func (u *UInt32Range) GetUpperBound() *int {
 }
 
 func (u *UInt32Range) GetExtraProperties() map[string]interface{} {
+	if u == nil {
+		return nil
+	}
 	return u.extraProperties
 }
 
@@ -15226,6 +16055,9 @@ func (u *UInt32Range) MarshalJSON() ([]byte, error) {
 }
 
 func (u *UInt32Range) String() string {
+	if u == nil {
+		return "<nil>"
+	}
 	if len(u.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
@@ -15268,6 +16100,9 @@ func (u *UnauthorizedErrorBody) GetErrorDescription() *string {
 }
 
 func (u *UnauthorizedErrorBody) GetExtraProperties() map[string]interface{} {
+	if u == nil {
+		return nil
+	}
 	return u.extraProperties
 }
 
@@ -15320,6 +16155,9 @@ func (u *UnauthorizedErrorBody) MarshalJSON() ([]byte, error) {
 }
 
 func (u *UnauthorizedErrorBody) String() string {
+	if u == nil {
+		return "<nil>"
+	}
 	if len(u.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(u.rawJSON); err == nil {
 			return value
@@ -15355,6 +16193,9 @@ func (v *VisualDetails) GetRangeRings() *RangeRings {
 }
 
 func (v *VisualDetails) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
 	return v.extraProperties
 }
 
@@ -15400,6 +16241,9 @@ func (v *VisualDetails) MarshalJSON() ([]byte, error) {
 }
 
 func (v *VisualDetails) String() string {
+	if v == nil {
+		return "<nil>"
+	}
 	if len(v.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
 			return value

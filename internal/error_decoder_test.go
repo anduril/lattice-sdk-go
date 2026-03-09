@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/anduril/lattice-sdk-go/v4/core"
+	"github.com/anduril/lattice-sdk-go/core"
 	"github.com/stretchr/testify/assert"
 )
 

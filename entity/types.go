@@ -5,7 +5,7 @@ package entity
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/internal"
 	big "math/big"
 )
 
@@ -40,6 +40,9 @@ func (e *Error) GetMessage() string {
 }
 
 func (e *Error) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -92,6 +95,9 @@ func (e *Error) MarshalJSON() ([]byte, error) {
 }
 
 func (e *Error) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
