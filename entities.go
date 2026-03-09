@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -72,6 +72,27 @@ func (e *EntityEventRequest) SetBatchSize(batchSize *int) {
 	e.require(entityEventRequestFieldBatchSize)
 }
 
+func (e *EntityEventRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityEventRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*e = EntityEventRequest(body)
+	return nil
+}
+
+func (e *EntityEventRequest) MarshalJSON() ([]byte, error) {
+	type embed EntityEventRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 var (
 	entityOverrideFieldEntityID   = big.NewInt(1 << 0)
 	entityOverrideFieldFieldPath  = big.NewInt(1 << 1)
@@ -127,6 +148,27 @@ func (e *EntityOverride) SetEntity(entity *Entity) {
 func (e *EntityOverride) SetProvenance(provenance *Provenance) {
 	e.Provenance = provenance
 	e.require(entityOverrideFieldProvenance)
+}
+
+func (e *EntityOverride) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityOverride
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*e = EntityOverride(body)
+	return nil
+}
+
+func (e *EntityOverride) MarshalJSON() ([]byte, error) {
+	type embed EntityOverride
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
 }
 
 var (
@@ -211,6 +253,27 @@ func (e *EntityStreamRequest) SetComponentsToInclude(componentsToInclude []strin
 	e.require(entityStreamRequestFieldComponentsToInclude)
 }
 
+func (e *EntityStreamRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler EntityStreamRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*e = EntityStreamRequest(body)
+	return nil
+}
+
+func (e *EntityStreamRequest) MarshalJSON() ([]byte, error) {
+	type embed EntityStreamRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*e),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
 // Event representing some type of entity change.
 var (
 	entityEventFieldEventType = big.NewInt(1 << 0)
@@ -252,6 +315,9 @@ func (e *EntityEvent) GetEntity() *Entity {
 }
 
 func (e *EntityEvent) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -319,6 +385,9 @@ func (e *EntityEvent) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntityEvent) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -396,6 +465,9 @@ func (e *EntityEventResponse) GetEntityEvents() []*EntityEvent {
 }
 
 func (e *EntityEventResponse) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -448,6 +520,9 @@ func (e *EntityEventResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntityEventResponse) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -499,6 +574,9 @@ func (e *EntityStreamEvent) GetEntity() *Entity {
 }
 
 func (e *EntityStreamEvent) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -566,6 +644,9 @@ func (e *EntityStreamEvent) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntityStreamEvent) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value
@@ -600,6 +681,9 @@ func (e *EntityStreamHeartbeat) GetTimestamp() *string {
 }
 
 func (e *EntityStreamHeartbeat) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
 	return e.extraProperties
 }
 
@@ -645,6 +729,9 @@ func (e *EntityStreamHeartbeat) MarshalJSON() ([]byte, error) {
 }
 
 func (e *EntityStreamHeartbeat) String() string {
+	if e == nil {
+		return "<nil>"
+	}
 	if len(e.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
 			return value

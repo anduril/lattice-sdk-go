@@ -5,9 +5,9 @@ package oauth_wire_test
 import (
 	bytes "bytes"
 	context "context"
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	client "github.com/anduril/lattice-sdk-go/v4/client"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	client "github.com/anduril/lattice-sdk-go/v5/client"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
 	assert "github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 	io "io"
