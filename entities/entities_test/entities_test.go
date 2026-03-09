@@ -6,9 +6,9 @@ import (
 	bytes "bytes"
 	context "context"
 	json "encoding/json"
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	client "github.com/anduril/lattice-sdk-go/v4/client"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	client "github.com/anduril/lattice-sdk-go/v5/client"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
 	require "github.com/stretchr/testify/require"
 	http "net/http"
 	os "os"
@@ -23,11 +23,11 @@ func VerifyRequestCount(
 	queryParams map[string]string,
 	expected int,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	wiremockURL := os.Getenv("WIREMOCK_URL")
+	if wiremockURL == "" {
+		wiremockURL = "http://localhost:8080"
 	}
-	WiremockAdminURL := "http://localhost:" + wiremockPort + "/__admin"
+	WiremockAdminURL := wiremockURL + "/__admin"
 	var reqBody bytes.Buffer
 	reqBody.WriteString(`{"method":"`)
 	reqBody.WriteString(method)
@@ -65,11 +65,10 @@ func VerifyRequestCount(
 func TestEntitiesPublishEntityWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -89,11 +88,10 @@ func TestEntitiesPublishEntityWithWireMock(
 func TestEntitiesGetEntityWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -115,11 +113,10 @@ func TestEntitiesGetEntityWithWireMock(
 func TestEntitiesOverrideEntityWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -142,11 +139,10 @@ func TestEntitiesOverrideEntityWithWireMock(
 func TestEntitiesRemoveEntityOverrideWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -169,11 +165,10 @@ func TestEntitiesRemoveEntityOverrideWithWireMock(
 func TestEntitiesLongPollEntityEventsWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -195,11 +190,10 @@ func TestEntitiesLongPollEntityEventsWithWireMock(
 func TestEntitiesStreamEntitiesWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)

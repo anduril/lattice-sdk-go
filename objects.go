@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -113,6 +113,7 @@ var (
 	listObjectsRequestFieldSinceTimestamp   = big.NewInt(1 << 1)
 	listObjectsRequestFieldPageToken        = big.NewInt(1 << 2)
 	listObjectsRequestFieldAllObjectsInMesh = big.NewInt(1 << 3)
+	listObjectsRequestFieldMaxPageSize      = big.NewInt(1 << 4)
 )
 
 type ListObjectsRequest struct {
@@ -124,6 +125,8 @@ type ListObjectsRequest struct {
 	PageToken *string `json:"-" url:"pageToken,omitempty"`
 	// Lists objects across all environment nodes in a Lattice Mesh.
 	AllObjectsInMesh *bool `json:"-" url:"allObjectsInMesh,omitempty"`
+	// Sets the maximum number of items that should be returned on a single page.
+	MaxPageSize *int `json:"-" url:"maxPageSize,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -164,6 +167,13 @@ func (l *ListObjectsRequest) SetAllObjectsInMesh(allObjectsInMesh *bool) {
 	l.require(listObjectsRequestFieldAllObjectsInMesh)
 }
 
+// SetMaxPageSize sets the MaxPageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListObjectsRequest) SetMaxPageSize(maxPageSize *int) {
+	l.MaxPageSize = maxPageSize
+	l.require(listObjectsRequestFieldMaxPageSize)
+}
+
 var (
 	contentIdentifierFieldPath     = big.NewInt(1 << 0)
 	contentIdentifierFieldChecksum = big.NewInt(1 << 1)
@@ -201,6 +211,9 @@ func (c *ContentIdentifier) GetChecksum() string {
 }
 
 func (c *ContentIdentifier) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
 	return c.extraProperties
 }
 
@@ -253,6 +266,9 @@ func (c *ContentIdentifier) MarshalJSON() ([]byte, error) {
 }
 
 func (c *ContentIdentifier) String() string {
+	if c == nil {
+		return "<nil>"
+	}
 	if len(c.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
 			return value
@@ -295,6 +311,9 @@ func (l *ListResponse) GetNextPageToken() *string {
 }
 
 func (l *ListResponse) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
 	return l.extraProperties
 }
 
@@ -347,6 +366,9 @@ func (l *ListResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (l *ListResponse) String() string {
+	if l == nil {
+		return "<nil>"
+	}
 	if len(l.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
 			return value
@@ -407,6 +429,9 @@ func (p *PathMetadata) GetExpiryTime() *time.Time {
 }
 
 func (p *PathMetadata) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
 	return p.extraProperties
 }
 
@@ -485,6 +510,9 @@ func (p *PathMetadata) MarshalJSON() ([]byte, error) {
 }
 
 func (p *PathMetadata) String() string {
+	if p == nil {
+		return "<nil>"
+	}
 	if len(p.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
 			return value
