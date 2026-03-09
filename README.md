@@ -57,9 +57,9 @@ Instantiate and use the client with the following:
 package example
 
 import (
-    client "github.com/anduril/lattice-sdk-go/v4/client"
-    option "github.com/anduril/lattice-sdk-go/v4/option"
-    Lattice "github.com/anduril/lattice-sdk-go/v4"
+    client "github.com/anduril/lattice-sdk-go/client"
+    option "github.com/anduril/lattice-sdk-go/option"
+    Lattice "github.com/anduril/lattice-sdk-go"
     context "context"
 )
 
@@ -239,3 +239,4 @@ request.SetName(nil)
 
 response, err := client.Entities.LongPollEntityEvents(ctx, request, ...)
 ```
+

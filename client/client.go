@@ -5,14 +5,14 @@ package client
 import (
 	context "context"
 	errors "errors"
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	entities "github.com/anduril/lattice-sdk-go/v4/entities"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	oauth "github.com/anduril/lattice-sdk-go/v4/oauth"
-	objects "github.com/anduril/lattice-sdk-go/v4/objects"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
-	tasks "github.com/anduril/lattice-sdk-go/v4/tasks"
+	Lattice "github.com/anduril/lattice-sdk-go"
+	core "github.com/anduril/lattice-sdk-go/core"
+	entities "github.com/anduril/lattice-sdk-go/entities"
+	internal "github.com/anduril/lattice-sdk-go/internal"
+	oauth "github.com/anduril/lattice-sdk-go/oauth"
+	objects "github.com/anduril/lattice-sdk-go/objects"
+	option "github.com/anduril/lattice-sdk-go/option"
+	tasks "github.com/anduril/lattice-sdk-go/tasks"
 )
 
 type Client struct {

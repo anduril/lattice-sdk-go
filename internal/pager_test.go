@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/anduril/lattice-sdk-go/v4/core"
+	"github.com/anduril/lattice-sdk-go/core"
 )
 
 type TestPageResponse struct {
