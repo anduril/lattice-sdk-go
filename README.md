@@ -239,3 +239,4 @@ request.SetName(nil)
 
 response, err := client.Entities.LongPollEntityEvents(ctx, request, ...)
 ```
+

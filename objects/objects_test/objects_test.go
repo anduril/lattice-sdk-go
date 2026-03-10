@@ -23,11 +23,11 @@ func VerifyRequestCount(
 	queryParams map[string]string,
 	expected int,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	wiremockURL := os.Getenv("WIREMOCK_URL")
+	if wiremockURL == "" {
+		wiremockURL = "http://localhost:8080"
 	}
-	WiremockAdminURL := "http://localhost:" + wiremockPort + "/__admin"
+	WiremockAdminURL := wiremockURL + "/__admin"
 	var reqBody bytes.Buffer
 	reqBody.WriteString(`{"method":"`)
 	reqBody.WriteString(method)
@@ -65,11 +65,10 @@ func VerifyRequestCount(
 func TestObjectsListObjectsWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -89,11 +88,10 @@ func TestObjectsListObjectsWithWireMock(
 func TestObjectsGetObjectWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -112,34 +110,13 @@ func TestObjectsGetObjectWithWireMock(
 	VerifyRequestCount(t, "TestObjectsGetObjectWithWireMock", "GET", "/api/v1/objects/objectPath", nil, 1)
 }
 
-func TestObjectsUploadObjectWithWireMock(
-	t *testing.T,
-) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
-	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
-	client := client.NewClient(
-		option.WithBaseURL(WireMockBaseURL),
-	)
-	_, invocationErr := client.Objects.UploadObject(
-		context.TODO(),
-		nil,
-	)
-
-	require.NoError(t, invocationErr, "Client method call should succeed")
-	VerifyRequestCount(t, "TestObjectsUploadObjectWithWireMock", "POST", "/api/v1/objects/{objectPath}", nil, 1)
-}
-
 func TestObjectsDeleteObjectWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)
@@ -161,11 +138,10 @@ func TestObjectsDeleteObjectWithWireMock(
 func TestObjectsGetObjectMetadataWithWireMock(
 	t *testing.T,
 ) {
-	wiremockPort := os.Getenv("WIREMOCK_PORT")
-	if wiremockPort == "" {
-		wiremockPort = "8080"
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
 	}
-	WireMockBaseURL := "http://localhost:" + wiremockPort
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
 	)

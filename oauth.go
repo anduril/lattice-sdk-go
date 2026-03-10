@@ -15,7 +15,6 @@ var (
 )
 
 type GetTokenRequest struct {
-	// The type of grant being requested
 	// The client identifier
 	ClientID *string `json:"client_id,omitempty" url:"-"`
 	// The client secret
@@ -148,6 +147,9 @@ func (g *GetTokenResponse) GetScope() *string {
 }
 
 func (g *GetTokenResponse) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
 	return g.extraProperties
 }
 
@@ -228,6 +230,9 @@ func (g *GetTokenResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GetTokenResponse) String() string {
+	if g == nil {
+		return "<nil>"
+	}
 	if len(g.rawJSON) > 0 {
 		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
 			return value
