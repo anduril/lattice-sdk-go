@@ -163,6 +163,52 @@ func (r *RawClient) UpdateTaskStatus(
 	}, nil
 }
 
+func (r *RawClient) CancelTask(
+	ctx context.Context,
+	request *Lattice.TaskCancellation,
+	opts ...option.RequestOption,
+) (*core.Response[*Lattice.Task], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		r.baseURL,
+		"https://example.developer.anduril.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/api/v1/tasks/%v/cancel",
+		request.TaskID,
+	)
+	headers := internal.MergeHeaders(
+		r.options.ToHeader(),
+		options.ToHeader(),
+	)
+	headers.Add("Content-Type", "application/json")
+	var response *Lattice.Task
+	raw, err := r.caller.Call(
+		ctx,
+		&internal.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Response[*Lattice.Task]{
+		StatusCode: raw.StatusCode,
+		Header:     raw.Header,
+		Body:       response,
+	}, nil
+}
+
 func (r *RawClient) QueryTasks(
 	ctx context.Context,
 	request *Lattice.TaskQuery,
