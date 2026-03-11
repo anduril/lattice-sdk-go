@@ -26,6 +26,7 @@ type RequestOptions struct {
 	BodyProperties  map[string]interface{}
 	QueryParameters url.Values
 	MaxAttempts     uint
+	MaxBufSize      int
 	tokenGetter     TokenGetter
 	ClientID        string
 	ClientSecret    string
@@ -67,8 +68,8 @@ func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/anduril/lattice-sdk-go/v4")
-	headers.Set("X-Fern-SDK-Version", "v4.3.0")
-	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.3.0")
+	headers.Set("X-Fern-SDK-Version", "v4.4.0")
+	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.4.0")
 	return headers
 }
 
@@ -124,6 +125,15 @@ type MaxAttemptsOption struct {
 
 func (m *MaxAttemptsOption) applyRequestOptions(opts *RequestOptions) {
 	opts.MaxAttempts = m.MaxAttempts
+}
+
+// MaxBufSizeOption implements the RequestOption interface.
+type MaxBufSizeOption struct {
+	MaxBufSize int
+}
+
+func (m *MaxBufSizeOption) applyRequestOptions(opts *RequestOptions) {
+	opts.MaxBufSize = m.MaxBufSize
 }
 
 // ClientIDOption implements the RequestOption interface.

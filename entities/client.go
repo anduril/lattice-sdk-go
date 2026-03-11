@@ -185,6 +185,7 @@ func (c *Client) StreamEntities(
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
+			MaxBufSize:      options.MaxBufSize,
 			Prefix:          internal.DefaultSSEDataPrefix,
 			Terminator:      internal.DefaultSSETerminator,
 			Format:          core.StreamFormatSSE,
