@@ -1,7 +1,7 @@
 {
-  "cliVersion": "4.29.0",
+  "cliVersion": "4.43.1",
   "generatorName": "fernapi/fern-go-sdk",
-  "generatorVersion": "1.30.3",
+  "generatorVersion": "1.31.1",
   "generatorConfig": {
     "module": {
       "path": "github.com/anduril/lattice-sdk-go"
@@ -11,6 +11,6 @@
     "inlinePathParameters": true,
     "inlineFileProperties": true
   },
-  "originGitCommit": "19b8cda580ea2507d81b89e8ff07dc8785280624",
+  "originGitCommit": "8d171acc5cb7122a5173b98ff23a08f3502e8a2d",
   "sdkVersion": "v4.5.0"
 }
