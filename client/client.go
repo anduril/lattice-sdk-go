@@ -5,6 +5,7 @@ package client
 import (
 	context "context"
 	errors "errors"
+
 	Lattice "github.com/anduril/lattice-sdk-go/v4"
 	core "github.com/anduril/lattice-sdk-go/v4/core"
 	entities "github.com/anduril/lattice-sdk-go/v4/entities"
@@ -28,9 +29,8 @@ type Client struct {
 
 func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
-	oauthTokenProvider := core.NewOAuthTokenProvider(
-		options.ClientID,
-		options.ClientSecret,
+	oauthTokenProvider := core.NewTokenProvider(
+		0,
 	)
 	authOptions := *options
 	authClient := oauth.NewClient(
