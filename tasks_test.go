@@ -781,6 +781,38 @@ func TestSettersTaskStreamRequest(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetUpdateStartTime", func(t *testing.T) {
+		obj := &TaskStreamRequest{}
+		var fernTestValueUpdateStartTime *Timestamp
+		obj.SetUpdateStartTime(fernTestValueUpdateStartTime)
+		assert.Equal(t, fernTestValueUpdateStartTime, obj.UpdateStartTime)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetParentTaskID", func(t *testing.T) {
+		obj := &TaskStreamRequest{}
+		var fernTestValueParentTaskID *string
+		obj.SetParentTaskID(fernTestValueParentTaskID)
+		assert.Equal(t, fernTestValueParentTaskID, obj.ParentTaskID)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetAssignee", func(t *testing.T) {
+		obj := &TaskStreamRequest{}
+		var fernTestValueAssignee *Principal
+		obj.SetAssignee(fernTestValueAssignee)
+		assert.Equal(t, fernTestValueAssignee, obj.Assignee)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetStatusFilter", func(t *testing.T) {
+		obj := &TaskStreamRequest{}
+		var fernTestValueStatusFilter *TaskStreamRequestStatusFilter
+		obj.SetStatusFilter(fernTestValueStatusFilter)
+		assert.Equal(t, fernTestValueStatusFilter, obj.StatusFilter)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 }
 
 func TestSettersMarkExplicitTaskStreamRequest(t *testing.T) {
@@ -885,6 +917,130 @@ func TestSettersMarkExplicitTaskStreamRequest(t *testing.T) {
 
 		// Act
 		obj.SetTaskType(fernTestValueTaskType)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetUpdateStartTime_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequest{}
+		var fernTestValueUpdateStartTime *Timestamp
+
+		// Act
+		obj.SetUpdateStartTime(fernTestValueUpdateStartTime)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetParentTaskID_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequest{}
+		var fernTestValueParentTaskID *string
+
+		// Act
+		obj.SetParentTaskID(fernTestValueParentTaskID)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetAssignee_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequest{}
+		var fernTestValueAssignee *Principal
+
+		// Act
+		obj.SetAssignee(fernTestValueAssignee)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetStatusFilter_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequest{}
+		var fernTestValueStatusFilter *TaskStreamRequestStatusFilter
+
+		// Act
+		obj.SetStatusFilter(fernTestValueStatusFilter)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
@@ -7142,6 +7298,159 @@ func TestSettersMarkExplicitTaskQueryUpdateTimeRange(t *testing.T) {
 
 }
 
+func TestSettersTaskStreamRequestStatusFilter(t *testing.T) {
+	t.Run("SetStatuses", func(t *testing.T) {
+		obj := &TaskStreamRequestStatusFilter{}
+		var fernTestValueStatuses []TaskStreamRequestStatusFilterStatusesItem
+		obj.SetStatuses(fernTestValueStatuses)
+		assert.Equal(t, fernTestValueStatuses, obj.Statuses)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetFilterType", func(t *testing.T) {
+		obj := &TaskStreamRequestStatusFilter{}
+		var fernTestValueFilterType *TaskStreamRequestStatusFilterFilterType
+		obj.SetFilterType(fernTestValueFilterType)
+		assert.Equal(t, fernTestValueFilterType, obj.FilterType)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+}
+
+func TestGettersTaskStreamRequestStatusFilter(t *testing.T) {
+	t.Run("GetStatuses", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequestStatusFilter{}
+		var expected []TaskStreamRequestStatusFilterStatusesItem
+		obj.Statuses = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetStatuses(), "getter should return the property value")
+	})
+
+	t.Run("GetStatuses_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequestStatusFilter{}
+		obj.Statuses = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetStatuses(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetStatuses_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *TaskStreamRequestStatusFilter
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetStatuses() // Should return zero value
+	})
+
+	t.Run("GetFilterType", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequestStatusFilter{}
+		var expected *TaskStreamRequestStatusFilterFilterType
+		obj.FilterType = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetFilterType(), "getter should return the property value")
+	})
+
+	t.Run("GetFilterType_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequestStatusFilter{}
+		obj.FilterType = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetFilterType(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetFilterType_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *TaskStreamRequestStatusFilter
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetFilterType() // Should return zero value
+	})
+
+}
+
+func TestSettersMarkExplicitTaskStreamRequestStatusFilter(t *testing.T) {
+	t.Run("SetStatuses_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequestStatusFilter{}
+		var fernTestValueStatuses []TaskStreamRequestStatusFilterStatusesItem
+
+		// Act
+		obj.SetStatuses(fernTestValueStatuses)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetFilterType_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequestStatusFilter{}
+		var fernTestValueFilterType *TaskStreamRequestStatusFilterFilterType
+
+		// Act
+		obj.SetFilterType(fernTestValueFilterType)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+}
+
 func TestGettersTaskStreamRequestTaskType(t *testing.T) {
 	t.Run("GetTaskStreamRequestTaskTypeTaskTypeURLs", func(t *testing.T) {
 		t.Parallel()
@@ -8515,6 +8824,39 @@ func TestJSONMarshalingTaskStreamEvent(t *testing.T) {
 	})
 }
 
+func TestJSONMarshalingTaskStreamRequestStatusFilter(t *testing.T) {
+	t.Run("MarshalUnmarshal", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskStreamRequestStatusFilter{}
+
+		// Act - Marshal to JSON
+		data, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed")
+		assert.NotNil(t, data, "marshaled data should not be nil")
+		assert.NotEmpty(t, data, "marshaled data should not be empty")
+
+		// Unmarshal back and verify round-trip
+		var unmarshaled TaskStreamRequestStatusFilter
+		err = json.Unmarshal(data, &unmarshaled)
+		assert.NoError(t, err, "round-trip unmarshal should succeed")
+	})
+
+	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
+		t.Parallel()
+		var obj TaskStreamRequestStatusFilter
+		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
+		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
+	})
+
+	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
+		t.Parallel()
+		var obj TaskStreamRequestStatusFilter
+		err := json.Unmarshal([]byte(`{}`), &obj)
+		assert.NoError(t, err, "unmarshaling empty object should succeed")
+	})
+}
+
 func TestJSONMarshalingTaskStreamRequestTaskTypeTaskTypePrefix(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
@@ -9127,6 +9469,22 @@ func TestStringTaskStreamEvent(t *testing.T) {
 	})
 }
 
+func TestStringTaskStreamRequestStatusFilter(t *testing.T) {
+	t.Run("StringMethod", func(t *testing.T) {
+		t.Parallel()
+		obj := &TaskStreamRequestStatusFilter{}
+		result := obj.String()
+		assert.NotEmpty(t, result, "String() should return a non-empty representation")
+	})
+
+	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *TaskStreamRequestStatusFilter
+		result := obj.String()
+		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
+	})
+}
+
 func TestStringTaskStreamRequestTaskTypeTaskTypePrefix(t *testing.T) {
 	t.Run("StringMethod", func(t *testing.T) {
 		t.Parallel()
@@ -9610,6 +9968,162 @@ func TestEnumTaskStatusStatus(t *testing.T) {
 
 	t.Run("Ptr", func(t *testing.T) {
 		val, err := NewTaskStatusStatusFromString("STATUS_INVALID")
+		assert.NoError(t, err)
+		ptr := val.Ptr()
+		assert.NotNil(t, ptr)
+		assert.Equal(t, val, *ptr)
+	})
+}
+
+func TestEnumTaskStreamRequestStatusFilterFilterType(t *testing.T) {
+	t.Run("NewFromString_FILTER_TYPE_INVALID", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterFilterTypeFromString("FILTER_TYPE_INVALID")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterFilterType("FILTER_TYPE_INVALID"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_FILTER_TYPE_INCLUSIVE", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterFilterTypeFromString("FILTER_TYPE_INCLUSIVE")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterFilterType("FILTER_TYPE_INCLUSIVE"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_FILTER_TYPE_EXCLUSIVE", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterFilterTypeFromString("FILTER_TYPE_EXCLUSIVE")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterFilterType("FILTER_TYPE_EXCLUSIVE"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_Invalid", func(t *testing.T) {
+		_, err := NewTaskStreamRequestStatusFilterFilterTypeFromString("invalid_value_that_does_not_exist")
+		assert.Error(t, err)
+	})
+
+	t.Run("Ptr", func(t *testing.T) {
+		val, err := NewTaskStreamRequestStatusFilterFilterTypeFromString("FILTER_TYPE_INVALID")
+		assert.NoError(t, err)
+		ptr := val.Ptr()
+		assert.NotNil(t, ptr)
+		assert.Equal(t, val, *ptr)
+	})
+}
+
+func TestEnumTaskStreamRequestStatusFilterStatusesItem(t *testing.T) {
+	t.Run("NewFromString_STATUS_INVALID", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_INVALID")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_INVALID"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_CREATED", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_CREATED")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_CREATED"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_SCHEDULED_IN_MANAGER", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_SCHEDULED_IN_MANAGER")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_SCHEDULED_IN_MANAGER"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_SENT", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_SENT")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_SENT"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_MACHINE_RECEIPT", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_MACHINE_RECEIPT")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_MACHINE_RECEIPT"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_ACK", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_ACK")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_ACK"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_WILCO", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_WILCO")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_WILCO"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_EXECUTING", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_EXECUTING")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_EXECUTING"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_WAITING_FOR_UPDATE", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_WAITING_FOR_UPDATE")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_WAITING_FOR_UPDATE"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_DONE_OK", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_DONE_OK")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_DONE_OK"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_DONE_NOT_OK", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_DONE_NOT_OK")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_DONE_NOT_OK"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_REPLACED", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_REPLACED")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_REPLACED"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_CANCEL_REQUESTED", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_CANCEL_REQUESTED")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_CANCEL_REQUESTED"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_COMPLETE_REQUESTED", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_COMPLETE_REQUESTED")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_COMPLETE_REQUESTED"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_STATUS_VERSION_REJECTED", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_VERSION_REJECTED")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, TaskStreamRequestStatusFilterStatusesItem("STATUS_VERSION_REJECTED"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_Invalid", func(t *testing.T) {
+		_, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("invalid_value_that_does_not_exist")
+		assert.Error(t, err)
+	})
+
+	t.Run("Ptr", func(t *testing.T) {
+		val, err := NewTaskStreamRequestStatusFilterStatusesItemFromString("STATUS_INVALID")
 		assert.NoError(t, err)
 		ptr := val.Ptr()
 		assert.NotNil(t, ptr)
@@ -10302,6 +10816,29 @@ func TestExtraPropertiesTaskStreamEvent(t *testing.T) {
 	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *TaskStreamEvent
+		extraProps := obj.GetExtraProperties()
+		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
+	})
+}
+
+func TestExtraPropertiesTaskStreamRequestStatusFilter(t *testing.T) {
+	t.Run("GetExtraProperties", func(t *testing.T) {
+		t.Parallel()
+		obj := &TaskStreamRequestStatusFilter{}
+		// Should not panic when calling GetExtraProperties()
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("GetExtraProperties() panicked: %v", r)
+			}
+		}()
+		extraProps := obj.GetExtraProperties()
+		// Result can be nil or an empty/non-empty map
+		_ = extraProps
+	})
+
+	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *TaskStreamRequestStatusFilter
 		extraProps := obj.GetExtraProperties()
 		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
 	})

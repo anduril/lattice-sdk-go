@@ -15225,9 +15225,6 @@ func (t *Threat) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// The datetime string in ISO 8601 format.
-type Timestamp = string
-
 var (
 	tleParametersFieldEphemerisType      = big.NewInt(1 << 0)
 	tleParametersFieldClassificationType = big.NewInt(1 << 1)

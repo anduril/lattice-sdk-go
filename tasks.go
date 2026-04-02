@@ -401,6 +401,10 @@ var (
 	taskStreamRequestFieldRateLimit               = big.NewInt(1 << 1)
 	taskStreamRequestFieldExcludePreexistingTasks = big.NewInt(1 << 2)
 	taskStreamRequestFieldTaskType                = big.NewInt(1 << 3)
+	taskStreamRequestFieldUpdateStartTime         = big.NewInt(1 << 4)
+	taskStreamRequestFieldParentTaskID            = big.NewInt(1 << 5)
+	taskStreamRequestFieldAssignee                = big.NewInt(1 << 6)
+	taskStreamRequestFieldStatusFilter            = big.NewInt(1 << 7)
 )
 
 type TaskStreamRequest struct {
@@ -414,6 +418,16 @@ type TaskStreamRequest struct {
 	ExcludePreexistingTasks *bool `json:"excludePreexistingTasks,omitempty" url:"-"`
 	// Optional filter that only returns tasks with specific types. If not provided, all task types will be streamed.
 	TaskType *TaskStreamRequestTaskType `json:"taskType,omitempty" url:"-"`
+	// If provided, returns tasks which have been updated since the given time.
+	UpdateStartTime *Timestamp `json:"updateStartTime,omitempty" url:"-"`
+	// A filter for tasks with a specific parent task ID.
+	// Note: This filter is mutually exclusive with all other filter fields (`updateStartTime`, `assignee`, `statusFilter`, `taskType`).
+	// Either provide `parentTaskId` or any combination of the other filters, but not both.
+	ParentTaskID *string `json:"parentTaskId,omitempty" url:"-"`
+	// A filter for tasks assigned to a specific principal.
+	Assignee *Principal `json:"assignee,omitempty" url:"-"`
+	// A filter for task statuses (inclusive or exclusive).
+	StatusFilter *TaskStreamRequestStatusFilter `json:"statusFilter,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -452,6 +466,34 @@ func (t *TaskStreamRequest) SetExcludePreexistingTasks(excludePreexistingTasks *
 func (t *TaskStreamRequest) SetTaskType(taskType *TaskStreamRequestTaskType) {
 	t.TaskType = taskType
 	t.require(taskStreamRequestFieldTaskType)
+}
+
+// SetUpdateStartTime sets the UpdateStartTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetUpdateStartTime(updateStartTime *Timestamp) {
+	t.UpdateStartTime = updateStartTime
+	t.require(taskStreamRequestFieldUpdateStartTime)
+}
+
+// SetParentTaskID sets the ParentTaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetParentTaskID(parentTaskID *string) {
+	t.ParentTaskID = parentTaskID
+	t.require(taskStreamRequestFieldParentTaskID)
+}
+
+// SetAssignee sets the Assignee field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetAssignee(assignee *Principal) {
+	t.Assignee = assignee
+	t.require(taskStreamRequestFieldAssignee)
+}
+
+// SetStatusFilter sets the StatusFilter field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequest) SetStatusFilter(statusFilter *TaskStreamRequestStatusFilter) {
+	t.StatusFilter = statusFilter
+	t.require(taskStreamRequestFieldStatusFilter)
 }
 
 func (t *TaskStreamRequest) UnmarshalJSON(data []byte) error {
@@ -4059,6 +4101,9 @@ func (t *TaskVersion) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+// The datetime string in ISO 8601 format.
+type Timestamp = string
+
 // A User Principal representing a human.
 var (
 	userFieldUserID = big.NewInt(1 << 0)
@@ -4629,6 +4674,196 @@ func (t *TaskQueryUpdateTimeRange) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", t)
+}
+
+// A filter for task statuses (inclusive or exclusive).
+var (
+	taskStreamRequestStatusFilterFieldStatuses   = big.NewInt(1 << 0)
+	taskStreamRequestStatusFilterFieldFilterType = big.NewInt(1 << 1)
+)
+
+type TaskStreamRequestStatusFilter struct {
+	// The statuses to filter by.
+	Statuses []TaskStreamRequestStatusFilterStatusesItem `json:"statuses,omitempty" url:"statuses,omitempty"`
+	// The type of filter to apply.
+	FilterType *TaskStreamRequestStatusFilterFilterType `json:"filterType,omitempty" url:"filterType,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TaskStreamRequestStatusFilter) GetStatuses() []TaskStreamRequestStatusFilterStatusesItem {
+	if t == nil {
+		return nil
+	}
+	return t.Statuses
+}
+
+func (t *TaskStreamRequestStatusFilter) GetFilterType() *TaskStreamRequestStatusFilterFilterType {
+	if t == nil {
+		return nil
+	}
+	return t.FilterType
+}
+
+func (t *TaskStreamRequestStatusFilter) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
+	return t.extraProperties
+}
+
+func (t *TaskStreamRequestStatusFilter) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetStatuses sets the Statuses field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequestStatusFilter) SetStatuses(statuses []TaskStreamRequestStatusFilterStatusesItem) {
+	t.Statuses = statuses
+	t.require(taskStreamRequestStatusFilterFieldStatuses)
+}
+
+// SetFilterType sets the FilterType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStreamRequestStatusFilter) SetFilterType(filterType *TaskStreamRequestStatusFilterFilterType) {
+	t.FilterType = filterType
+	t.require(taskStreamRequestStatusFilterFieldFilterType)
+}
+
+func (t *TaskStreamRequestStatusFilter) UnmarshalJSON(data []byte) error {
+	type unmarshaler TaskStreamRequestStatusFilter
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TaskStreamRequestStatusFilter(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TaskStreamRequestStatusFilter) MarshalJSON() ([]byte, error) {
+	type embed TaskStreamRequestStatusFilter
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (t *TaskStreamRequestStatusFilter) String() string {
+	if t == nil {
+		return "<nil>"
+	}
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
+// The type of filter to apply.
+type TaskStreamRequestStatusFilterFilterType string
+
+const (
+	TaskStreamRequestStatusFilterFilterTypeFilterTypeInvalid   TaskStreamRequestStatusFilterFilterType = "FILTER_TYPE_INVALID"
+	TaskStreamRequestStatusFilterFilterTypeFilterTypeInclusive TaskStreamRequestStatusFilterFilterType = "FILTER_TYPE_INCLUSIVE"
+	TaskStreamRequestStatusFilterFilterTypeFilterTypeExclusive TaskStreamRequestStatusFilterFilterType = "FILTER_TYPE_EXCLUSIVE"
+)
+
+func NewTaskStreamRequestStatusFilterFilterTypeFromString(s string) (TaskStreamRequestStatusFilterFilterType, error) {
+	switch s {
+	case "FILTER_TYPE_INVALID":
+		return TaskStreamRequestStatusFilterFilterTypeFilterTypeInvalid, nil
+	case "FILTER_TYPE_INCLUSIVE":
+		return TaskStreamRequestStatusFilterFilterTypeFilterTypeInclusive, nil
+	case "FILTER_TYPE_EXCLUSIVE":
+		return TaskStreamRequestStatusFilterFilterTypeFilterTypeExclusive, nil
+	}
+	var t TaskStreamRequestStatusFilterFilterType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TaskStreamRequestStatusFilterFilterType) Ptr() *TaskStreamRequestStatusFilterFilterType {
+	return &t
+}
+
+type TaskStreamRequestStatusFilterStatusesItem string
+
+const (
+	TaskStreamRequestStatusFilterStatusesItemStatusInvalid            TaskStreamRequestStatusFilterStatusesItem = "STATUS_INVALID"
+	TaskStreamRequestStatusFilterStatusesItemStatusCreated            TaskStreamRequestStatusFilterStatusesItem = "STATUS_CREATED"
+	TaskStreamRequestStatusFilterStatusesItemStatusScheduledInManager TaskStreamRequestStatusFilterStatusesItem = "STATUS_SCHEDULED_IN_MANAGER"
+	TaskStreamRequestStatusFilterStatusesItemStatusSent               TaskStreamRequestStatusFilterStatusesItem = "STATUS_SENT"
+	TaskStreamRequestStatusFilterStatusesItemStatusMachineReceipt     TaskStreamRequestStatusFilterStatusesItem = "STATUS_MACHINE_RECEIPT"
+	TaskStreamRequestStatusFilterStatusesItemStatusAck                TaskStreamRequestStatusFilterStatusesItem = "STATUS_ACK"
+	TaskStreamRequestStatusFilterStatusesItemStatusWilco              TaskStreamRequestStatusFilterStatusesItem = "STATUS_WILCO"
+	TaskStreamRequestStatusFilterStatusesItemStatusExecuting          TaskStreamRequestStatusFilterStatusesItem = "STATUS_EXECUTING"
+	TaskStreamRequestStatusFilterStatusesItemStatusWaitingForUpdate   TaskStreamRequestStatusFilterStatusesItem = "STATUS_WAITING_FOR_UPDATE"
+	TaskStreamRequestStatusFilterStatusesItemStatusDoneOk             TaskStreamRequestStatusFilterStatusesItem = "STATUS_DONE_OK"
+	TaskStreamRequestStatusFilterStatusesItemStatusDoneNotOk          TaskStreamRequestStatusFilterStatusesItem = "STATUS_DONE_NOT_OK"
+	TaskStreamRequestStatusFilterStatusesItemStatusReplaced           TaskStreamRequestStatusFilterStatusesItem = "STATUS_REPLACED"
+	TaskStreamRequestStatusFilterStatusesItemStatusCancelRequested    TaskStreamRequestStatusFilterStatusesItem = "STATUS_CANCEL_REQUESTED"
+	TaskStreamRequestStatusFilterStatusesItemStatusCompleteRequested  TaskStreamRequestStatusFilterStatusesItem = "STATUS_COMPLETE_REQUESTED"
+	TaskStreamRequestStatusFilterStatusesItemStatusVersionRejected    TaskStreamRequestStatusFilterStatusesItem = "STATUS_VERSION_REJECTED"
+)
+
+func NewTaskStreamRequestStatusFilterStatusesItemFromString(s string) (TaskStreamRequestStatusFilterStatusesItem, error) {
+	switch s {
+	case "STATUS_INVALID":
+		return TaskStreamRequestStatusFilterStatusesItemStatusInvalid, nil
+	case "STATUS_CREATED":
+		return TaskStreamRequestStatusFilterStatusesItemStatusCreated, nil
+	case "STATUS_SCHEDULED_IN_MANAGER":
+		return TaskStreamRequestStatusFilterStatusesItemStatusScheduledInManager, nil
+	case "STATUS_SENT":
+		return TaskStreamRequestStatusFilterStatusesItemStatusSent, nil
+	case "STATUS_MACHINE_RECEIPT":
+		return TaskStreamRequestStatusFilterStatusesItemStatusMachineReceipt, nil
+	case "STATUS_ACK":
+		return TaskStreamRequestStatusFilterStatusesItemStatusAck, nil
+	case "STATUS_WILCO":
+		return TaskStreamRequestStatusFilterStatusesItemStatusWilco, nil
+	case "STATUS_EXECUTING":
+		return TaskStreamRequestStatusFilterStatusesItemStatusExecuting, nil
+	case "STATUS_WAITING_FOR_UPDATE":
+		return TaskStreamRequestStatusFilterStatusesItemStatusWaitingForUpdate, nil
+	case "STATUS_DONE_OK":
+		return TaskStreamRequestStatusFilterStatusesItemStatusDoneOk, nil
+	case "STATUS_DONE_NOT_OK":
+		return TaskStreamRequestStatusFilterStatusesItemStatusDoneNotOk, nil
+	case "STATUS_REPLACED":
+		return TaskStreamRequestStatusFilterStatusesItemStatusReplaced, nil
+	case "STATUS_CANCEL_REQUESTED":
+		return TaskStreamRequestStatusFilterStatusesItemStatusCancelRequested, nil
+	case "STATUS_COMPLETE_REQUESTED":
+		return TaskStreamRequestStatusFilterStatusesItemStatusCompleteRequested, nil
+	case "STATUS_VERSION_REJECTED":
+		return TaskStreamRequestStatusFilterStatusesItemStatusVersionRejected, nil
+	}
+	var t TaskStreamRequestStatusFilterStatusesItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TaskStreamRequestStatusFilterStatusesItem) Ptr() *TaskStreamRequestStatusFilterStatusesItem {
+	return &t
 }
 
 // Optional filter that only returns tasks with specific types. If not provided, all task types will be streamed.
