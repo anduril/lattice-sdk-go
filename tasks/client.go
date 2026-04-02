@@ -114,12 +114,11 @@ func (c *Client) UpdateTaskStatus(
 // This method initiates task cancellation based on the task's current state:
 //   - If the task has not been sent to an agent, it cancels immediately and transitions the task
 //     to a terminal state (`STATUS_DONE_NOT_OK` with `ERROR_CODE_CANCELLED`).
-//   - If the task has already been sent to an agent, the cancellation request is routed to the agent with a delivery status of `DELIVERY_STATUS_PENDING_CANCEL`.
-//     The agent is responsible for determining whether cancellation is possible and updating
-//     the task status accordingly via the `UpdateStatus` endpoint:
-//   - If the task can be cancelled, the agent should update the task status to `STATUS_DONE_NOT_OK`.
-//   - If the task cannot be cancelled, the agent should attach an error to the task stating why cancellation is not possible using `UpdateStatus`
-//     or the returned task object.
+//   - If the task has already been sent to an agent, the cancellation request is routed to the agent.
+//     The agent is then responsible for deciding whether cancellation is possible or not:
+//   - If the task can be cancelled, the agent must use `UpdateTaskStatus` and set the task status to `STATUS_DONE_NOT_OK`.
+//   - If the task cannot be cancelled, the agent must use `UpdateTaskStatus` to attach a `TaskError` to the task with the error code `ERROR_CODE_REJECTED`
+//     and a `message` explaining why the task cannot be cancelled.
 func (c *Client) CancelTask(
 	ctx context.Context,
 	request *Lattice.TaskCancellation,
