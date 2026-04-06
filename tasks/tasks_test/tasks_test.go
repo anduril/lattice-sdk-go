@@ -252,3 +252,28 @@ func TestTasksStreamAsAgentWithWireMock(
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestTasksStreamAsAgentWithWireMock", "POST", "/api/v1/agent/stream", nil, 1)
 }
+
+func TestTasksStreamManualControlFramesWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+	)
+	request := &Lattice.ManualControlStreamRequest{
+		TaskID: "taskId",
+	}
+	_, invocationErr := client.Tasks.StreamManualControlFrames(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestTasksStreamManualControlFramesWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestTasksStreamManualControlFramesWithWireMock", "POST", "/api/v1/tasks/taskId/manual-control/stream", nil, 1)
+}
