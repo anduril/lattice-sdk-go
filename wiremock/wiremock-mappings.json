@@ -401,6 +401,37 @@
       }
     },
     {
+      "id": "4f0032be-1e6f-4db3-8388-a8ec2dce6f8a",
+      "name": "Stream manual control frames - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/tasks/{taskId}/manual-control/stream",
+        "method": "POST",
+        "pathParameters": {
+          "taskId": {
+            "equalTo": "taskId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "event: message\ndata: {\"timestamp\":\"timestamp\",\"event\":\"heartbeat\"}\n",
+        "headers": {
+          "Content-Type": "text/event-stream"
+        }
+      },
+      "uuid": "4f0032be-1e6f-4db3-8388-a8ec2dce6f8a",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "b3418340-26a1-439d-8b7e-6dc23cba3dba",
       "name": "List objects - default",
       "request": {
@@ -548,6 +579,6 @@
     }
   ],
   "meta": {
-    "total": 19
+    "total": 20
   }
 }

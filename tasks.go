@@ -397,6 +397,63 @@ func (a *AgentStreamRequest) MarshalJSON() ([]byte, error) {
 }
 
 var (
+	manualControlStreamRequestFieldTaskID              = big.NewInt(1 << 0)
+	manualControlStreamRequestFieldHeartbeatIntervalMs = big.NewInt(1 << 1)
+)
+
+type ManualControlStreamRequest struct {
+	// The ID of the manual control task to receive frames for.
+	TaskID string `json:"-" url:"-"`
+	// The time interval, in milliseconds, that determines the frequency at which to send heartbeat events. Defaults to 30000 (30 seconds).
+	HeartbeatIntervalMs *int `json:"heartbeatIntervalMs,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (m *ManualControlStreamRequest) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlStreamRequest) SetTaskID(taskID string) {
+	m.TaskID = taskID
+	m.require(manualControlStreamRequestFieldTaskID)
+}
+
+// SetHeartbeatIntervalMs sets the HeartbeatIntervalMs field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlStreamRequest) SetHeartbeatIntervalMs(heartbeatIntervalMs *int) {
+	m.HeartbeatIntervalMs = heartbeatIntervalMs
+	m.require(manualControlStreamRequestFieldHeartbeatIntervalMs)
+}
+
+func (m *ManualControlStreamRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ManualControlStreamRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*m = ManualControlStreamRequest(body)
+	return nil
+}
+
+func (m *ManualControlStreamRequest) MarshalJSON() ([]byte, error) {
+	type embed ManualControlStreamRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*m),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	taskStreamRequestFieldHeartbeatIntervalMs     = big.NewInt(1 << 0)
 	taskStreamRequestFieldRateLimit               = big.NewInt(1 << 1)
 	taskStreamRequestFieldExcludePreexistingTasks = big.NewInt(1 << 2)
@@ -1925,6 +1982,357 @@ func (g *GoogleProtobufAny) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", g)
+}
+
+// A single frame of manual control input forwarded by Lattice to an agent.
+//
+//	When an operator sends manual control input, for example, joystick movements using
+//	`SendManualControlFrames`, Lattice packages each input into a `ManualControlFrame`
+//	and forwards it to the executing agent via the `ListenForManualControlFrames`
+//	streaming RPC.
+//
+//	Each frame carries sequencing metadata to support concurrent control sessions,
+//	detect stale frames, and ensure proper ordering.
+var (
+	manualControlFrameFieldTaskID        = big.NewInt(1 << 0)
+	manualControlFrameFieldEpochMicros   = big.NewInt(1 << 1)
+	manualControlFrameFieldSequence      = big.NewInt(1 << 2)
+	manualControlFrameFieldCreationTime  = big.NewInt(1 << 3)
+	manualControlFrameFieldSpecification = big.NewInt(1 << 4)
+)
+
+type ManualControlFrame struct {
+	// The ID of the manual control task this frame belongs to.
+	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
+	// Unix timestamp in microseconds identifying the control session.
+	//
+	//	Increments each time a client opens a new stream for this task.
+	//	Agents should ignore frames with a lower epoch to handle stale streams
+	//	or operator handoffs.
+	EpochMicros *string `json:"epochMicros,omitempty" url:"epochMicros,omitempty"`
+	// The sequence number for a stream, incremented for each frame.
+	//
+	//	Agents can use this to detect out-of-order delivery within the same epoch.
+	Sequence *string `json:"sequence,omitempty" url:"sequence,omitempty"`
+	// The time at which this frame was created.
+	//
+	//	Agents can use this to detect stale frame data.
+	CreationTime *time.Time `json:"creationTime,omitempty" url:"creationTime,omitempty"`
+	// The control instructions for this frame, passed through from the client.
+	//
+	//	The format of each task is specific to the task, and not visible to Lattice.
+	Specification *GoogleProtobufAny `json:"specification,omitempty" url:"specification,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *ManualControlFrame) GetTaskID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.TaskID
+}
+
+func (m *ManualControlFrame) GetEpochMicros() *string {
+	if m == nil {
+		return nil
+	}
+	return m.EpochMicros
+}
+
+func (m *ManualControlFrame) GetSequence() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Sequence
+}
+
+func (m *ManualControlFrame) GetCreationTime() *time.Time {
+	if m == nil {
+		return nil
+	}
+	return m.CreationTime
+}
+
+func (m *ManualControlFrame) GetSpecification() *GoogleProtobufAny {
+	if m == nil {
+		return nil
+	}
+	return m.Specification
+}
+
+func (m *ManualControlFrame) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
+	return m.extraProperties
+}
+
+func (m *ManualControlFrame) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrame) SetTaskID(taskID *string) {
+	m.TaskID = taskID
+	m.require(manualControlFrameFieldTaskID)
+}
+
+// SetEpochMicros sets the EpochMicros field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrame) SetEpochMicros(epochMicros *string) {
+	m.EpochMicros = epochMicros
+	m.require(manualControlFrameFieldEpochMicros)
+}
+
+// SetSequence sets the Sequence field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrame) SetSequence(sequence *string) {
+	m.Sequence = sequence
+	m.require(manualControlFrameFieldSequence)
+}
+
+// SetCreationTime sets the CreationTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrame) SetCreationTime(creationTime *time.Time) {
+	m.CreationTime = creationTime
+	m.require(manualControlFrameFieldCreationTime)
+}
+
+// SetSpecification sets the Specification field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrame) SetSpecification(specification *GoogleProtobufAny) {
+	m.Specification = specification
+	m.require(manualControlFrameFieldSpecification)
+}
+
+func (m *ManualControlFrame) UnmarshalJSON(data []byte) error {
+	type embed ManualControlFrame
+	var unmarshaler = struct {
+		embed
+		CreationTime *internal.DateTime `json:"creationTime,omitempty"`
+	}{
+		embed: embed(*m),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*m = ManualControlFrame(unmarshaler.embed)
+	m.CreationTime = unmarshaler.CreationTime.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *ManualControlFrame) MarshalJSON() ([]byte, error) {
+	type embed ManualControlFrame
+	var marshaler = struct {
+		embed
+		CreationTime *internal.DateTime `json:"creationTime,omitempty"`
+	}{
+		embed:        embed(*m),
+		CreationTime: internal.NewOptionalDateTime(m.CreationTime),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (m *ManualControlFrame) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
+}
+
+var (
+	manualControlFrameEventFieldTaskID        = big.NewInt(1 << 0)
+	manualControlFrameEventFieldEpochMicros   = big.NewInt(1 << 1)
+	manualControlFrameEventFieldSequence      = big.NewInt(1 << 2)
+	manualControlFrameEventFieldCreationTime  = big.NewInt(1 << 3)
+	manualControlFrameEventFieldSpecification = big.NewInt(1 << 4)
+)
+
+type ManualControlFrameEvent struct {
+	// The ID of the manual control task this frame belongs to.
+	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
+	// Unix timestamp in microseconds identifying the control session.
+	//
+	//	Increments each time a client opens a new stream for this task.
+	//	Agents should ignore frames with a lower epoch to handle stale streams
+	//	or operator handoffs.
+	EpochMicros *string `json:"epochMicros,omitempty" url:"epochMicros,omitempty"`
+	// The sequence number for a stream, incremented for each frame.
+	//
+	//	Agents can use this to detect out-of-order delivery within the same epoch.
+	Sequence *string `json:"sequence,omitempty" url:"sequence,omitempty"`
+	// The time at which this frame was created.
+	//
+	//	Agents can use this to detect stale frame data.
+	CreationTime *time.Time `json:"creationTime,omitempty" url:"creationTime,omitempty"`
+	// The control instructions for this frame, passed through from the client.
+	//
+	//	The format of each task is specific to the task, and not visible to Lattice.
+	Specification *GoogleProtobufAny `json:"specification,omitempty" url:"specification,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (m *ManualControlFrameEvent) GetTaskID() *string {
+	if m == nil {
+		return nil
+	}
+	return m.TaskID
+}
+
+func (m *ManualControlFrameEvent) GetEpochMicros() *string {
+	if m == nil {
+		return nil
+	}
+	return m.EpochMicros
+}
+
+func (m *ManualControlFrameEvent) GetSequence() *string {
+	if m == nil {
+		return nil
+	}
+	return m.Sequence
+}
+
+func (m *ManualControlFrameEvent) GetCreationTime() *time.Time {
+	if m == nil {
+		return nil
+	}
+	return m.CreationTime
+}
+
+func (m *ManualControlFrameEvent) GetSpecification() *GoogleProtobufAny {
+	if m == nil {
+		return nil
+	}
+	return m.Specification
+}
+
+func (m *ManualControlFrameEvent) GetExtraProperties() map[string]interface{} {
+	if m == nil {
+		return nil
+	}
+	return m.extraProperties
+}
+
+func (m *ManualControlFrameEvent) require(field *big.Int) {
+	if m.explicitFields == nil {
+		m.explicitFields = big.NewInt(0)
+	}
+	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameEvent) SetTaskID(taskID *string) {
+	m.TaskID = taskID
+	m.require(manualControlFrameEventFieldTaskID)
+}
+
+// SetEpochMicros sets the EpochMicros field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameEvent) SetEpochMicros(epochMicros *string) {
+	m.EpochMicros = epochMicros
+	m.require(manualControlFrameEventFieldEpochMicros)
+}
+
+// SetSequence sets the Sequence field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameEvent) SetSequence(sequence *string) {
+	m.Sequence = sequence
+	m.require(manualControlFrameEventFieldSequence)
+}
+
+// SetCreationTime sets the CreationTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameEvent) SetCreationTime(creationTime *time.Time) {
+	m.CreationTime = creationTime
+	m.require(manualControlFrameEventFieldCreationTime)
+}
+
+// SetSpecification sets the Specification field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameEvent) SetSpecification(specification *GoogleProtobufAny) {
+	m.Specification = specification
+	m.require(manualControlFrameEventFieldSpecification)
+}
+
+func (m *ManualControlFrameEvent) UnmarshalJSON(data []byte) error {
+	type embed ManualControlFrameEvent
+	var unmarshaler = struct {
+		embed
+		CreationTime *internal.DateTime `json:"creationTime,omitempty"`
+	}{
+		embed: embed(*m),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*m = ManualControlFrameEvent(unmarshaler.embed)
+	m.CreationTime = unmarshaler.CreationTime.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *m)
+	if err != nil {
+		return err
+	}
+	m.extraProperties = extraProperties
+	m.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (m *ManualControlFrameEvent) MarshalJSON() ([]byte, error) {
+	type embed ManualControlFrameEvent
+	var marshaler = struct {
+		embed
+		CreationTime *internal.DateTime `json:"creationTime,omitempty"`
+	}{
+		embed:        embed(*m),
+		CreationTime: internal.NewOptionalDateTime(m.CreationTime),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (m *ManualControlFrameEvent) String() string {
+	if m == nil {
+		return "<nil>"
+	}
+	if len(m.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(m.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(m); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", m)
 }
 
 // Owner designates the entity responsible for writes of task data.
@@ -4284,6 +4692,124 @@ func (s *StreamAsAgentResponse) validate() error {
 	}
 	if s.AgentRequest != nil {
 		fields = append(fields, "agent_request")
+	}
+	if len(fields) == 0 {
+		if s.Event != "" {
+			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", s, s.Event)
+		}
+		return fmt.Errorf("type %T is empty", s)
+	}
+	if len(fields) > 1 {
+		return fmt.Errorf("type %T defines values for %s, but only one value is allowed", s, fields)
+	}
+	if s.Event != "" {
+		field := fields[0]
+		if s.Event != field {
+			return fmt.Errorf(
+				"type %T defines a discriminant set to %q, but it does not match the %T field; either remove or update the discriminant to match",
+				s,
+				s.Event,
+				s,
+			)
+		}
+	}
+	return nil
+}
+
+// The stream event response.
+type StreamManualControlFramesResponse struct {
+	Event              string
+	Heartbeat          *StreamHeartbeat
+	ManualControlFrame *ManualControlFrameEvent
+}
+
+func (s *StreamManualControlFramesResponse) GetEvent() string {
+	if s == nil {
+		return ""
+	}
+	return s.Event
+}
+
+func (s *StreamManualControlFramesResponse) GetHeartbeat() *StreamHeartbeat {
+	if s == nil {
+		return nil
+	}
+	return s.Heartbeat
+}
+
+func (s *StreamManualControlFramesResponse) GetManualControlFrame() *ManualControlFrameEvent {
+	if s == nil {
+		return nil
+	}
+	return s.ManualControlFrame
+}
+
+func (s *StreamManualControlFramesResponse) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Event string `json:"event"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	s.Event = unmarshaler.Event
+	if unmarshaler.Event == "" {
+		return fmt.Errorf("%T did not include discriminant event", s)
+	}
+	switch unmarshaler.Event {
+	case "heartbeat":
+		value := new(StreamHeartbeat)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		s.Heartbeat = value
+	case "manual_control_frame":
+		value := new(ManualControlFrameEvent)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		s.ManualControlFrame = value
+	}
+	return nil
+}
+
+func (s StreamManualControlFramesResponse) MarshalJSON() ([]byte, error) {
+	if err := s.validate(); err != nil {
+		return nil, err
+	}
+	if s.Heartbeat != nil {
+		return internal.MarshalJSONWithExtraProperty(s.Heartbeat, "event", "heartbeat")
+	}
+	if s.ManualControlFrame != nil {
+		return internal.MarshalJSONWithExtraProperty(s.ManualControlFrame, "event", "manual_control_frame")
+	}
+	return nil, fmt.Errorf("type %T does not define a non-empty union type", s)
+}
+
+type StreamManualControlFramesResponseVisitor interface {
+	VisitHeartbeat(*StreamHeartbeat) error
+	VisitManualControlFrame(*ManualControlFrameEvent) error
+}
+
+func (s *StreamManualControlFramesResponse) Accept(visitor StreamManualControlFramesResponseVisitor) error {
+	if s.Heartbeat != nil {
+		return visitor.VisitHeartbeat(s.Heartbeat)
+	}
+	if s.ManualControlFrame != nil {
+		return visitor.VisitManualControlFrame(s.ManualControlFrame)
+	}
+	return fmt.Errorf("type %T does not define a non-empty union type", s)
+}
+
+func (s *StreamManualControlFramesResponse) validate() error {
+	if s == nil {
+		return fmt.Errorf("type %T is nil", s)
+	}
+	var fields []string
+	if s.Heartbeat != nil {
+		fields = append(fields, "heartbeat")
+	}
+	if s.ManualControlFrame != nil {
+		fields = append(fields, "manual_control_frame")
 	}
 	if len(fields) == 0 {
 		if s.Event != "" {

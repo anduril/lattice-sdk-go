@@ -300,3 +300,58 @@ func (c *Client) StreamAsAgent(
 		},
 	)
 }
+
+// Establishes a server streaming connection that delivers manual control frames to agents
+// using server-sent events (SSE).
+//
+// This endpoint streams manual control frames, for example, for joystick movements, for a specific task
+// to the executing agent. The agent should open this stream before reporting `STATUS_EXECUTING`
+// to ensure it is ready to receive control input when the operator begins sending frames.
+//
+// Each frame includes epoch and sequence metadata for handling concurrent control sessions
+// and detecting stale or out-of-order frames. Heartbeat messages are sent periodically to
+// maintain the connection.
+//
+// The stream terminates automatically when the task reaches a terminal state
+// (`STATUS_DONE_OK` or `STATUS_DONE_NOT_OK`).
+func (c *Client) StreamManualControlFrames(
+	ctx context.Context,
+	request *Lattice.ManualControlStreamRequest,
+	opts ...option.RequestOption,
+) (*core.Stream[Lattice.StreamManualControlFramesResponse], error) {
+	options := core.NewRequestOptions(opts...)
+	baseURL := internal.ResolveBaseURL(
+		options.BaseURL,
+		c.baseURL,
+		"https://example.developer.anduril.com",
+	)
+	endpointURL := internal.EncodeURL(
+		baseURL+"/api/v1/tasks/%v/manual-control/stream",
+		request.TaskID,
+	)
+	headers := internal.MergeHeaders(
+		c.options.ToHeader(),
+		options.ToHeader(),
+	)
+	headers.Add("Accept", "text/event-stream")
+	headers.Add("Content-Type", "application/json")
+	streamer := internal.NewStreamer[Lattice.StreamManualControlFramesResponse](c.caller)
+	return streamer.Stream(
+		ctx,
+		&internal.StreamParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			Headers:         headers,
+			MaxAttempts:     options.MaxAttempts,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			MaxBufSize:      options.MaxBufSize,
+			Prefix:          internal.DefaultSSEDataPrefix,
+			Terminator:      internal.DefaultSSETerminator,
+			Format:          core.StreamFormatSSE,
+			Request:         request,
+			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+		},
+	)
+}
