@@ -545,3 +545,22 @@ func NewGetObjectRequestAcceptEncodingFromString(s string) (GetObjectRequestAcce
 func (g GetObjectRequestAcceptEncoding) Ptr() *GetObjectRequestAcceptEncoding {
 	return &g
 }
+
+type UploadObjectRequestDistributionMode string
+
+const (
+	UploadObjectRequestDistributionModeForce UploadObjectRequestDistributionMode = "force"
+)
+
+func NewUploadObjectRequestDistributionModeFromString(s string) (UploadObjectRequestDistributionMode, error) {
+	switch s {
+	case "force":
+		return UploadObjectRequestDistributionModeForce, nil
+	}
+	var t UploadObjectRequestDistributionMode
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UploadObjectRequestDistributionMode) Ptr() *UploadObjectRequestDistributionMode {
+	return &u
+}
