@@ -1083,7 +1083,7 @@ func TestSettersAngleOfArrival(t *testing.T) {
 
 	t.Run("SetBearingElevationCovarianceRad2", func(t *testing.T) {
 		obj := &AngleOfArrival{}
-		var fernTestValueBearingElevationCovarianceRad2 *TMat2
+		var fernTestValueBearingElevationCovarianceRad2 *Tmat2
 		obj.SetBearingElevationCovarianceRad2(fernTestValueBearingElevationCovarianceRad2)
 		assert.Equal(t, fernTestValueBearingElevationCovarianceRad2, obj.BearingElevationCovarianceRad2)
 		assert.NotNil(t, obj.explicitFields)
@@ -1129,7 +1129,7 @@ func TestGettersAngleOfArrival(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &AngleOfArrival{}
-		var expected *TMat2
+		var expected *Tmat2
 		obj.BearingElevationCovarianceRad2 = expected
 
 		// Act & Assert
@@ -1196,7 +1196,7 @@ func TestSettersMarkExplicitAngleOfArrival(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &AngleOfArrival{}
-		var fernTestValueBearingElevationCovarianceRad2 *TMat2
+		var fernTestValueBearingElevationCovarianceRad2 *Tmat2
 
 		// Act
 		obj.SetBearingElevationCovarianceRad2(fernTestValueBearingElevationCovarianceRad2)
@@ -7380,9 +7380,9 @@ func TestSettersMarkExplicitEntityManagerPose(t *testing.T) {
 
 }
 
-func TestSettersEntityManagerTMat3(t *testing.T) {
+func TestSettersEntityManagerTmat3(t *testing.T) {
 	t.Run("SetMxx", func(t *testing.T) {
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMxx *float64
 		obj.SetMxx(fernTestValueMxx)
 		assert.Equal(t, fernTestValueMxx, obj.Mxx)
@@ -7390,7 +7390,7 @@ func TestSettersEntityManagerTMat3(t *testing.T) {
 	})
 
 	t.Run("SetMxy", func(t *testing.T) {
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMxy *float64
 		obj.SetMxy(fernTestValueMxy)
 		assert.Equal(t, fernTestValueMxy, obj.Mxy)
@@ -7398,7 +7398,7 @@ func TestSettersEntityManagerTMat3(t *testing.T) {
 	})
 
 	t.Run("SetMxz", func(t *testing.T) {
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMxz *float64
 		obj.SetMxz(fernTestValueMxz)
 		assert.Equal(t, fernTestValueMxz, obj.Mxz)
@@ -7406,7 +7406,7 @@ func TestSettersEntityManagerTMat3(t *testing.T) {
 	})
 
 	t.Run("SetMyy", func(t *testing.T) {
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMyy *float64
 		obj.SetMyy(fernTestValueMyy)
 		assert.Equal(t, fernTestValueMyy, obj.Myy)
@@ -7414,7 +7414,7 @@ func TestSettersEntityManagerTMat3(t *testing.T) {
 	})
 
 	t.Run("SetMyz", func(t *testing.T) {
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMyz *float64
 		obj.SetMyz(fernTestValueMyz)
 		assert.Equal(t, fernTestValueMyz, obj.Myz)
@@ -7422,7 +7422,7 @@ func TestSettersEntityManagerTMat3(t *testing.T) {
 	})
 
 	t.Run("SetMzz", func(t *testing.T) {
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMzz *float64
 		obj.SetMzz(fernTestValueMzz)
 		assert.Equal(t, fernTestValueMzz, obj.Mzz)
@@ -7431,11 +7431,11 @@ func TestSettersEntityManagerTMat3(t *testing.T) {
 
 }
 
-func TestGettersEntityManagerTMat3(t *testing.T) {
+func TestGettersEntityManagerTmat3(t *testing.T) {
 	t.Run("GetMxx", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var expected *float64
 		obj.Mxx = expected
 
@@ -7446,7 +7446,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMxx_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		obj.Mxx = nil
 
 		// Act & Assert
@@ -7455,7 +7455,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 
 	t.Run("GetMxx_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -7468,7 +7468,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMxy", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var expected *float64
 		obj.Mxy = expected
 
@@ -7479,7 +7479,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMxy_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		obj.Mxy = nil
 
 		// Act & Assert
@@ -7488,7 +7488,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 
 	t.Run("GetMxy_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -7501,7 +7501,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMxz", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var expected *float64
 		obj.Mxz = expected
 
@@ -7512,7 +7512,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMxz_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		obj.Mxz = nil
 
 		// Act & Assert
@@ -7521,7 +7521,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 
 	t.Run("GetMxz_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -7534,7 +7534,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMyy", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var expected *float64
 		obj.Myy = expected
 
@@ -7545,7 +7545,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMyy_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		obj.Myy = nil
 
 		// Act & Assert
@@ -7554,7 +7554,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 
 	t.Run("GetMyy_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -7567,7 +7567,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMyz", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var expected *float64
 		obj.Myz = expected
 
@@ -7578,7 +7578,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMyz_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		obj.Myz = nil
 
 		// Act & Assert
@@ -7587,7 +7587,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 
 	t.Run("GetMyz_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -7600,7 +7600,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMzz", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var expected *float64
 		obj.Mzz = expected
 
@@ -7611,7 +7611,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 	t.Run("GetMzz_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		obj.Mzz = nil
 
 		// Act & Assert
@@ -7620,7 +7620,7 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 
 	t.Run("GetMzz_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -7632,11 +7632,11 @@ func TestGettersEntityManagerTMat3(t *testing.T) {
 
 }
 
-func TestSettersMarkExplicitEntityManagerTMat3(t *testing.T) {
+func TestSettersMarkExplicitEntityManagerTmat3(t *testing.T) {
 	t.Run("SetMxx_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMxx *float64
 
 		// Act
@@ -7667,7 +7667,7 @@ func TestSettersMarkExplicitEntityManagerTMat3(t *testing.T) {
 	t.Run("SetMxy_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMxy *float64
 
 		// Act
@@ -7698,7 +7698,7 @@ func TestSettersMarkExplicitEntityManagerTMat3(t *testing.T) {
 	t.Run("SetMxz_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMxz *float64
 
 		// Act
@@ -7729,7 +7729,7 @@ func TestSettersMarkExplicitEntityManagerTMat3(t *testing.T) {
 	t.Run("SetMyy_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMyy *float64
 
 		// Act
@@ -7760,7 +7760,7 @@ func TestSettersMarkExplicitEntityManagerTMat3(t *testing.T) {
 	t.Run("SetMyz_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMyz *float64
 
 		// Act
@@ -7791,7 +7791,7 @@ func TestSettersMarkExplicitEntityManagerTMat3(t *testing.T) {
 	t.Run("SetMzz_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		var fernTestValueMzz *float64
 
 		// Act
@@ -14097,7 +14097,7 @@ func TestSettersMarkExplicitLocation(t *testing.T) {
 func TestSettersLocationUncertainty(t *testing.T) {
 	t.Run("SetPositionEnuCov", func(t *testing.T) {
 		obj := &LocationUncertainty{}
-		var fernTestValuePositionEnuCov *EntityManagerTMat3
+		var fernTestValuePositionEnuCov *EntityManagerTmat3
 		obj.SetPositionEnuCov(fernTestValuePositionEnuCov)
 		assert.Equal(t, fernTestValuePositionEnuCov, obj.PositionEnuCov)
 		assert.NotNil(t, obj.explicitFields)
@@ -14105,7 +14105,7 @@ func TestSettersLocationUncertainty(t *testing.T) {
 
 	t.Run("SetVelocityEnuCov", func(t *testing.T) {
 		obj := &LocationUncertainty{}
-		var fernTestValueVelocityEnuCov *EntityManagerTMat3
+		var fernTestValueVelocityEnuCov *EntityManagerTmat3
 		obj.SetVelocityEnuCov(fernTestValueVelocityEnuCov)
 		assert.Equal(t, fernTestValueVelocityEnuCov, obj.VelocityEnuCov)
 		assert.NotNil(t, obj.explicitFields)
@@ -14126,7 +14126,7 @@ func TestGettersLocationUncertainty(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &LocationUncertainty{}
-		var expected *EntityManagerTMat3
+		var expected *EntityManagerTmat3
 		obj.PositionEnuCov = expected
 
 		// Act & Assert
@@ -14159,7 +14159,7 @@ func TestGettersLocationUncertainty(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &LocationUncertainty{}
-		var expected *EntityManagerTMat3
+		var expected *EntityManagerTmat3
 		obj.VelocityEnuCov = expected
 
 		// Act & Assert
@@ -14228,7 +14228,7 @@ func TestSettersMarkExplicitLocationUncertainty(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &LocationUncertainty{}
-		var fernTestValuePositionEnuCov *EntityManagerTMat3
+		var fernTestValuePositionEnuCov *EntityManagerTmat3
 
 		// Act
 		obj.SetPositionEnuCov(fernTestValuePositionEnuCov)
@@ -14259,7 +14259,7 @@ func TestSettersMarkExplicitLocationUncertainty(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &LocationUncertainty{}
-		var fernTestValueVelocityEnuCov *EntityManagerTMat3
+		var fernTestValueVelocityEnuCov *EntityManagerTmat3
 
 		// Act
 		obj.SetVelocityEnuCov(fernTestValueVelocityEnuCov)
@@ -19012,11 +19012,11 @@ func TestSettersPowerLevel(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
-	t.Run("SetConsumptionRateLPerS", func(t *testing.T) {
+	t.Run("SetConsumptionRateLperS", func(t *testing.T) {
 		obj := &PowerLevel{}
-		var fernTestValueConsumptionRateLPerS *float64
-		obj.SetConsumptionRateLPerS(fernTestValueConsumptionRateLPerS)
-		assert.Equal(t, fernTestValueConsumptionRateLPerS, obj.ConsumptionRateLPerS)
+		var fernTestValueConsumptionRateLperS *float64
+		obj.SetConsumptionRateLperS(fernTestValueConsumptionRateLperS)
+		assert.Equal(t, fernTestValueConsumptionRateLperS, obj.ConsumptionRateLperS)
 		assert.NotNil(t, obj.explicitFields)
 	})
 
@@ -19221,28 +19221,28 @@ func TestGettersPowerLevel(t *testing.T) {
 		_ = obj.GetRunTimeToEmptyMins() // Should return zero value
 	})
 
-	t.Run("GetConsumptionRateLPerS", func(t *testing.T) {
+	t.Run("GetConsumptionRateLperS", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &PowerLevel{}
 		var expected *float64
-		obj.ConsumptionRateLPerS = expected
+		obj.ConsumptionRateLperS = expected
 
 		// Act & Assert
-		assert.Equal(t, expected, obj.GetConsumptionRateLPerS(), "getter should return the property value")
+		assert.Equal(t, expected, obj.GetConsumptionRateLperS(), "getter should return the property value")
 	})
 
-	t.Run("GetConsumptionRateLPerS_NilValue", func(t *testing.T) {
+	t.Run("GetConsumptionRateLperS_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &PowerLevel{}
-		obj.ConsumptionRateLPerS = nil
+		obj.ConsumptionRateLperS = nil
 
 		// Act & Assert
-		assert.Nil(t, obj.GetConsumptionRateLPerS(), "getter should return nil when property is nil")
+		assert.Nil(t, obj.GetConsumptionRateLperS(), "getter should return nil when property is nil")
 	})
 
-	t.Run("GetConsumptionRateLPerS_NilReceiver", func(t *testing.T) {
+	t.Run("GetConsumptionRateLperS_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *PowerLevel
 		// Should not panic - getters should handle nil receiver gracefully
@@ -19251,7 +19251,7 @@ func TestGettersPowerLevel(t *testing.T) {
 				t.Errorf("Getter panicked on nil receiver: %v", r)
 			}
 		}()
-		_ = obj.GetConsumptionRateLPerS() // Should return zero value
+		_ = obj.GetConsumptionRateLperS() // Should return zero value
 	})
 
 }
@@ -19443,14 +19443,14 @@ func TestSettersMarkExplicitPowerLevel(t *testing.T) {
 		// It verifies that setting a field via setter allows successful JSON round-trip
 	})
 
-	t.Run("SetConsumptionRateLPerS_MarksExplicit", func(t *testing.T) {
+	t.Run("SetConsumptionRateLperS_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &PowerLevel{}
-		var fernTestValueConsumptionRateLPerS *float64
+		var fernTestValueConsumptionRateLperS *float64
 
 		// Act
-		obj.SetConsumptionRateLPerS(fernTestValueConsumptionRateLPerS)
+		obj.SetConsumptionRateLperS(fernTestValueConsumptionRateLperS)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
@@ -24651,9 +24651,9 @@ func TestSettersMarkExplicitSymbology(t *testing.T) {
 
 }
 
-func TestSettersTMat2(t *testing.T) {
+func TestSettersTmat2(t *testing.T) {
 	t.Run("SetMxx", func(t *testing.T) {
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var fernTestValueMxx *float64
 		obj.SetMxx(fernTestValueMxx)
 		assert.Equal(t, fernTestValueMxx, obj.Mxx)
@@ -24661,7 +24661,7 @@ func TestSettersTMat2(t *testing.T) {
 	})
 
 	t.Run("SetMxy", func(t *testing.T) {
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var fernTestValueMxy *float64
 		obj.SetMxy(fernTestValueMxy)
 		assert.Equal(t, fernTestValueMxy, obj.Mxy)
@@ -24669,7 +24669,7 @@ func TestSettersTMat2(t *testing.T) {
 	})
 
 	t.Run("SetMyy", func(t *testing.T) {
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var fernTestValueMyy *float64
 		obj.SetMyy(fernTestValueMyy)
 		assert.Equal(t, fernTestValueMyy, obj.Myy)
@@ -24678,11 +24678,11 @@ func TestSettersTMat2(t *testing.T) {
 
 }
 
-func TestGettersTMat2(t *testing.T) {
+func TestGettersTmat2(t *testing.T) {
 	t.Run("GetMxx", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var expected *float64
 		obj.Mxx = expected
 
@@ -24693,7 +24693,7 @@ func TestGettersTMat2(t *testing.T) {
 	t.Run("GetMxx_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		obj.Mxx = nil
 
 		// Act & Assert
@@ -24702,7 +24702,7 @@ func TestGettersTMat2(t *testing.T) {
 
 	t.Run("GetMxx_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *TMat2
+		var obj *Tmat2
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -24715,7 +24715,7 @@ func TestGettersTMat2(t *testing.T) {
 	t.Run("GetMxy", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var expected *float64
 		obj.Mxy = expected
 
@@ -24726,7 +24726,7 @@ func TestGettersTMat2(t *testing.T) {
 	t.Run("GetMxy_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		obj.Mxy = nil
 
 		// Act & Assert
@@ -24735,7 +24735,7 @@ func TestGettersTMat2(t *testing.T) {
 
 	t.Run("GetMxy_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *TMat2
+		var obj *Tmat2
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -24748,7 +24748,7 @@ func TestGettersTMat2(t *testing.T) {
 	t.Run("GetMyy", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var expected *float64
 		obj.Myy = expected
 
@@ -24759,7 +24759,7 @@ func TestGettersTMat2(t *testing.T) {
 	t.Run("GetMyy_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		obj.Myy = nil
 
 		// Act & Assert
@@ -24768,7 +24768,7 @@ func TestGettersTMat2(t *testing.T) {
 
 	t.Run("GetMyy_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *TMat2
+		var obj *Tmat2
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -24780,11 +24780,11 @@ func TestGettersTMat2(t *testing.T) {
 
 }
 
-func TestSettersMarkExplicitTMat2(t *testing.T) {
+func TestSettersMarkExplicitTmat2(t *testing.T) {
 	t.Run("SetMxx_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var fernTestValueMxx *float64
 
 		// Act
@@ -24815,7 +24815,7 @@ func TestSettersMarkExplicitTMat2(t *testing.T) {
 	t.Run("SetMxy_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var fernTestValueMxy *float64
 
 		// Act
@@ -24846,7 +24846,7 @@ func TestSettersMarkExplicitTMat2(t *testing.T) {
 	t.Run("SetMyy_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &TMat2{}
+		obj := &Tmat2{}
 		var fernTestValueMyy *float64
 
 		// Act
@@ -26173,7 +26173,7 @@ func TestSettersTracked(t *testing.T) {
 
 	t.Run("SetNumberOfObjects", func(t *testing.T) {
 		obj := &Tracked{}
-		var fernTestValueNumberOfObjects *UInt32Range
+		var fernTestValueNumberOfObjects *Uint32Range
 		obj.SetNumberOfObjects(fernTestValueNumberOfObjects)
 		assert.Equal(t, fernTestValueNumberOfObjects, obj.NumberOfObjects)
 		assert.NotNil(t, obj.explicitFields)
@@ -26276,7 +26276,7 @@ func TestGettersTracked(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &Tracked{}
-		var expected *UInt32Range
+		var expected *Uint32Range
 		obj.NumberOfObjects = expected
 
 		// Act & Assert
@@ -26473,7 +26473,7 @@ func TestSettersMarkExplicitTracked(t *testing.T) {
 		t.Parallel()
 		// Arrange
 		obj := &Tracked{}
-		var fernTestValueNumberOfObjects *UInt32Range
+		var fernTestValueNumberOfObjects *Uint32Range
 
 		// Act
 		obj.SetNumberOfObjects(fernTestValueNumberOfObjects)
@@ -27189,9 +27189,9 @@ func TestSettersMarkExplicitTransponderCodes(t *testing.T) {
 
 }
 
-func TestSettersUInt32Range(t *testing.T) {
+func TestSettersUint32Range(t *testing.T) {
 	t.Run("SetLowerBound", func(t *testing.T) {
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		var fernTestValueLowerBound *int
 		obj.SetLowerBound(fernTestValueLowerBound)
 		assert.Equal(t, fernTestValueLowerBound, obj.LowerBound)
@@ -27199,7 +27199,7 @@ func TestSettersUInt32Range(t *testing.T) {
 	})
 
 	t.Run("SetUpperBound", func(t *testing.T) {
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		var fernTestValueUpperBound *int
 		obj.SetUpperBound(fernTestValueUpperBound)
 		assert.Equal(t, fernTestValueUpperBound, obj.UpperBound)
@@ -27208,11 +27208,11 @@ func TestSettersUInt32Range(t *testing.T) {
 
 }
 
-func TestGettersUInt32Range(t *testing.T) {
+func TestGettersUint32Range(t *testing.T) {
 	t.Run("GetLowerBound", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		var expected *int
 		obj.LowerBound = expected
 
@@ -27223,7 +27223,7 @@ func TestGettersUInt32Range(t *testing.T) {
 	t.Run("GetLowerBound_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		obj.LowerBound = nil
 
 		// Act & Assert
@@ -27232,7 +27232,7 @@ func TestGettersUInt32Range(t *testing.T) {
 
 	t.Run("GetLowerBound_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *UInt32Range
+		var obj *Uint32Range
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -27245,7 +27245,7 @@ func TestGettersUInt32Range(t *testing.T) {
 	t.Run("GetUpperBound", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		var expected *int
 		obj.UpperBound = expected
 
@@ -27256,7 +27256,7 @@ func TestGettersUInt32Range(t *testing.T) {
 	t.Run("GetUpperBound_NilValue", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		obj.UpperBound = nil
 
 		// Act & Assert
@@ -27265,7 +27265,7 @@ func TestGettersUInt32Range(t *testing.T) {
 
 	t.Run("GetUpperBound_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *UInt32Range
+		var obj *Uint32Range
 		// Should not panic - getters should handle nil receiver gracefully
 		defer func() {
 			if r := recover(); r != nil {
@@ -27277,11 +27277,11 @@ func TestGettersUInt32Range(t *testing.T) {
 
 }
 
-func TestSettersMarkExplicitUInt32Range(t *testing.T) {
+func TestSettersMarkExplicitUint32Range(t *testing.T) {
 	t.Run("SetLowerBound_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		var fernTestValueLowerBound *int
 
 		// Act
@@ -27312,7 +27312,7 @@ func TestSettersMarkExplicitUInt32Range(t *testing.T) {
 	t.Run("SetUpperBound_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		var fernTestValueUpperBound *int
 
 		// Act
@@ -28523,11 +28523,11 @@ func TestJSONMarshalingEntityManagerPose(t *testing.T) {
 	})
 }
 
-func TestJSONMarshalingEntityManagerTMat3(t *testing.T) {
+func TestJSONMarshalingEntityManagerTmat3(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 
 		// Act - Marshal to JSON
 		data, err := json.Marshal(obj)
@@ -28536,21 +28536,21 @@ func TestJSONMarshalingEntityManagerTMat3(t *testing.T) {
 		assert.NotEmpty(t, data, "marshaled data should not be empty")
 
 		// Unmarshal back and verify round-trip
-		var unmarshaled EntityManagerTMat3
+		var unmarshaled EntityManagerTmat3
 		err = json.Unmarshal(data, &unmarshaled)
 		assert.NoError(t, err, "round-trip unmarshal should succeed")
 	})
 
 	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
 		t.Parallel()
-		var obj EntityManagerTMat3
+		var obj EntityManagerTmat3
 		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
 		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
 	})
 
 	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
 		t.Parallel()
-		var obj EntityManagerTMat3
+		var obj EntityManagerTmat3
 		err := json.Unmarshal([]byte(`{}`), &obj)
 		assert.NoError(t, err, "unmarshaling empty object should succeed")
 	})
@@ -31064,39 +31064,6 @@ func TestJSONMarshalingSymbology(t *testing.T) {
 	})
 }
 
-func TestJSONMarshalingTMat2(t *testing.T) {
-	t.Run("MarshalUnmarshal", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &TMat2{}
-
-		// Act - Marshal to JSON
-		data, err := json.Marshal(obj)
-		require.NoError(t, err, "marshaling should succeed")
-		assert.NotNil(t, data, "marshaled data should not be nil")
-		assert.NotEmpty(t, data, "marshaled data should not be empty")
-
-		// Unmarshal back and verify round-trip
-		var unmarshaled TMat2
-		err = json.Unmarshal(data, &unmarshaled)
-		assert.NoError(t, err, "round-trip unmarshal should succeed")
-	})
-
-	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
-		t.Parallel()
-		var obj TMat2
-		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
-		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
-	})
-
-	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
-		t.Parallel()
-		var obj TMat2
-		err := json.Unmarshal([]byte(`{}`), &obj)
-		assert.NoError(t, err, "unmarshaling empty object should succeed")
-	})
-}
-
 func TestJSONMarshalingTargetPriority(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
@@ -31295,6 +31262,39 @@ func TestJSONMarshalingTleParameters(t *testing.T) {
 	})
 }
 
+func TestJSONMarshalingTmat2(t *testing.T) {
+	t.Run("MarshalUnmarshal", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &Tmat2{}
+
+		// Act - Marshal to JSON
+		data, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed")
+		assert.NotNil(t, data, "marshaled data should not be nil")
+		assert.NotEmpty(t, data, "marshaled data should not be empty")
+
+		// Unmarshal back and verify round-trip
+		var unmarshaled Tmat2
+		err = json.Unmarshal(data, &unmarshaled)
+		assert.NoError(t, err, "round-trip unmarshal should succeed")
+	})
+
+	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
+		t.Parallel()
+		var obj Tmat2
+		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
+		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
+	})
+
+	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
+		t.Parallel()
+		var obj Tmat2
+		err := json.Unmarshal([]byte(`{}`), &obj)
+		assert.NoError(t, err, "unmarshaling empty object should succeed")
+	})
+}
+
 func TestJSONMarshalingTracked(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
@@ -31394,11 +31394,11 @@ func TestJSONMarshalingTransponderCodes(t *testing.T) {
 	})
 }
 
-func TestJSONMarshalingUInt32Range(t *testing.T) {
+func TestJSONMarshalingUint32Range(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 
 		// Act - Marshal to JSON
 		data, err := json.Marshal(obj)
@@ -31407,21 +31407,21 @@ func TestJSONMarshalingUInt32Range(t *testing.T) {
 		assert.NotEmpty(t, data, "marshaled data should not be empty")
 
 		// Unmarshal back and verify round-trip
-		var unmarshaled UInt32Range
+		var unmarshaled Uint32Range
 		err = json.Unmarshal(data, &unmarshaled)
 		assert.NoError(t, err, "round-trip unmarshal should succeed")
 	})
 
 	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
 		t.Parallel()
-		var obj UInt32Range
+		var obj Uint32Range
 		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
 		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
 	})
 
 	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
 		t.Parallel()
-		var obj UInt32Range
+		var obj Uint32Range
 		err := json.Unmarshal([]byte(`{}`), &obj)
 		assert.NoError(t, err, "unmarshaling empty object should succeed")
 	})
@@ -31957,17 +31957,17 @@ func TestStringEntityManagerPose(t *testing.T) {
 	})
 }
 
-func TestStringEntityManagerTMat3(t *testing.T) {
+func TestStringEntityManagerTmat3(t *testing.T) {
 	t.Run("StringMethod", func(t *testing.T) {
 		t.Parallel()
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		result := obj.String()
 		assert.NotEmpty(t, result, "String() should return a non-empty representation")
 	})
 
 	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		result := obj.String()
 		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
 	})
@@ -33189,22 +33189,6 @@ func TestStringSymbology(t *testing.T) {
 	})
 }
 
-func TestStringTMat2(t *testing.T) {
-	t.Run("StringMethod", func(t *testing.T) {
-		t.Parallel()
-		obj := &TMat2{}
-		result := obj.String()
-		assert.NotEmpty(t, result, "String() should return a non-empty representation")
-	})
-
-	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
-		t.Parallel()
-		var obj *TMat2
-		result := obj.String()
-		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
-	})
-}
-
 func TestStringTargetPriority(t *testing.T) {
 	t.Run("StringMethod", func(t *testing.T) {
 		t.Parallel()
@@ -33301,6 +33285,22 @@ func TestStringTleParameters(t *testing.T) {
 	})
 }
 
+func TestStringTmat2(t *testing.T) {
+	t.Run("StringMethod", func(t *testing.T) {
+		t.Parallel()
+		obj := &Tmat2{}
+		result := obj.String()
+		assert.NotEmpty(t, result, "String() should return a non-empty representation")
+	})
+
+	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *Tmat2
+		result := obj.String()
+		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
+	})
+}
+
 func TestStringTracked(t *testing.T) {
 	t.Run("StringMethod", func(t *testing.T) {
 		t.Parallel()
@@ -33349,17 +33349,17 @@ func TestStringTransponderCodes(t *testing.T) {
 	})
 }
 
-func TestStringUInt32Range(t *testing.T) {
+func TestStringUint32Range(t *testing.T) {
 	t.Run("StringMethod", func(t *testing.T) {
 		t.Parallel()
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		result := obj.String()
 		assert.NotEmpty(t, result, "String() should return a non-empty representation")
 	})
 
 	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *UInt32Range
+		var obj *Uint32Range
 		result := obj.String()
 		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
 	})
@@ -36772,10 +36772,10 @@ func TestExtraPropertiesEntityManagerPose(t *testing.T) {
 	})
 }
 
-func TestExtraPropertiesEntityManagerTMat3(t *testing.T) {
+func TestExtraPropertiesEntityManagerTmat3(t *testing.T) {
 	t.Run("GetExtraProperties", func(t *testing.T) {
 		t.Parallel()
-		obj := &EntityManagerTMat3{}
+		obj := &EntityManagerTmat3{}
 		// Should not panic when calling GetExtraProperties()
 		defer func() {
 			if r := recover(); r != nil {
@@ -36789,7 +36789,7 @@ func TestExtraPropertiesEntityManagerTMat3(t *testing.T) {
 
 	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *EntityManagerTMat3
+		var obj *EntityManagerTmat3
 		extraProps := obj.GetExtraProperties()
 		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
 	})
@@ -38543,29 +38543,6 @@ func TestExtraPropertiesSymbology(t *testing.T) {
 	})
 }
 
-func TestExtraPropertiesTMat2(t *testing.T) {
-	t.Run("GetExtraProperties", func(t *testing.T) {
-		t.Parallel()
-		obj := &TMat2{}
-		// Should not panic when calling GetExtraProperties()
-		defer func() {
-			if r := recover(); r != nil {
-				t.Errorf("GetExtraProperties() panicked: %v", r)
-			}
-		}()
-		extraProps := obj.GetExtraProperties()
-		// Result can be nil or an empty/non-empty map
-		_ = extraProps
-	})
-
-	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
-		t.Parallel()
-		var obj *TMat2
-		extraProps := obj.GetExtraProperties()
-		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
-	})
-}
-
 func TestExtraPropertiesTargetPriority(t *testing.T) {
 	t.Run("GetExtraProperties", func(t *testing.T) {
 		t.Parallel()
@@ -38704,6 +38681,29 @@ func TestExtraPropertiesTleParameters(t *testing.T) {
 	})
 }
 
+func TestExtraPropertiesTmat2(t *testing.T) {
+	t.Run("GetExtraProperties", func(t *testing.T) {
+		t.Parallel()
+		obj := &Tmat2{}
+		// Should not panic when calling GetExtraProperties()
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("GetExtraProperties() panicked: %v", r)
+			}
+		}()
+		extraProps := obj.GetExtraProperties()
+		// Result can be nil or an empty/non-empty map
+		_ = extraProps
+	})
+
+	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *Tmat2
+		extraProps := obj.GetExtraProperties()
+		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
+	})
+}
+
 func TestExtraPropertiesTracked(t *testing.T) {
 	t.Run("GetExtraProperties", func(t *testing.T) {
 		t.Parallel()
@@ -38773,10 +38773,10 @@ func TestExtraPropertiesTransponderCodes(t *testing.T) {
 	})
 }
 
-func TestExtraPropertiesUInt32Range(t *testing.T) {
+func TestExtraPropertiesUint32Range(t *testing.T) {
 	t.Run("GetExtraProperties", func(t *testing.T) {
 		t.Parallel()
-		obj := &UInt32Range{}
+		obj := &Uint32Range{}
 		// Should not panic when calling GetExtraProperties()
 		defer func() {
 			if r := recover(); r != nil {
@@ -38790,7 +38790,7 @@ func TestExtraPropertiesUInt32Range(t *testing.T) {
 
 	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
 		t.Parallel()
-		var obj *UInt32Range
+		var obj *Uint32Range
 		extraProps := obj.GetExtraProperties()
 		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
 	})
