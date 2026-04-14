@@ -68,8 +68,8 @@ func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/anduril/lattice-sdk-go/v4")
-	headers.Set("X-Fern-SDK-Version", "v4.8.0")
-	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.8.0")
+	headers.Set("X-Fern-SDK-Version", "v4.9.0")
+	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.9.0")
 	return headers
 }
 

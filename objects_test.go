@@ -1163,6 +1163,28 @@ func TestEnumGetObjectRequestAcceptEncoding(t *testing.T) {
 	})
 }
 
+func TestEnumUploadObjectRequestDistributionMode(t *testing.T) {
+	t.Run("NewFromString_force", func(t *testing.T) {
+		t.Parallel()
+		val, err := NewUploadObjectRequestDistributionModeFromString("force")
+		assert.NoError(t, err, "valid enum value should not return error")
+		assert.Equal(t, UploadObjectRequestDistributionMode("force"), val, "enum value should match expected wire value")
+	})
+
+	t.Run("NewFromString_Invalid", func(t *testing.T) {
+		_, err := NewUploadObjectRequestDistributionModeFromString("invalid_value_that_does_not_exist")
+		assert.Error(t, err)
+	})
+
+	t.Run("Ptr", func(t *testing.T) {
+		val, err := NewUploadObjectRequestDistributionModeFromString("force")
+		assert.NoError(t, err)
+		ptr := val.Ptr()
+		assert.NotNil(t, ptr)
+		assert.Equal(t, val, *ptr)
+	})
+}
+
 func TestExtraPropertiesContentIdentifier(t *testing.T) {
 	t.Run("GetExtraProperties", func(t *testing.T) {
 		t.Parallel()
