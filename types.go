@@ -15766,7 +15766,7 @@ func (t *TrackedBy) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// A message describing any transponder codes associated with Mode 1, 2, 3, 4, 5, S interrogations.
+// A message describing any transponder codes associated with Mode 1, 2, 3, 4, 5, S, C interrogations.
 var (
 	transponderCodesFieldMode1                      = big.NewInt(1 << 0)
 	transponderCodesFieldMode2                      = big.NewInt(1 << 1)
@@ -15774,6 +15774,7 @@ var (
 	transponderCodesFieldMode4InterrogationResponse = big.NewInt(1 << 3)
 	transponderCodesFieldMode5                      = big.NewInt(1 << 4)
 	transponderCodesFieldModeS                      = big.NewInt(1 << 5)
+	transponderCodesFieldModeCAltitudeFt            = big.NewInt(1 << 6)
 )
 
 type TransponderCodes struct {
@@ -15789,6 +15790,10 @@ type TransponderCodes struct {
 	Mode5 *Mode5 `json:"mode5,omitempty" url:"mode5,omitempty"`
 	// The Mode S transponder codes.
 	ModeS *ModeS `json:"modeS,omitempty" url:"modeS,omitempty"`
+	// The Mode C altitude reported by the transponder in feet. Mode C provides pressure altitude
+	//
+	//	in 100-foot increments up to 10,000 feet MSL. A zero value indicates No Statement.
+	ModeCAltitudeFt *int `json:"modeCAltitudeFt,omitempty" url:"modeCAltitudeFt,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -15837,6 +15842,13 @@ func (t *TransponderCodes) GetModeS() *ModeS {
 		return nil
 	}
 	return t.ModeS
+}
+
+func (t *TransponderCodes) GetModeCAltitudeFt() *int {
+	if t == nil {
+		return nil
+	}
+	return t.ModeCAltitudeFt
 }
 
 func (t *TransponderCodes) GetExtraProperties() map[string]interface{} {
@@ -15893,6 +15905,13 @@ func (t *TransponderCodes) SetMode5(mode5 *Mode5) {
 func (t *TransponderCodes) SetModeS(modeS *ModeS) {
 	t.ModeS = modeS
 	t.require(transponderCodesFieldModeS)
+}
+
+// SetModeCAltitudeFt sets the ModeCAltitudeFt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TransponderCodes) SetModeCAltitudeFt(modeCAltitudeFt *int) {
+	t.ModeCAltitudeFt = modeCAltitudeFt
+	t.require(transponderCodesFieldModeCAltitudeFt)
 }
 
 func (t *TransponderCodes) UnmarshalJSON(data []byte) error {
