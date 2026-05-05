@@ -26797,6 +26797,14 @@ func TestSettersTransponderCodes(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetModeCAltitudeFt", func(t *testing.T) {
+		obj := &TransponderCodes{}
+		var fernTestValueModeCAltitudeFt *int
+		obj.SetModeCAltitudeFt(fernTestValueModeCAltitudeFt)
+		assert.Equal(t, fernTestValueModeCAltitudeFt, obj.ModeCAltitudeFt)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 }
 
 func TestGettersTransponderCodes(t *testing.T) {
@@ -26998,6 +27006,39 @@ func TestGettersTransponderCodes(t *testing.T) {
 		_ = obj.GetModeS() // Should return zero value
 	})
 
+	t.Run("GetModeCAltitudeFt", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TransponderCodes{}
+		var expected *int
+		obj.ModeCAltitudeFt = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetModeCAltitudeFt(), "getter should return the property value")
+	})
+
+	t.Run("GetModeCAltitudeFt_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TransponderCodes{}
+		obj.ModeCAltitudeFt = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetModeCAltitudeFt(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetModeCAltitudeFt_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *TransponderCodes
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetModeCAltitudeFt() // Should return zero value
+	})
+
 }
 
 func TestSettersMarkExplicitTransponderCodes(t *testing.T) {
@@ -27164,6 +27205,37 @@ func TestSettersMarkExplicitTransponderCodes(t *testing.T) {
 
 		// Act
 		obj.SetModeS(fernTestValueModeS)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetModeCAltitudeFt_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TransponderCodes{}
+		var fernTestValueModeCAltitudeFt *int
+
+		// Act
+		obj.SetModeCAltitudeFt(fernTestValueModeCAltitudeFt)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
