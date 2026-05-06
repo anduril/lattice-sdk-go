@@ -4,9 +4,9 @@ package Lattice
 
 import (
 	json "encoding/json"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	entity "github.com/anduril/lattice-sdk-go/v4/entity"
-	object "github.com/anduril/lattice-sdk-go/v4/object"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	entity "github.com/anduril/lattice-sdk-go/v5/entity"
+	object "github.com/anduril/lattice-sdk-go/v5/object"
 )
 
 // Bad request

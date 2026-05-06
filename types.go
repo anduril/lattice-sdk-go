@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -3451,7 +3451,7 @@ type Entity struct {
 	TargetPriority *TargetPriority `json:"targetPriority,omitempty" url:"targetPriority,omitempty"`
 	// Describes an entity's signal characteristics, primarily used when an entity is a signal of interest.
 	Signal *Signal `json:"signal,omitempty" url:"signal,omitempty"`
-	// A message describing any transponder codes associated with Mode 1, 2, 3, 4, 5, S interrogations. These are related to ADS-B modes.
+	// A message describing any transponder codes associated with Mode 1, 2, 3, 4, 5, S, C interrogations. These are related to ADS-B modes.
 	TransponderCodes *TransponderCodes `json:"transponderCodes,omitempty" url:"transponderCodes,omitempty"`
 	// Describes an entity's security classification levels at an overall classification level and on a per
 	//
@@ -15790,9 +15790,9 @@ type TransponderCodes struct {
 	Mode5 *Mode5 `json:"mode5,omitempty" url:"mode5,omitempty"`
 	// The Mode S transponder codes.
 	ModeS *ModeS `json:"modeS,omitempty" url:"modeS,omitempty"`
-	// The Mode C altitude reported by the transponder in feet. Mode C provides pressure altitude
+	// The Mode C altitude reported by the transponder in feet. Mode C provides pressure altitude in 100-foot increments up
 	//
-	//	in 100-foot increments up to 10,000 feet MSL. A zero value indicates No Statement.
+	//	to 10,000 feet MSL. Valid altitudes include 0 ft (sea level). An unset field indicates no Mode C response was received.
 	ModeCAltitudeFt *int `json:"modeCAltitudeFt,omitempty" url:"modeCAltitudeFt,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
