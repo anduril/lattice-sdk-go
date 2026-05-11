@@ -15211,14 +15211,6 @@ func TestSettersMarkExplicitMedia(t *testing.T) {
 }
 
 func TestSettersMediaItem(t *testing.T) {
-	t.Run("SetItemIdentifier", func(t *testing.T) {
-		obj := &MediaItem{}
-		var fernTestValueItemIdentifier *string
-		obj.SetItemIdentifier(fernTestValueItemIdentifier)
-		assert.Equal(t, fernTestValueItemIdentifier, obj.ItemIdentifier)
-		assert.NotNil(t, obj.explicitFields)
-	})
-
 	t.Run("SetType", func(t *testing.T) {
 		obj := &MediaItem{}
 		var fernTestValueType *MediaItemType
@@ -15238,39 +15230,6 @@ func TestSettersMediaItem(t *testing.T) {
 }
 
 func TestGettersMediaItem(t *testing.T) {
-	t.Run("GetItemIdentifier", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &MediaItem{}
-		var expected *string
-		obj.ItemIdentifier = expected
-
-		// Act & Assert
-		assert.Equal(t, expected, obj.GetItemIdentifier(), "getter should return the property value")
-	})
-
-	t.Run("GetItemIdentifier_NilValue", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &MediaItem{}
-		obj.ItemIdentifier = nil
-
-		// Act & Assert
-		assert.Nil(t, obj.GetItemIdentifier(), "getter should return nil when property is nil")
-	})
-
-	t.Run("GetItemIdentifier_NilReceiver", func(t *testing.T) {
-		t.Parallel()
-		var obj *MediaItem
-		// Should not panic - getters should handle nil receiver gracefully
-		defer func() {
-			if r := recover(); r != nil {
-				t.Errorf("Getter panicked on nil receiver: %v", r)
-			}
-		}()
-		_ = obj.GetItemIdentifier() // Should return zero value
-	})
-
 	t.Run("GetType", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
@@ -15340,37 +15299,6 @@ func TestGettersMediaItem(t *testing.T) {
 }
 
 func TestSettersMarkExplicitMediaItem(t *testing.T) {
-	t.Run("SetItemIdentifier_MarksExplicit", func(t *testing.T) {
-		t.Parallel()
-		// Arrange
-		obj := &MediaItem{}
-		var fernTestValueItemIdentifier *string
-
-		// Act
-		obj.SetItemIdentifier(fernTestValueItemIdentifier)
-
-		// Assert - object with explicitly set field can be marshaled/unmarshaled
-		bytes, err := json.Marshal(obj)
-		require.NoError(t, err, "marshaling should succeed for test setup")
-
-		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
-		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
-		if len(bytes) > 0 && bytes[0] == '{' {
-			// JSON object - unmarshal into map
-			var unmarshaled map[string]interface{}
-			err = json.Unmarshal(bytes, &unmarshaled)
-			require.NoError(t, err, "unmarshaling should succeed for test verification")
-		} else {
-			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
-			var unmarshaled interface{}
-			err = json.Unmarshal(bytes, &unmarshaled)
-			require.NoError(t, err, "unmarshaling should succeed for test verification")
-		}
-
-		// Note: This does not explicitly assert the presence of a specific JSON field
-		// It verifies that setting a field via setter allows successful JSON round-trip
-	})
-
 	t.Run("SetType_MarksExplicit", func(t *testing.T) {
 		t.Parallel()
 		// Arrange
