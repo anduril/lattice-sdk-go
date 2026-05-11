@@ -8482,11 +8482,15 @@ func (m *Media) String() string {
 }
 
 var (
-	mediaItemFieldType         = big.NewInt(1 << 0)
-	mediaItemFieldRelativePath = big.NewInt(1 << 1)
+	mediaItemFieldItemIdentifier = big.NewInt(1 << 0)
+	mediaItemFieldType           = big.NewInt(1 << 1)
+	mediaItemFieldRelativePath   = big.NewInt(1 << 2)
 )
 
 type MediaItem struct {
+	// A unique identifier for this mediaItem.
+	ItemIdentifier *string `json:"itemIdentifier,omitempty" url:"itemIdentifier,omitempty"`
+	// The type of media for this item.
 	Type *MediaItemType `json:"type,omitempty" url:"type,omitempty"`
 	// The path, relative to the environment base URL, where media related to an entity can be accessed
 	RelativePath *string `json:"relativePath,omitempty" url:"relativePath,omitempty"`
@@ -8496,6 +8500,13 @@ type MediaItem struct {
 
 	extraProperties map[string]interface{}
 	rawJSON         json.RawMessage
+}
+
+func (m *MediaItem) GetItemIdentifier() *string {
+	if m == nil {
+		return nil
+	}
+	return m.ItemIdentifier
 }
 
 func (m *MediaItem) GetType() *MediaItemType {
@@ -8524,6 +8535,13 @@ func (m *MediaItem) require(field *big.Int) {
 		m.explicitFields = big.NewInt(0)
 	}
 	m.explicitFields.Or(m.explicitFields, field)
+}
+
+// SetItemIdentifier sets the ItemIdentifier field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *MediaItem) SetItemIdentifier(itemIdentifier *string) {
+	m.ItemIdentifier = itemIdentifier
+	m.require(mediaItemFieldItemIdentifier)
 }
 
 // SetType sets the Type field and marks it as non-optional;
@@ -8582,6 +8600,7 @@ func (m *MediaItem) String() string {
 	return fmt.Sprintf("%#v", m)
 }
 
+// The type of media for this item.
 type MediaItemType string
 
 const (
