@@ -109,6 +109,42 @@ func (g *GetObjectMetadataRequest) SetObjectPath(objectPath string) {
 }
 
 var (
+	listDeletedObjectsRequestFieldPageToken   = big.NewInt(1 << 0)
+	listDeletedObjectsRequestFieldMaxPageSize = big.NewInt(1 << 1)
+)
+
+type ListDeletedObjectsRequest struct {
+	// Opaque cursor returned by a prior response to continue paging.
+	PageToken *string `json:"-" url:"pageToken,omitempty"`
+	// Maximum number of records to return in a single response. Server enforces an upper bound.
+	MaxPageSize *int `json:"-" url:"maxPageSize,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (l *ListDeletedObjectsRequest) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetPageToken sets the PageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListDeletedObjectsRequest) SetPageToken(pageToken *string) {
+	l.PageToken = pageToken
+	l.require(listDeletedObjectsRequestFieldPageToken)
+}
+
+// SetMaxPageSize sets the MaxPageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListDeletedObjectsRequest) SetMaxPageSize(maxPageSize *int) {
+	l.MaxPageSize = maxPageSize
+	l.require(listDeletedObjectsRequestFieldMaxPageSize)
+}
+
+var (
 	listObjectsRequestFieldPrefix           = big.NewInt(1 << 0)
 	listObjectsRequestFieldSinceTimestamp   = big.NewInt(1 << 1)
 	listObjectsRequestFieldPageToken        = big.NewInt(1 << 2)
@@ -278,6 +314,239 @@ func (c *ContentIdentifier) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	deletedObjectEntryFieldPath      = big.NewInt(1 << 0)
+	deletedObjectEntryFieldChecksum  = big.NewInt(1 << 1)
+	deletedObjectEntryFieldDeletedAt = big.NewInt(1 << 2)
+)
+
+type DeletedObjectEntry struct {
+	// Object path that was deleted on this node.
+	// A valid path must not contain the following:
+	// - Spaces or Tabs
+	// - Special characters other than underscore (_), dash (-), period (.) and slash (/)
+	// - Non-ASCII characters such as accents or symbols
+	// Paths must not start with a leading space.
+	Path string `json:"path" url:"path"`
+	// The SHA-256 checksum of this object.
+	Checksum string `json:"checksum" url:"checksum"`
+	// Wall-clock time at which the deletion was initiated on this node.
+	DeletedAt time.Time `json:"deleted_at" url:"deleted_at"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (d *DeletedObjectEntry) GetPath() string {
+	if d == nil {
+		return ""
+	}
+	return d.Path
+}
+
+func (d *DeletedObjectEntry) GetChecksum() string {
+	if d == nil {
+		return ""
+	}
+	return d.Checksum
+}
+
+func (d *DeletedObjectEntry) GetDeletedAt() time.Time {
+	if d == nil {
+		return time.Time{}
+	}
+	return d.DeletedAt
+}
+
+func (d *DeletedObjectEntry) GetExtraProperties() map[string]interface{} {
+	if d == nil {
+		return nil
+	}
+	return d.extraProperties
+}
+
+func (d *DeletedObjectEntry) require(field *big.Int) {
+	if d.explicitFields == nil {
+		d.explicitFields = big.NewInt(0)
+	}
+	d.explicitFields.Or(d.explicitFields, field)
+}
+
+// SetPath sets the Path field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeletedObjectEntry) SetPath(path string) {
+	d.Path = path
+	d.require(deletedObjectEntryFieldPath)
+}
+
+// SetChecksum sets the Checksum field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeletedObjectEntry) SetChecksum(checksum string) {
+	d.Checksum = checksum
+	d.require(deletedObjectEntryFieldChecksum)
+}
+
+// SetDeletedAt sets the DeletedAt field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeletedObjectEntry) SetDeletedAt(deletedAt time.Time) {
+	d.DeletedAt = deletedAt
+	d.require(deletedObjectEntryFieldDeletedAt)
+}
+
+func (d *DeletedObjectEntry) UnmarshalJSON(data []byte) error {
+	type embed DeletedObjectEntry
+	var unmarshaler = struct {
+		embed
+		DeletedAt *internal.DateTime `json:"deleted_at"`
+	}{
+		embed: embed(*d),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*d = DeletedObjectEntry(unmarshaler.embed)
+	d.DeletedAt = unmarshaler.DeletedAt.Time()
+	extraProperties, err := internal.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+	d.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeletedObjectEntry) MarshalJSON() ([]byte, error) {
+	type embed DeletedObjectEntry
+	var marshaler = struct {
+		embed
+		DeletedAt *internal.DateTime `json:"deleted_at"`
+	}{
+		embed:     embed(*d),
+		DeletedAt: internal.NewDateTime(d.DeletedAt),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, d.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (d *DeletedObjectEntry) String() string {
+	if d == nil {
+		return "<nil>"
+	}
+	if len(d.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(d.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+var (
+	listDeletedObjectsResponseFieldDeletedObjects = big.NewInt(1 << 0)
+	listDeletedObjectsResponseFieldNextPageToken  = big.NewInt(1 << 1)
+)
+
+type ListDeletedObjectsResponse struct {
+	DeletedObjects []*DeletedObjectEntry `json:"deleted_objects" url:"deleted_objects"`
+	// Present when more pages are available. Pass back as `pageToken`.
+	NextPageToken *string `json:"next_page_token,omitempty" url:"next_page_token,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (l *ListDeletedObjectsResponse) GetDeletedObjects() []*DeletedObjectEntry {
+	if l == nil {
+		return nil
+	}
+	return l.DeletedObjects
+}
+
+func (l *ListDeletedObjectsResponse) GetNextPageToken() *string {
+	if l == nil {
+		return nil
+	}
+	return l.NextPageToken
+}
+
+func (l *ListDeletedObjectsResponse) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
+	return l.extraProperties
+}
+
+func (l *ListDeletedObjectsResponse) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetDeletedObjects sets the DeletedObjects field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListDeletedObjectsResponse) SetDeletedObjects(deletedObjects []*DeletedObjectEntry) {
+	l.DeletedObjects = deletedObjects
+	l.require(listDeletedObjectsResponseFieldDeletedObjects)
+}
+
+// SetNextPageToken sets the NextPageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *ListDeletedObjectsResponse) SetNextPageToken(nextPageToken *string) {
+	l.NextPageToken = nextPageToken
+	l.require(listDeletedObjectsResponseFieldNextPageToken)
+}
+
+func (l *ListDeletedObjectsResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ListDeletedObjectsResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = ListDeletedObjectsResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+	l.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *ListDeletedObjectsResponse) MarshalJSON() ([]byte, error) {
+	type embed ListDeletedObjectsResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*l),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, l.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (l *ListDeletedObjectsResponse) String() string {
+	if l == nil {
+		return "<nil>"
+	}
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 var (
