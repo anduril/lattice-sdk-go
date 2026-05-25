@@ -3,6 +3,7 @@
 package core
 
 import (
+	fmt "fmt"
 	http "net/http"
 	url "net/url"
 )
@@ -21,9 +22,9 @@ type TokenGetter func() (string, error)
 // to be used directly; use the option package instead.
 type RequestOptions struct {
 	BaseURL         string
-	HTTPClient      HTTPClient
-	HTTPHeader      http.Header
-	BodyProperties  map[string]interface{}
+	HTTPClient     HTTPClient
+	HTTPHeader     http.Header
+	BodyProperties map[string]interface{}
 	QueryParameters url.Values
 	MaxAttempts     uint
 	MaxBufSize      int
@@ -39,8 +40,8 @@ type RequestOptions struct {
 // to be used directly; use RequestOption instead.
 func NewRequestOptions(opts ...RequestOption) *RequestOptions {
 	options := &RequestOptions{
-		HTTPHeader:      make(http.Header),
-		BodyProperties:  make(map[string]interface{}),
+		HTTPHeader:     make(http.Header),
+		BodyProperties: make(map[string]interface{}),
 		QueryParameters: make(url.Values),
 	}
 	for _, opt := range opts {
@@ -51,17 +52,24 @@ func NewRequestOptions(opts ...RequestOption) *RequestOptions {
 
 // ToHeader maps the configured request options into a http.Header used
 // for the request(s).
-func (r *RequestOptions) ToHeader() http.Header {
+func (r *RequestOptions) ToHeader() (http.Header, error) {
 	header := r.cloneHeader()
+
 	if r.Token != "" {
 		header.Set("Authorization", "Bearer "+r.Token)
 	}
+
 	if header.Get("Authorization") == "" && r.tokenGetter != nil {
-		if token, err := r.tokenGetter(); err == nil && token != "" {
+		token, err := r.tokenGetter()
+		if err != nil {
+			return nil, fmt.Errorf("get oauth token: %w", err)
+		}
+		if token != "" {
 			header.Set("Authorization", "Bearer "+token)
 		}
 	}
-	return header
+
+	return header, nil
 }
 
 func (r *RequestOptions) cloneHeader() http.Header {
