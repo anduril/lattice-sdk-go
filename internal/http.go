@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+
+	core "github.com/anduril/lattice-sdk-go/v4/core"
 )
 
 // HTTPClient is an interface for a subset of the *http.Client.
@@ -28,7 +30,6 @@ func ResolveBaseURL(values ...string) string {
 func EncodeURL(urlFormat string, args ...interface{}) string {
 	escapedArgs := make([]interface{}, 0, len(args))
 	for _, arg := range args {
-		// Dereference the argument if it's a pointer
 		value := dereferenceArg(arg)
 		escapedArgs = append(escapedArgs, url.PathEscape(fmt.Sprintf("%v", value)))
 	}
@@ -43,8 +44,6 @@ func dereferenceArg(arg interface{}) interface{} {
 	}
 
 	v := reflect.ValueOf(arg)
-
-	// Keep dereferencing until we get to a non-pointer value or hit nil
 	for v.Kind() == reflect.Ptr {
 		if v.IsNil() {
 			return nil
@@ -63,9 +62,27 @@ func MergeHeaders(left, right http.Header) http.Header {
 			left[key] = values
 			continue
 		}
+
 		if value := right.Get(key); value != "" {
 			left.Set(key, value)
 		}
 	}
+
 	return left
+}
+
+// MergeRequestHeaders converts request options into headers and merges them,
+// where the right options take precedence over the left.
+func MergeRequestHeaders(leftOptions, rightOptions *core.RequestOptions) (http.Header, error) {
+	left, err := leftOptions.ToHeader()
+	if err != nil {
+		return nil, err
+	}
+
+	right, err := rightOptions.ToHeader()
+	if err != nil {
+		return nil, err
+	}
+
+	return MergeHeaders(left, right), nil
 }
