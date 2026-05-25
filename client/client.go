@@ -29,38 +29,43 @@ type Client struct {
 
 func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
-	oauthTokenProvider := core.NewTokenProvider(
-		0,
-	)
+
+	oauthTokenProvider := core.NewTokenProvider(0)
+
 	authOptions := *options
-	authClient := oauth.NewClient(
-		&authOptions,
-	)
-	options.SetTokenGetter(func() (string, error) {
-		return oauthTokenProvider.GetOrFetch(func() (string, int, error) {
-			response, err := authClient.GetToken(context.Background(), &Lattice.GetTokenRequest{
-				ClientID: Lattice.String(
-					options.ClientID,
-				),
-				ClientSecret: Lattice.String(
-					options.ClientSecret,
-				),
+	authClient := oauth.NewClient(&authOptions)
+
+	if options.ClientID != "" || options.ClientSecret != "" {
+		options.SetTokenGetter(func() (string, error) {
+			return oauthTokenProvider.GetOrFetch(func() (string, int, error) {
+				response, err := authClient.GetToken(context.Background(), &Lattice.GetTokenRequest{
+					ClientID: Lattice.String(
+						options.ClientID,
+					),
+					ClientSecret: Lattice.String(
+						options.ClientSecret,
+					),
+				})
+				if err != nil {
+					return "", 0, err
+				}
+
+				if response.AccessToken == "" {
+					return "", 0, errors.New(
+						"oauth response missing access token",
+					)
+				}
+
+				expiresIn := core.DefaultExpirySeconds
+				if response.ExpiresIn != nil {
+					expiresIn = *response.ExpiresIn
+				}
+
+				return response.AccessToken, expiresIn, nil
 			})
-			if err != nil {
-				return "", 0, err
-			}
-			if response.AccessToken == "" {
-				return "", 0, errors.New(
-					"oauth response missing access token",
-				)
-			}
-			expiresIn := core.DefaultExpirySeconds
-			if response.ExpiresIn != nil {
-				expiresIn = *response.ExpiresIn
-			}
-			return response.AccessToken, expiresIn, nil
 		})
-	})
+	}
+
 	return &Client{
 		Entities: entities.NewClient(options),
 		Tasks:    tasks.NewClient(options),
