@@ -347,7 +347,7 @@ var (
 type AgentStreamRequest struct {
 	// The selector criteria to determine which tasks the agent receives.
 	AgentSelector *EntityIDsSelector `json:"agentSelector,omitempty" url:"-"`
-	// The time interval, defined in seconds, that determines the frequency at which to send heartbeat events. Defaults to 30s.
+	// The time interval, in milliseconds, that determines the frequency at which to send heartbeat events. Defaults to 30000 (30 seconds).
 	HeartbeatIntervalMs *int `json:"heartbeatIntervalMs,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted

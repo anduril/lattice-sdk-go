@@ -20,17 +20,20 @@ type TokenGetter func() (string, error)
 // This type is primarily used by the generated code and is not meant
 // to be used directly; use the option package instead.
 type RequestOptions struct {
-	BaseURL         string
-	HTTPClient      HTTPClient
-	HTTPHeader      http.Header
-	BodyProperties  map[string]interface{}
-	QueryParameters url.Values
-	MaxAttempts     uint
-	MaxBufSize      int
-	tokenGetter     TokenGetter
-	ClientID        string
-	ClientSecret    string
-	Token           string
+	BaseURL                    string
+	HTTPClient                 HTTPClient
+	HTTPHeader                 http.Header
+	BodyProperties             map[string]interface{}
+	QueryParameters            url.Values
+	MaxAttempts                uint
+	MaxBufSize                 int
+	MaxStreamReconnectAttempts uint
+	DisableStreamReconnection  bool
+	DisableRetries             bool
+	tokenGetter                TokenGetter
+	ClientID                   string
+	ClientSecret               string
+	Token                      string
 }
 
 // NewRequestOptions returns a new *RequestOptions value.
@@ -68,8 +71,8 @@ func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/anduril/lattice-sdk-go/v4")
-	headers.Set("X-Fern-SDK-Version", "v4.12.1")
-	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.12.1")
+	headers.Set("X-Fern-SDK-Version", "v4.13.0")
+	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.13.0")
 	return headers
 }
 
@@ -134,6 +137,29 @@ type MaxBufSizeOption struct {
 
 func (m *MaxBufSizeOption) applyRequestOptions(opts *RequestOptions) {
 	opts.MaxBufSize = m.MaxBufSize
+}
+
+// MaxStreamReconnectAttemptsOption implements the RequestOption interface.
+type MaxStreamReconnectAttemptsOption struct {
+	MaxStreamReconnectAttempts uint
+}
+
+func (m *MaxStreamReconnectAttemptsOption) applyRequestOptions(opts *RequestOptions) {
+	opts.MaxStreamReconnectAttempts = m.MaxStreamReconnectAttempts
+}
+
+// WithoutStreamReconnectionOption implements the RequestOption interface.
+type WithoutStreamReconnectionOption struct{}
+
+func (w *WithoutStreamReconnectionOption) applyRequestOptions(opts *RequestOptions) {
+	opts.DisableStreamReconnection = true
+}
+
+// WithoutRetriesOption implements the RequestOption interface.
+type WithoutRetriesOption struct{}
+
+func (w *WithoutRetriesOption) applyRequestOptions(opts *RequestOptions) {
+	opts.DisableRetries = true
 }
 
 // ClientIDOption implements the RequestOption interface.
