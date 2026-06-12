@@ -459,33 +459,6 @@
       "postServeActions": []
     },
     {
-      "id": "05f359e3-83a4-4211-b1e5-6272a02ccc4e",
-      "name": "List locally-deleted force-distributed objects - default",
-      "request": {
-        "urlPathTemplate": "/api/v1/debug/deleted-objects",
-        "method": "GET"
-      },
-      "response": {
-        "status": 200,
-        "body": "{\n  \"deleted_objects\": [\n    {\n      \"path\": \"path\",\n      \"checksum\": \"checksum\",\n      \"deleted_at\": \"2024-01-15T09:30:00Z\"\n    }\n  ],\n  \"next_page_token\": \"next_page_token\"\n}",
-        "headers": {
-          "Content-Type": "application/json"
-        }
-      },
-      "uuid": "05f359e3-83a4-4211-b1e5-6272a02ccc4e",
-      "persistent": true,
-      "priority": 3,
-      "metadata": {
-        "mocklab": {
-          "created": {
-            "at": "2020-01-01T00:00:00.000Z",
-            "via": "SYSTEM"
-          }
-        }
-      },
-      "postServeActions": []
-    },
-    {
       "id": "eadf8120-1213-44ec-8c74-75d5643cea71",
       "name": "Get object - default",
       "request": {
@@ -606,6 +579,6 @@
     }
   ],
   "meta": {
-    "total": 21
+    "total": 20
   }
 }

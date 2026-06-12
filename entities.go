@@ -748,6 +748,8 @@ type StreamEntitiesResponse struct {
 	Event     string
 	Heartbeat *EntityStreamHeartbeat
 	Entity    *EntityStreamEvent
+
+	rawJSON json.RawMessage
 }
 
 func (s *StreamEntitiesResponse) GetEvent() string {
@@ -796,6 +798,7 @@ func (s *StreamEntitiesResponse) UnmarshalJSON(data []byte) error {
 		}
 		s.Entity = value
 	}
+	s.rawJSON = json.RawMessage(data)
 	return nil
 }
 
@@ -808,6 +811,9 @@ func (s StreamEntitiesResponse) MarshalJSON() ([]byte, error) {
 	}
 	if s.Entity != nil {
 		return internal.MarshalJSONWithExtraProperty(s.Entity, "event", "entity")
+	}
+	if len(s.rawJSON) > 0 {
+		return s.rawJSON, nil
 	}
 	return nil, fmt.Errorf("type %T does not define a non-empty union type", s)
 }
@@ -840,6 +846,9 @@ func (s *StreamEntitiesResponse) validate() error {
 	}
 	if len(fields) == 0 {
 		if s.Event != "" {
+			if len(s.rawJSON) > 0 {
+				return nil
+			}
 			return fmt.Errorf("type %T defines a discriminant set to %q but the field is not set", s, s.Event)
 		}
 		return fmt.Errorf("type %T is empty", s)
