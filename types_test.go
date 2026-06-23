@@ -9997,6 +9997,14 @@ func TestSettersGeoDetails(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetVisualDetails", func(t *testing.T) {
+		obj := &GeoDetails{}
+		var fernTestValueVisualDetails *GeoVisualDetails
+		obj.SetVisualDetails(fernTestValueVisualDetails)
+		assert.Equal(t, fernTestValueVisualDetails, obj.VisualDetails)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 }
 
 func TestGettersGeoDetails(t *testing.T) {
@@ -10099,6 +10107,39 @@ func TestGettersGeoDetails(t *testing.T) {
 		_ = obj.GetAcm() // Should return zero value
 	})
 
+	t.Run("GetVisualDetails", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoDetails{}
+		var expected *GeoVisualDetails
+		obj.VisualDetails = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetVisualDetails(), "getter should return the property value")
+	})
+
+	t.Run("GetVisualDetails_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoDetails{}
+		obj.VisualDetails = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetVisualDetails(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetVisualDetails_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *GeoDetails
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetVisualDetails() // Should return zero value
+	})
+
 }
 
 func TestSettersMarkExplicitGeoDetails(t *testing.T) {
@@ -10172,6 +10213,37 @@ func TestSettersMarkExplicitGeoDetails(t *testing.T) {
 
 		// Act
 		obj.SetAcm(fernTestValueAcm)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetVisualDetails_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoDetails{}
+		var fernTestValueVisualDetails *GeoVisualDetails
+
+		// Act
+		obj.SetVisualDetails(fernTestValueVisualDetails)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
@@ -11531,6 +11603,159 @@ func TestSettersMarkExplicitGeoShape(t *testing.T) {
 
 		// Act
 		obj.SetEllipsoid(fernTestValueEllipsoid)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+}
+
+func TestSettersGeoVisualDetails(t *testing.T) {
+	t.Run("SetFillColor", func(t *testing.T) {
+		obj := &GeoVisualDetails{}
+		var fernTestValueFillColor *Color
+		obj.SetFillColor(fernTestValueFillColor)
+		assert.Equal(t, fernTestValueFillColor, obj.FillColor)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetLineColor", func(t *testing.T) {
+		obj := &GeoVisualDetails{}
+		var fernTestValueLineColor *Color
+		obj.SetLineColor(fernTestValueLineColor)
+		assert.Equal(t, fernTestValueLineColor, obj.LineColor)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+}
+
+func TestGettersGeoVisualDetails(t *testing.T) {
+	t.Run("GetFillColor", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoVisualDetails{}
+		var expected *Color
+		obj.FillColor = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetFillColor(), "getter should return the property value")
+	})
+
+	t.Run("GetFillColor_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoVisualDetails{}
+		obj.FillColor = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetFillColor(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetFillColor_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *GeoVisualDetails
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetFillColor() // Should return zero value
+	})
+
+	t.Run("GetLineColor", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoVisualDetails{}
+		var expected *Color
+		obj.LineColor = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetLineColor(), "getter should return the property value")
+	})
+
+	t.Run("GetLineColor_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoVisualDetails{}
+		obj.LineColor = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetLineColor(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetLineColor_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *GeoVisualDetails
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetLineColor() // Should return zero value
+	})
+
+}
+
+func TestSettersMarkExplicitGeoVisualDetails(t *testing.T) {
+	t.Run("SetFillColor_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoVisualDetails{}
+		var fernTestValueFillColor *Color
+
+		// Act
+		obj.SetFillColor(fernTestValueFillColor)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetLineColor_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoVisualDetails{}
+		var fernTestValueLineColor *Color
+
+		// Act
+		obj.SetLineColor(fernTestValueLineColor)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
@@ -29228,6 +29453,39 @@ func TestJSONMarshalingGeoShape(t *testing.T) {
 	})
 }
 
+func TestJSONMarshalingGeoVisualDetails(t *testing.T) {
+	t.Run("MarshalUnmarshal", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GeoVisualDetails{}
+
+		// Act - Marshal to JSON
+		data, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed")
+		assert.NotNil(t, data, "marshaled data should not be nil")
+		assert.NotEmpty(t, data, "marshaled data should not be empty")
+
+		// Unmarshal back and verify round-trip
+		var unmarshaled GeoVisualDetails
+		err = json.Unmarshal(data, &unmarshaled)
+		assert.NoError(t, err, "round-trip unmarshal should succeed")
+	})
+
+	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
+		t.Parallel()
+		var obj GeoVisualDetails
+		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
+		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
+	})
+
+	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
+		t.Parallel()
+		var obj GeoVisualDetails
+		err := json.Unmarshal([]byte(`{}`), &obj)
+		assert.NoError(t, err, "unmarshaling empty object should succeed")
+	})
+}
+
 func TestJSONMarshalingGroupChild(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
@@ -32368,6 +32626,22 @@ func TestStringGeoShape(t *testing.T) {
 	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *GeoShape
+		result := obj.String()
+		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
+	})
+}
+
+func TestStringGeoVisualDetails(t *testing.T) {
+	t.Run("StringMethod", func(t *testing.T) {
+		t.Parallel()
+		obj := &GeoVisualDetails{}
+		result := obj.String()
+		assert.NotEmpty(t, result, "String() should return a non-empty representation")
+	})
+
+	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *GeoVisualDetails
 		result := obj.String()
 		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
 	})
@@ -37302,6 +37576,29 @@ func TestExtraPropertiesGeoShape(t *testing.T) {
 	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *GeoShape
+		extraProps := obj.GetExtraProperties()
+		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
+	})
+}
+
+func TestExtraPropertiesGeoVisualDetails(t *testing.T) {
+	t.Run("GetExtraProperties", func(t *testing.T) {
+		t.Parallel()
+		obj := &GeoVisualDetails{}
+		// Should not panic when calling GetExtraProperties()
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("GetExtraProperties() panicked: %v", r)
+			}
+		}()
+		extraProps := obj.GetExtraProperties()
+		// Result can be nil or an empty/non-empty map
+		_ = extraProps
+	})
+
+	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *GeoVisualDetails
 		extraProps := obj.GetExtraProperties()
 		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
 	})
