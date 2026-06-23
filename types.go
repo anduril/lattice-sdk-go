@@ -1537,11 +1537,11 @@ var (
 )
 
 type Color struct {
-	// The amount of red in the color as a value in the interval [0, 1].
+	// The amount of red in the color as a value in the interval [0, 255].
 	Red *float64 `json:"red,omitempty" url:"red,omitempty"`
-	// The amount of green in the color as a value in the interval [0, 1].
+	// The amount of green in the color as a value in the interval [0, 255].
 	Green *float64 `json:"green,omitempty" url:"green,omitempty"`
-	// The amount of blue in the color as a value in the interval [0, 1].
+	// The amount of blue in the color as a value in the interval [0, 255].
 	Blue *float64 `json:"blue,omitempty" url:"blue,omitempty"`
 	// The fraction of this color that should be applied to the pixel. That is,
 	//
@@ -5464,15 +5464,17 @@ func (f *Fuel) String() string {
 
 // A component that describes a geo-entity.
 var (
-	geoDetailsFieldType        = big.NewInt(1 << 0)
-	geoDetailsFieldControlArea = big.NewInt(1 << 1)
-	geoDetailsFieldAcm         = big.NewInt(1 << 2)
+	geoDetailsFieldType          = big.NewInt(1 << 0)
+	geoDetailsFieldControlArea   = big.NewInt(1 << 1)
+	geoDetailsFieldAcm           = big.NewInt(1 << 2)
+	geoDetailsFieldVisualDetails = big.NewInt(1 << 3)
 )
 
 type GeoDetails struct {
-	Type        *GeoDetailsType     `json:"type,omitempty" url:"type,omitempty"`
-	ControlArea *ControlAreaDetails `json:"controlArea,omitempty" url:"controlArea,omitempty"`
-	Acm         *AcmDetails         `json:"acm,omitempty" url:"acm,omitempty"`
+	Type          *GeoDetailsType     `json:"type,omitempty" url:"type,omitempty"`
+	ControlArea   *ControlAreaDetails `json:"controlArea,omitempty" url:"controlArea,omitempty"`
+	Acm           *AcmDetails         `json:"acm,omitempty" url:"acm,omitempty"`
+	VisualDetails *GeoVisualDetails   `json:"visualDetails,omitempty" url:"visualDetails,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -5500,6 +5502,13 @@ func (g *GeoDetails) GetAcm() *AcmDetails {
 		return nil
 	}
 	return g.Acm
+}
+
+func (g *GeoDetails) GetVisualDetails() *GeoVisualDetails {
+	if g == nil {
+		return nil
+	}
+	return g.VisualDetails
 }
 
 func (g *GeoDetails) GetExtraProperties() map[string]interface{} {
@@ -5535,6 +5544,13 @@ func (g *GeoDetails) SetControlArea(controlArea *ControlAreaDetails) {
 func (g *GeoDetails) SetAcm(acm *AcmDetails) {
 	g.Acm = acm
 	g.require(geoDetailsFieldAcm)
+}
+
+// SetVisualDetails sets the VisualDetails field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GeoDetails) SetVisualDetails(visualDetails *GeoVisualDetails) {
+	g.VisualDetails = visualDetails
+	g.require(geoDetailsFieldVisualDetails)
 }
 
 func (g *GeoDetails) UnmarshalJSON(data []byte) error {
@@ -6405,6 +6421,109 @@ func (g *GeoShape) MarshalJSON() ([]byte, error) {
 }
 
 func (g *GeoShape) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
+// Details specific to displaying a geo-entity
+var (
+	geoVisualDetailsFieldFillColor = big.NewInt(1 << 0)
+	geoVisualDetailsFieldLineColor = big.NewInt(1 << 1)
+)
+
+type GeoVisualDetails struct {
+	// Describes the fill color of a geo-entity.
+	FillColor *Color `json:"fillColor,omitempty" url:"fillColor,omitempty"`
+	// Describes the line color of a geo-entity.
+	LineColor *Color `json:"lineColor,omitempty" url:"lineColor,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GeoVisualDetails) GetFillColor() *Color {
+	if g == nil {
+		return nil
+	}
+	return g.FillColor
+}
+
+func (g *GeoVisualDetails) GetLineColor() *Color {
+	if g == nil {
+		return nil
+	}
+	return g.LineColor
+}
+
+func (g *GeoVisualDetails) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GeoVisualDetails) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetFillColor sets the FillColor field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GeoVisualDetails) SetFillColor(fillColor *Color) {
+	g.FillColor = fillColor
+	g.require(geoVisualDetailsFieldFillColor)
+}
+
+// SetLineColor sets the LineColor field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GeoVisualDetails) SetLineColor(lineColor *Color) {
+	g.LineColor = lineColor
+	g.require(geoVisualDetailsFieldLineColor)
+}
+
+func (g *GeoVisualDetails) UnmarshalJSON(data []byte) error {
+	type unmarshaler GeoVisualDetails
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GeoVisualDetails(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GeoVisualDetails) MarshalJSON() ([]byte, error) {
+	type embed GeoVisualDetails
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GeoVisualDetails) String() string {
 	if g == nil {
 		return "<nil>"
 	}
