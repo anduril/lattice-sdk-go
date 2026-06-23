@@ -100,31 +100,6 @@ func TestObjectsListObjectsWithWireMock(
 	VerifyRequestCount(t, "TestObjectsListObjectsWithWireMock", "GET", "/api/v1/objects", nil, 1)
 }
 
-func TestObjectsGetObjectWithWireMock(
-	t *testing.T,
-) {
-	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
-	if WireMockBaseURL == "" {
-		WireMockBaseURL = "http://localhost:8080"
-	}
-	client := client.NewClient(
-		option.WithBaseURL(WireMockBaseURL),
-	)
-	request := &Lattice.GetObjectRequest{
-		ObjectPath: "objectPath",
-	}
-	_, invocationErr := client.Objects.GetObject(
-		context.TODO(),
-		request,
-		option.WithHTTPHeader(
-			http.Header{"X-Test-Id": []string{"TestObjectsGetObjectWithWireMock"}},
-		),
-	)
-
-	require.NoError(t, invocationErr, "Client method call should succeed")
-	VerifyRequestCount(t, "TestObjectsGetObjectWithWireMock", "GET", "/api/v1/objects/objectPath", nil, 1)
-}
-
 func TestObjectsDeleteObjectWithWireMock(
 	t *testing.T,
 ) {
