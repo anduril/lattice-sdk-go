@@ -59,9 +59,9 @@ package example
 import (
     context "context"
 
-    Lattice "github.com/anduril/lattice-sdk-go/v4"
-    client "github.com/anduril/lattice-sdk-go/v4/client"
-    option "github.com/anduril/lattice-sdk-go/v4/option"
+    Lattice "github.com/anduril/lattice-sdk-go"
+    client "github.com/anduril/lattice-sdk-go/client"
+    option "github.com/anduril/lattice-sdk-go/option"
 )
 
 func do() {
