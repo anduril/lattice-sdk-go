@@ -439,6 +439,19 @@ client.Entities.StreamEntities(
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**filter:** `*Lattice.Statement` 
+
+Optional root of a Statement filter expression tree. If provided, only entities matching
+the filter are streamed. Applied dynamically: an entity that begins matching is delivered
+as a CREATE, and one that stops matching is delivered as a DELETE. Mirrors the filter on
+the gRPC StreamEntityComponents endpoint.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
