@@ -271,12 +271,12 @@ var (
 type TaskQuery struct {
 	// If set, returns results starting from the given pageToken.
 	PageToken *string `json:"pageToken,omitempty" url:"-"`
-	// If present matches Tasks with this parent Task ID.
-	// Note: this is mutually exclusive with all other query parameters, for example, either provide parent task ID, or
+	// If present matches tasks with this parent task ID.
+	// This is mutually exclusive with all other query parameters, for example, either provide parent task ID, or
 	// any of the remaining parameters, but not both.
 	ParentTaskID *string                `json:"parentTaskId,omitempty" url:"-"`
 	StatusFilter *TaskQueryStatusFilter `json:"statusFilter,omitempty" url:"-"`
-	// If provided, only provides Tasks updated within the time range.
+	// If provided, only provides tasks updated within the time range.
 	UpdateTimeRange *TaskQueryUpdateTimeRange `json:"updateTimeRange,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -4984,7 +4984,7 @@ var (
 )
 
 type TaskQueryStatusFilter struct {
-	// Status of the Task to filter by, inclusive.
+	// Status of the task to filter by, inclusive.
 	Status *TaskQueryStatusFilterStatus `json:"status,omitempty" url:"status,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -5064,7 +5064,7 @@ func (t *TaskQueryStatusFilter) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Status of the Task to filter by, inclusive.
+// Status of the task to filter by, inclusive.
 type TaskQueryStatusFilterStatus string
 
 const (
@@ -5126,16 +5126,16 @@ func (t TaskQueryStatusFilterStatus) Ptr() *TaskQueryStatusFilterStatus {
 	return &t
 }
 
-// If provided, only provides Tasks updated within the time range.
+// If provided, only provides tasks updated within the time range.
 var (
 	taskQueryUpdateTimeRangeFieldStartTime = big.NewInt(1 << 0)
 	taskQueryUpdateTimeRangeFieldEndTime   = big.NewInt(1 << 1)
 )
 
 type TaskQueryUpdateTimeRange struct {
-	// If provided, returns Tasks only updated after this time.
+	// If provided, returns tasks only updated after this time.
 	StartTime *string `json:"startTime,omitempty" url:"startTime,omitempty"`
-	// If provided, returns Tasks only updated before this time.
+	// If provided, returns tasks only updated before this time.
 	EndTime *string `json:"endTime,omitempty" url:"endTime,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
