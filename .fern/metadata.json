@@ -11,9 +11,9 @@
     "inlinePathParameters": true,
     "inlineFileProperties": true
   },
-  "originGitCommit": "8321bd837c4be3b7b8cb046c8c7e8b0e898ce550",
+  "originGitCommit": "0018dcec2d75e9dc35382332b4f4f2e2eea862c2",
   "originGitCommitIsDirty": false,
   "invokedBy": "manual",
-  "requestedVersion": "4.18.0",
-  "sdkVersion": "v4.18.0"
+  "requestedVersion": "AUTO",
+  "sdkVersion": "v4.19.0"
 }
