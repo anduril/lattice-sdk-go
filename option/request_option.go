@@ -95,6 +95,14 @@ func WithoutRetries() *core.WithoutRetriesOption {
 	return &core.WithoutRetriesOption{}
 }
 
+// WithServer sets the "server" server URL variable, which is
+// substituted into the base URL template(s) at construction time.
+func WithServer(server string) *core.ServerOption {
+	return &core.ServerOption{
+		Server: server,
+	}
+}
+
 // WithClientID sets the clientID auth request parameter.
 func WithClientID(clientID string) *core.ClientIDOption {
 	return &core.ClientIDOption{
