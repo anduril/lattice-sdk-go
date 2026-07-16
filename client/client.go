@@ -5,6 +5,7 @@ package client
 import (
 	context "context"
 	errors "errors"
+	fmt "fmt"
 
 	Lattice "github.com/anduril/lattice-sdk-go/v4"
 	core "github.com/anduril/lattice-sdk-go/v4/core"
@@ -29,6 +30,16 @@ type Client struct {
 
 func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
+	if options.BaseURL == "" && (options.Server != "") {
+		server := options.Server
+		if server == "" {
+			server = "example.developer.anduril.com"
+		}
+		options.BaseURL = fmt.Sprintf(
+			"https://%s",
+			server,
+		)
+	}
 	oauthTokenProvider := core.NewTokenProvider(
 		0,
 	)
@@ -37,7 +48,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		&authOptions,
 	)
 	options.SetTokenGetter(func() (string, error) {
-		return oauthTokenProvider.GetOrFetch(func() (string, int, error) {
+		return oauthTokenProvider.GetOrFetch(func() (string, int64, error) {
 			response, err := authClient.GetToken(context.Background(), &Lattice.GetTokenRequest{
 				ClientID: Lattice.String(
 					options.ClientID,
@@ -54,9 +65,9 @@ func NewClient(opts ...option.RequestOption) *Client {
 					"oauth response missing access token",
 				)
 			}
-			expiresIn := core.DefaultExpirySeconds
+			expiresIn := int64(core.DefaultExpirySeconds)
 			if response.ExpiresIn != nil {
-				expiresIn = *response.ExpiresIn
+				expiresIn = int64(*response.ExpiresIn)
 			}
 			return response.AccessToken, expiresIn, nil
 		})

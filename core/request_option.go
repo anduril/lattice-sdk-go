@@ -34,6 +34,7 @@ type RequestOptions struct {
 	ClientID                   string
 	ClientSecret               string
 	Token                      string
+	Server                     string
 }
 
 // NewRequestOptions returns a new *RequestOptions value.
@@ -71,8 +72,8 @@ func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/anduril/lattice-sdk-go/v4")
-	headers.Set("X-Fern-SDK-Version", "v4.18.1")
-	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/v4.18.1")
+	headers.Set("X-Fern-SDK-Version", "v4.19.0")
+	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/4.19.0")
 	return headers
 }
 
@@ -160,6 +161,15 @@ type WithoutRetriesOption struct{}
 
 func (w *WithoutRetriesOption) applyRequestOptions(opts *RequestOptions) {
 	opts.DisableRetries = true
+}
+
+// ServerOption implements the RequestOption interface.
+type ServerOption struct {
+	Server string
+}
+
+func (s *ServerOption) applyRequestOptions(opts *RequestOptions) {
+	opts.Server = s.Server
 }
 
 // ClientIDOption implements the RequestOption interface.
