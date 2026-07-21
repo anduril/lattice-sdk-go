@@ -7,10 +7,10 @@ import (
 	io "io"
 	http "net/http"
 
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
 )
 
 type Client struct {
@@ -37,6 +37,14 @@ func NewClient(options *core.RequestOptions) *Client {
 }
 
 // Lists objects in your environment. You can define a prefix to list a subset of your objects. If you do not set a prefix, Lattice returns all available objects. By default this endpoint will list local objects only.
+//
+// Example:
+//
+//	request := &Lattice.ListObjectsRequest{}
+//	client.Objects.ListObjects(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) ListObjects(
 	ctx context.Context,
 	request *Lattice.ListObjectsRequest,
@@ -98,6 +106,16 @@ func (c *Client) ListObjects(
 }
 
 // Fetches an object from your environment using the objectPath path parameter.
+//
+// Example:
+//
+//	request := &Lattice.GetObjectRequest{
+//	    ObjectPath: "objectPath",
+//	}
+//	client.Objects.GetObject(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) GetObject(
 	ctx context.Context,
 	request *Lattice.GetObjectRequest,
@@ -115,6 +133,14 @@ func (c *Client) GetObject(
 }
 
 // Uploads an object. The object must be 1 GiB or smaller.
+//
+// Example:
+//
+//	client.Objects.UploadObject(
+//	    context.TODO(),
+//	    "<objectPath>",
+//	    request,
+//	)
 func (c *Client) UploadObject(
 	ctx context.Context,
 	// Path of the Object that is to be uploaded.
@@ -135,6 +161,16 @@ func (c *Client) UploadObject(
 }
 
 // Deletes an object from your environment given the objectPath path parameter.
+//
+// Example:
+//
+//	request := &Lattice.DeleteObjectRequest{
+//	    ObjectPath: "objectPath",
+//	}
+//	client.Objects.DeleteObject(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) DeleteObject(
 	ctx context.Context,
 	request *Lattice.DeleteObjectRequest,
@@ -152,6 +188,16 @@ func (c *Client) DeleteObject(
 }
 
 // Returns metadata for a specified object path. Use this to fetch metadata such as object size (size_bytes), its expiry time (expiry_time), or its latest update timestamp (last_updated_at).
+//
+// Example:
+//
+//	request := &Lattice.GetObjectMetadataRequest{
+//	    ObjectPath: "objectPath",
+//	}
+//	client.Objects.GetObjectMetadata(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) GetObjectMetadata(
 	ctx context.Context,
 	request *Lattice.GetObjectMetadataRequest,

@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -880,6 +880,1042 @@ func NewAlternateIDTypeFromString(s string) (AlternateIDType, error) {
 }
 
 func (a AlternateIDType) Ptr() *AlternateIDType {
+	return &a
+}
+
+var (
+	altitudeFieldHaeWgs84     = big.NewInt(1 << 0)
+	altitudeFieldAsf          = big.NewInt(1 << 1)
+	altitudeFieldBss          = big.NewInt(1 << 2)
+	altitudeFieldPressureSdp  = big.NewInt(1 << 3)
+	altitudeFieldPressureAmsl = big.NewInt(1 << 4)
+	altitudeFieldEgm96Amsl    = big.NewInt(1 << 5)
+	altitudeFieldAgl          = big.NewInt(1 << 6)
+)
+
+type Altitude struct {
+	HaeWgs84     *AltitudeAboveWgs84Ellipsoid             `json:"haeWgs84,omitempty" url:"haeWgs84,omitempty"`
+	Asf          *AltitudeAboveSeaFloor                   `json:"asf,omitempty" url:"asf,omitempty"`
+	Bss          *AltitudeBelowSeaSurface                 `json:"bss,omitempty" url:"bss,omitempty"`
+	PressureSdp  *AltitudeAboveStandardDatumPlanePressure `json:"pressureSdp,omitempty" url:"pressureSdp,omitempty"`
+	PressureAmsl *AltitudeAboveMeanSeaLevelPressure       `json:"pressureAmsl,omitempty" url:"pressureAmsl,omitempty"`
+	Egm96Amsl    *AltitudeAboveMeanSeaLevelEgm96          `json:"egm96Amsl,omitempty" url:"egm96Amsl,omitempty"`
+	Agl          *AltitudeAboveGroundLevel                `json:"agl,omitempty" url:"agl,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *Altitude) GetHaeWgs84() *AltitudeAboveWgs84Ellipsoid {
+	if a == nil {
+		return nil
+	}
+	return a.HaeWgs84
+}
+
+func (a *Altitude) GetAsf() *AltitudeAboveSeaFloor {
+	if a == nil {
+		return nil
+	}
+	return a.Asf
+}
+
+func (a *Altitude) GetBss() *AltitudeBelowSeaSurface {
+	if a == nil {
+		return nil
+	}
+	return a.Bss
+}
+
+func (a *Altitude) GetPressureSdp() *AltitudeAboveStandardDatumPlanePressure {
+	if a == nil {
+		return nil
+	}
+	return a.PressureSdp
+}
+
+func (a *Altitude) GetPressureAmsl() *AltitudeAboveMeanSeaLevelPressure {
+	if a == nil {
+		return nil
+	}
+	return a.PressureAmsl
+}
+
+func (a *Altitude) GetEgm96Amsl() *AltitudeAboveMeanSeaLevelEgm96 {
+	if a == nil {
+		return nil
+	}
+	return a.Egm96Amsl
+}
+
+func (a *Altitude) GetAgl() *AltitudeAboveGroundLevel {
+	if a == nil {
+		return nil
+	}
+	return a.Agl
+}
+
+func (a *Altitude) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *Altitude) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetHaeWgs84 sets the HaeWgs84 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Altitude) SetHaeWgs84(haeWgs84 *AltitudeAboveWgs84Ellipsoid) {
+	a.HaeWgs84 = haeWgs84
+	a.require(altitudeFieldHaeWgs84)
+}
+
+// SetAsf sets the Asf field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Altitude) SetAsf(asf *AltitudeAboveSeaFloor) {
+	a.Asf = asf
+	a.require(altitudeFieldAsf)
+}
+
+// SetBss sets the Bss field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Altitude) SetBss(bss *AltitudeBelowSeaSurface) {
+	a.Bss = bss
+	a.require(altitudeFieldBss)
+}
+
+// SetPressureSdp sets the PressureSdp field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Altitude) SetPressureSdp(pressureSdp *AltitudeAboveStandardDatumPlanePressure) {
+	a.PressureSdp = pressureSdp
+	a.require(altitudeFieldPressureSdp)
+}
+
+// SetPressureAmsl sets the PressureAmsl field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Altitude) SetPressureAmsl(pressureAmsl *AltitudeAboveMeanSeaLevelPressure) {
+	a.PressureAmsl = pressureAmsl
+	a.require(altitudeFieldPressureAmsl)
+}
+
+// SetEgm96Amsl sets the Egm96Amsl field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Altitude) SetEgm96Amsl(egm96Amsl *AltitudeAboveMeanSeaLevelEgm96) {
+	a.Egm96Amsl = egm96Amsl
+	a.require(altitudeFieldEgm96Amsl)
+}
+
+// SetAgl sets the Agl field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *Altitude) SetAgl(agl *AltitudeAboveGroundLevel) {
+	a.Agl = agl
+	a.require(altitudeFieldAgl)
+}
+
+func (a *Altitude) UnmarshalJSON(data []byte) error {
+	type unmarshaler Altitude
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = Altitude(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *Altitude) MarshalJSON() ([]byte, error) {
+	type embed Altitude
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *Altitude) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Altitude as AGL (Above ground level). This is also known as absolute altitude or QFE in aviation terms.
+var (
+	altitudeAboveGroundLevelFieldProvenance  = big.NewInt(1 << 0)
+	altitudeAboveGroundLevelFieldValueMeters = big.NewInt(1 << 1)
+)
+
+type AltitudeAboveGroundLevel struct {
+	// The provenance of the measurement.
+	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
+	// The altitude value in meters.
+	ValueMeters *float64 `json:"valueMeters,omitempty" url:"valueMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeAboveGroundLevel) GetProvenance() *AltitudeProvenance {
+	if a == nil {
+		return nil
+	}
+	return a.Provenance
+}
+
+func (a *AltitudeAboveGroundLevel) GetValueMeters() *float64 {
+	if a == nil {
+		return nil
+	}
+	return a.ValueMeters
+}
+
+func (a *AltitudeAboveGroundLevel) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeAboveGroundLevel) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveGroundLevel) SetProvenance(provenance *AltitudeProvenance) {
+	a.Provenance = provenance
+	a.require(altitudeAboveGroundLevelFieldProvenance)
+}
+
+// SetValueMeters sets the ValueMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveGroundLevel) SetValueMeters(valueMeters *float64) {
+	a.ValueMeters = valueMeters
+	a.require(altitudeAboveGroundLevelFieldValueMeters)
+}
+
+func (a *AltitudeAboveGroundLevel) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeAboveGroundLevel
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeAboveGroundLevel(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeAboveGroundLevel) MarshalJSON() ([]byte, error) {
+	type embed AltitudeAboveGroundLevel
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeAboveGroundLevel) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// The altitude relative to mean sea level represented by the EGM96 geoid. This is often calculated using a terrain
+//
+//	conversion of from a GNSS device.
+var (
+	altitudeAboveMeanSeaLevelEgm96FieldProvenance  = big.NewInt(1 << 0)
+	altitudeAboveMeanSeaLevelEgm96FieldValueMeters = big.NewInt(1 << 1)
+)
+
+type AltitudeAboveMeanSeaLevelEgm96 struct {
+	// The provenance of the measurement.
+	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
+	// The altitude value in meters.
+	ValueMeters *float64 `json:"valueMeters,omitempty" url:"valueMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeAboveMeanSeaLevelEgm96) GetProvenance() *AltitudeProvenance {
+	if a == nil {
+		return nil
+	}
+	return a.Provenance
+}
+
+func (a *AltitudeAboveMeanSeaLevelEgm96) GetValueMeters() *float64 {
+	if a == nil {
+		return nil
+	}
+	return a.ValueMeters
+}
+
+func (a *AltitudeAboveMeanSeaLevelEgm96) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeAboveMeanSeaLevelEgm96) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveMeanSeaLevelEgm96) SetProvenance(provenance *AltitudeProvenance) {
+	a.Provenance = provenance
+	a.require(altitudeAboveMeanSeaLevelEgm96FieldProvenance)
+}
+
+// SetValueMeters sets the ValueMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveMeanSeaLevelEgm96) SetValueMeters(valueMeters *float64) {
+	a.ValueMeters = valueMeters
+	a.require(altitudeAboveMeanSeaLevelEgm96FieldValueMeters)
+}
+
+func (a *AltitudeAboveMeanSeaLevelEgm96) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeAboveMeanSeaLevelEgm96
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeAboveMeanSeaLevelEgm96(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeAboveMeanSeaLevelEgm96) MarshalJSON() ([]byte, error) {
+	type embed AltitudeAboveMeanSeaLevelEgm96
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeAboveMeanSeaLevelEgm96) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// The calibrated pressure altitude reading measured above MSL. This is known as QNH or true altitude in aviation
+//
+//	terms. This is separated from AltitudeAboveMeanSeaLevelEGM96, as the two values are not guaranteed to be the
+//	same due to temperature fluctuations.
+var (
+	altitudeAboveMeanSeaLevelPressureFieldProvenance  = big.NewInt(1 << 0)
+	altitudeAboveMeanSeaLevelPressureFieldValueMeters = big.NewInt(1 << 1)
+)
+
+type AltitudeAboveMeanSeaLevelPressure struct {
+	// The provenance of the measurement.
+	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
+	// The altitude value in meters.
+	ValueMeters *float64 `json:"valueMeters,omitempty" url:"valueMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeAboveMeanSeaLevelPressure) GetProvenance() *AltitudeProvenance {
+	if a == nil {
+		return nil
+	}
+	return a.Provenance
+}
+
+func (a *AltitudeAboveMeanSeaLevelPressure) GetValueMeters() *float64 {
+	if a == nil {
+		return nil
+	}
+	return a.ValueMeters
+}
+
+func (a *AltitudeAboveMeanSeaLevelPressure) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeAboveMeanSeaLevelPressure) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveMeanSeaLevelPressure) SetProvenance(provenance *AltitudeProvenance) {
+	a.Provenance = provenance
+	a.require(altitudeAboveMeanSeaLevelPressureFieldProvenance)
+}
+
+// SetValueMeters sets the ValueMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveMeanSeaLevelPressure) SetValueMeters(valueMeters *float64) {
+	a.ValueMeters = valueMeters
+	a.require(altitudeAboveMeanSeaLevelPressureFieldValueMeters)
+}
+
+func (a *AltitudeAboveMeanSeaLevelPressure) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeAboveMeanSeaLevelPressure
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeAboveMeanSeaLevelPressure(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeAboveMeanSeaLevelPressure) MarshalJSON() ([]byte, error) {
+	type embed AltitudeAboveMeanSeaLevelPressure
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeAboveMeanSeaLevelPressure) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// The altitude above the sea floor, generally measured with a sonar.
+var (
+	altitudeAboveSeaFloorFieldProvenance  = big.NewInt(1 << 0)
+	altitudeAboveSeaFloorFieldValueMeters = big.NewInt(1 << 1)
+)
+
+type AltitudeAboveSeaFloor struct {
+	// The provenance of the measurement.
+	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
+	// The altitude value in meters.
+	ValueMeters *float64 `json:"valueMeters,omitempty" url:"valueMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeAboveSeaFloor) GetProvenance() *AltitudeProvenance {
+	if a == nil {
+		return nil
+	}
+	return a.Provenance
+}
+
+func (a *AltitudeAboveSeaFloor) GetValueMeters() *float64 {
+	if a == nil {
+		return nil
+	}
+	return a.ValueMeters
+}
+
+func (a *AltitudeAboveSeaFloor) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeAboveSeaFloor) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveSeaFloor) SetProvenance(provenance *AltitudeProvenance) {
+	a.Provenance = provenance
+	a.require(altitudeAboveSeaFloorFieldProvenance)
+}
+
+// SetValueMeters sets the ValueMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveSeaFloor) SetValueMeters(valueMeters *float64) {
+	a.ValueMeters = valueMeters
+	a.require(altitudeAboveSeaFloorFieldValueMeters)
+}
+
+func (a *AltitudeAboveSeaFloor) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeAboveSeaFloor
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeAboveSeaFloor(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeAboveSeaFloor) MarshalJSON() ([]byte, error) {
+	type embed AltitudeAboveSeaFloor
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeAboveSeaFloor) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// The altitude reading measured above the standard datum plane (29.92 inHg or 1013.2 hPA). This is also known as
+//
+//	pressure altitude or QNE in aviation terms. This altitude should be used when flying at high altitudes and
+//	above the transition level (18,000 in the USA and Canada), ensuring the use of a common reference altitude.
+var (
+	altitudeAboveStandardDatumPlanePressureFieldProvenance  = big.NewInt(1 << 0)
+	altitudeAboveStandardDatumPlanePressureFieldValueMeters = big.NewInt(1 << 1)
+)
+
+type AltitudeAboveStandardDatumPlanePressure struct {
+	// The provenance of the measurement.
+	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
+	// The altitude value in meters.
+	ValueMeters *float64 `json:"valueMeters,omitempty" url:"valueMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeAboveStandardDatumPlanePressure) GetProvenance() *AltitudeProvenance {
+	if a == nil {
+		return nil
+	}
+	return a.Provenance
+}
+
+func (a *AltitudeAboveStandardDatumPlanePressure) GetValueMeters() *float64 {
+	if a == nil {
+		return nil
+	}
+	return a.ValueMeters
+}
+
+func (a *AltitudeAboveStandardDatumPlanePressure) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeAboveStandardDatumPlanePressure) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveStandardDatumPlanePressure) SetProvenance(provenance *AltitudeProvenance) {
+	a.Provenance = provenance
+	a.require(altitudeAboveStandardDatumPlanePressureFieldProvenance)
+}
+
+// SetValueMeters sets the ValueMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveStandardDatumPlanePressure) SetValueMeters(valueMeters *float64) {
+	a.ValueMeters = valueMeters
+	a.require(altitudeAboveStandardDatumPlanePressureFieldValueMeters)
+}
+
+func (a *AltitudeAboveStandardDatumPlanePressure) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeAboveStandardDatumPlanePressure
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeAboveStandardDatumPlanePressure(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeAboveStandardDatumPlanePressure) MarshalJSON() ([]byte, error) {
+	type embed AltitudeAboveStandardDatumPlanePressure
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeAboveStandardDatumPlanePressure) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// Altitude above the WGS84 defined ellipsoid. Often measured with a GNSS sensor.
+var (
+	altitudeAboveWgs84EllipsoidFieldProvenance  = big.NewInt(1 << 0)
+	altitudeAboveWgs84EllipsoidFieldValueMeters = big.NewInt(1 << 1)
+)
+
+type AltitudeAboveWgs84Ellipsoid struct {
+	// The provenance of the measurement.
+	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
+	// The altitude value in meters.
+	ValueMeters *float64 `json:"valueMeters,omitempty" url:"valueMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeAboveWgs84Ellipsoid) GetProvenance() *AltitudeProvenance {
+	if a == nil {
+		return nil
+	}
+	return a.Provenance
+}
+
+func (a *AltitudeAboveWgs84Ellipsoid) GetValueMeters() *float64 {
+	if a == nil {
+		return nil
+	}
+	return a.ValueMeters
+}
+
+func (a *AltitudeAboveWgs84Ellipsoid) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeAboveWgs84Ellipsoid) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveWgs84Ellipsoid) SetProvenance(provenance *AltitudeProvenance) {
+	a.Provenance = provenance
+	a.require(altitudeAboveWgs84EllipsoidFieldProvenance)
+}
+
+// SetValueMeters sets the ValueMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeAboveWgs84Ellipsoid) SetValueMeters(valueMeters *float64) {
+	a.ValueMeters = valueMeters
+	a.require(altitudeAboveWgs84EllipsoidFieldValueMeters)
+}
+
+func (a *AltitudeAboveWgs84Ellipsoid) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeAboveWgs84Ellipsoid
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeAboveWgs84Ellipsoid(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeAboveWgs84Ellipsoid) MarshalJSON() ([]byte, error) {
+	type embed AltitudeAboveWgs84Ellipsoid
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeAboveWgs84Ellipsoid) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+// The altitude below sea surface, generally measured with a pressure depth sensor.
+var (
+	altitudeBelowSeaSurfaceFieldProvenance  = big.NewInt(1 << 0)
+	altitudeBelowSeaSurfaceFieldValueMeters = big.NewInt(1 << 1)
+)
+
+type AltitudeBelowSeaSurface struct {
+	// The provenance of the measurement.
+	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
+	// The altitude value in meters.
+	ValueMeters *float64 `json:"valueMeters,omitempty" url:"valueMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeBelowSeaSurface) GetProvenance() *AltitudeProvenance {
+	if a == nil {
+		return nil
+	}
+	return a.Provenance
+}
+
+func (a *AltitudeBelowSeaSurface) GetValueMeters() *float64 {
+	if a == nil {
+		return nil
+	}
+	return a.ValueMeters
+}
+
+func (a *AltitudeBelowSeaSurface) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeBelowSeaSurface) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetProvenance sets the Provenance field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeBelowSeaSurface) SetProvenance(provenance *AltitudeProvenance) {
+	a.Provenance = provenance
+	a.require(altitudeBelowSeaSurfaceFieldProvenance)
+}
+
+// SetValueMeters sets the ValueMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeBelowSeaSurface) SetValueMeters(valueMeters *float64) {
+	a.ValueMeters = valueMeters
+	a.require(altitudeBelowSeaSurfaceFieldValueMeters)
+}
+
+func (a *AltitudeBelowSeaSurface) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeBelowSeaSurface
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeBelowSeaSurface(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeBelowSeaSurface) MarshalJSON() ([]byte, error) {
+	type embed AltitudeBelowSeaSurface
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeBelowSeaSurface) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+var (
+	altitudeProvenanceFieldSourceType = big.NewInt(1 << 0)
+)
+
+type AltitudeProvenance struct {
+	SourceType *AltitudeProvenanceSourceType `json:"sourceType,omitempty" url:"sourceType,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (a *AltitudeProvenance) GetSourceType() *AltitudeProvenanceSourceType {
+	if a == nil {
+		return nil
+	}
+	return a.SourceType
+}
+
+func (a *AltitudeProvenance) GetExtraProperties() map[string]interface{} {
+	if a == nil {
+		return nil
+	}
+	return a.extraProperties
+}
+
+func (a *AltitudeProvenance) require(field *big.Int) {
+	if a.explicitFields == nil {
+		a.explicitFields = big.NewInt(0)
+	}
+	a.explicitFields.Or(a.explicitFields, field)
+}
+
+// SetSourceType sets the SourceType field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (a *AltitudeProvenance) SetSourceType(sourceType *AltitudeProvenanceSourceType) {
+	a.SourceType = sourceType
+	a.require(altitudeProvenanceFieldSourceType)
+}
+
+func (a *AltitudeProvenance) UnmarshalJSON(data []byte) error {
+	type unmarshaler AltitudeProvenance
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AltitudeProvenance(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+	a.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AltitudeProvenance) MarshalJSON() ([]byte, error) {
+	type embed AltitudeProvenance
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*a),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, a.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (a *AltitudeProvenance) String() string {
+	if a == nil {
+		return "<nil>"
+	}
+	if len(a.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(a.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
+}
+
+type AltitudeProvenanceSourceType string
+
+const (
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeInvalid           AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_INVALID"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeRadarAltimeter    AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_RADAR_ALTIMETER"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeLaserAltimeter    AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_LASER_ALTIMETER"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeBarometer         AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_BAROMETER"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeTerrainConversion AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_TERRAIN_CONVERSION"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeGnss              AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_GNSS"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeSonar             AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_SONAR"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeUserInput         AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_USER_INPUT"
+	AltitudeProvenanceSourceTypeAltitudeProvenanceTypeIns               AltitudeProvenanceSourceType = "ALTITUDE_PROVENANCE_TYPE_INS"
+)
+
+func NewAltitudeProvenanceSourceTypeFromString(s string) (AltitudeProvenanceSourceType, error) {
+	switch s {
+	case "ALTITUDE_PROVENANCE_TYPE_INVALID":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeInvalid, nil
+	case "ALTITUDE_PROVENANCE_TYPE_RADAR_ALTIMETER":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeRadarAltimeter, nil
+	case "ALTITUDE_PROVENANCE_TYPE_LASER_ALTIMETER":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeLaserAltimeter, nil
+	case "ALTITUDE_PROVENANCE_TYPE_BAROMETER":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeBarometer, nil
+	case "ALTITUDE_PROVENANCE_TYPE_TERRAIN_CONVERSION":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeTerrainConversion, nil
+	case "ALTITUDE_PROVENANCE_TYPE_GNSS":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeGnss, nil
+	case "ALTITUDE_PROVENANCE_TYPE_SONAR":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeSonar, nil
+	case "ALTITUDE_PROVENANCE_TYPE_USER_INPUT":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeUserInput, nil
+	case "ALTITUDE_PROVENANCE_TYPE_INS":
+		return AltitudeProvenanceSourceTypeAltitudeProvenanceTypeIns, nil
+	}
+	var t AltitudeProvenanceSourceType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AltitudeProvenanceSourceType) Ptr() *AltitudeProvenanceSourceType {
 	return &a
 }
 
@@ -3347,35 +4383,36 @@ var (
 	entityFieldStatus              = big.NewInt(1 << 6)
 	entityFieldLocation            = big.NewInt(1 << 7)
 	entityFieldLocationUncertainty = big.NewInt(1 << 8)
-	entityFieldGeoShape            = big.NewInt(1 << 9)
-	entityFieldGeoDetails          = big.NewInt(1 << 10)
-	entityFieldAliases             = big.NewInt(1 << 11)
-	entityFieldTracked             = big.NewInt(1 << 12)
-	entityFieldCorrelation         = big.NewInt(1 << 13)
-	entityFieldMilView             = big.NewInt(1 << 14)
-	entityFieldOntology            = big.NewInt(1 << 15)
-	entityFieldSensors             = big.NewInt(1 << 16)
-	entityFieldPayloads            = big.NewInt(1 << 17)
-	entityFieldPowerState          = big.NewInt(1 << 18)
-	entityFieldProvenance          = big.NewInt(1 << 19)
-	entityFieldOverrides           = big.NewInt(1 << 20)
-	entityFieldIndicators          = big.NewInt(1 << 21)
-	entityFieldTargetPriority      = big.NewInt(1 << 22)
-	entityFieldSignal              = big.NewInt(1 << 23)
-	entityFieldTransponderCodes    = big.NewInt(1 << 24)
-	entityFieldDataClassification  = big.NewInt(1 << 25)
-	entityFieldTaskCatalog         = big.NewInt(1 << 26)
-	entityFieldMedia               = big.NewInt(1 << 27)
-	entityFieldRelationships       = big.NewInt(1 << 28)
-	entityFieldVisualDetails       = big.NewInt(1 << 29)
-	entityFieldDimensions          = big.NewInt(1 << 30)
-	entityFieldRouteDetails        = big.NewInt(1 << 31)
-	entityFieldSchedules           = big.NewInt(1 << 32)
-	entityFieldHealth              = big.NewInt(1 << 33)
-	entityFieldGroupDetails        = big.NewInt(1 << 34)
-	entityFieldSupplies            = big.NewInt(1 << 35)
-	entityFieldOrbit               = big.NewInt(1 << 36)
-	entityFieldSymbology           = big.NewInt(1 << 37)
+	entityFieldKinematics          = big.NewInt(1 << 9)
+	entityFieldGeoShape            = big.NewInt(1 << 10)
+	entityFieldGeoDetails          = big.NewInt(1 << 11)
+	entityFieldAliases             = big.NewInt(1 << 12)
+	entityFieldTracked             = big.NewInt(1 << 13)
+	entityFieldCorrelation         = big.NewInt(1 << 14)
+	entityFieldMilView             = big.NewInt(1 << 15)
+	entityFieldOntology            = big.NewInt(1 << 16)
+	entityFieldSensors             = big.NewInt(1 << 17)
+	entityFieldPayloads            = big.NewInt(1 << 18)
+	entityFieldPowerState          = big.NewInt(1 << 19)
+	entityFieldProvenance          = big.NewInt(1 << 20)
+	entityFieldOverrides           = big.NewInt(1 << 21)
+	entityFieldIndicators          = big.NewInt(1 << 22)
+	entityFieldTargetPriority      = big.NewInt(1 << 23)
+	entityFieldSignal              = big.NewInt(1 << 24)
+	entityFieldTransponderCodes    = big.NewInt(1 << 25)
+	entityFieldDataClassification  = big.NewInt(1 << 26)
+	entityFieldTaskCatalog         = big.NewInt(1 << 27)
+	entityFieldMedia               = big.NewInt(1 << 28)
+	entityFieldRelationships       = big.NewInt(1 << 29)
+	entityFieldVisualDetails       = big.NewInt(1 << 30)
+	entityFieldDimensions          = big.NewInt(1 << 31)
+	entityFieldRouteDetails        = big.NewInt(1 << 32)
+	entityFieldSchedules           = big.NewInt(1 << 33)
+	entityFieldHealth              = big.NewInt(1 << 34)
+	entityFieldGroupDetails        = big.NewInt(1 << 35)
+	entityFieldSupplies            = big.NewInt(1 << 36)
+	entityFieldOrbit               = big.NewInt(1 << 37)
+	entityFieldSymbology           = big.NewInt(1 << 38)
 )
 
 type Entity struct {
@@ -3414,10 +4451,18 @@ type Entity struct {
 	NoExpiry *bool `json:"noExpiry,omitempty" url:"noExpiry,omitempty"`
 	// Human-readable descriptions of what the entity is currently doing.
 	Status *Status `json:"status,omitempty" url:"status,omitempty"`
-	// Geospatial data related to the entity, including its position, kinematics, and orientation.
+	// Geospatial data related to the entity, including its position, kinematics, and orientation. Populate either
+	//
+	//	this field (and `location_uncertainty`) or `kinematics`, not both. Populating both can lead to conflicting or
+	//	inconsistent kinematics data for the entity.
 	Location *Location `json:"location,omitempty" url:"location,omitempty"`
 	// Indicates uncertainty of the entity's position and kinematics.
 	LocationUncertainty *LocationUncertainty `json:"locationUncertainty,omitempty" url:"locationUncertainty,omitempty"`
+	// Kinematics data related to the entity to a higher degree of granularity than Location. This is preferred for Track Entities.
+	//
+	//	Populate either `location`/`location_uncertainty` or this field, not both.
+	//	Populating both can lead to conflicting or inconsistent kinematics data for the entity.
+	Kinematics *Kinematics `json:"kinematics,omitempty" url:"kinematics,omitempty"`
 	// Geospatial representation of the entity, including entities that cover an area rather than a fixed point.
 	GeoShape *GeoShape `json:"geoShape,omitempty" url:"geoShape,omitempty"`
 	// Additional details on what the geospatial area or point represents, along with visual display details.
@@ -3550,6 +4595,13 @@ func (e *Entity) GetLocationUncertainty() *LocationUncertainty {
 		return nil
 	}
 	return e.LocationUncertainty
+}
+
+func (e *Entity) GetKinematics() *Kinematics {
+	if e == nil {
+		return nil
+	}
+	return e.Kinematics
 }
 
 func (e *Entity) GetGeoShape() *GeoShape {
@@ -3830,6 +4882,13 @@ func (e *Entity) SetLocation(location *Location) {
 func (e *Entity) SetLocationUncertainty(locationUncertainty *LocationUncertainty) {
 	e.LocationUncertainty = locationUncertainty
 	e.require(entityFieldLocationUncertainty)
+}
+
+// SetKinematics sets the Kinematics field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *Entity) SetKinematics(kinematics *Kinematics) {
+	e.Kinematics = kinematics
+	e.require(entityFieldKinematics)
 }
 
 // SetGeoShape sets the GeoShape field and marks it as non-optional;
@@ -7508,6 +8567,515 @@ func (i *Indicators) String() string {
 	return fmt.Sprintf("%#v", i)
 }
 
+// Kinematics of the entity, including its location, location uncertainty, motion, attitude, and the time the
+//
+//	kinematics were measured.
+//
+//	Only one of the fields on this message is expected to be set when publishing an entity.
+var (
+	kinematicsFieldKinematicsGeodetic   = big.NewInt(1 << 0)
+	kinematicsFieldKinematicsGeocentric = big.NewInt(1 << 1)
+)
+
+type Kinematics struct {
+	// Kinematics measured in a geodetic (WGS84 latitude/longitude/altitude and ENU) reference frame.
+	KinematicsGeodetic *KinematicsGeodetic `json:"kinematicsGeodetic,omitempty" url:"kinematicsGeodetic,omitempty"`
+	// Kinematics measured in a geocentric (ECEF) reference frame.
+	KinematicsGeocentric *KinematicsGeocentric `json:"kinematicsGeocentric,omitempty" url:"kinematicsGeocentric,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (k *Kinematics) GetKinematicsGeodetic() *KinematicsGeodetic {
+	if k == nil {
+		return nil
+	}
+	return k.KinematicsGeodetic
+}
+
+func (k *Kinematics) GetKinematicsGeocentric() *KinematicsGeocentric {
+	if k == nil {
+		return nil
+	}
+	return k.KinematicsGeocentric
+}
+
+func (k *Kinematics) GetExtraProperties() map[string]interface{} {
+	if k == nil {
+		return nil
+	}
+	return k.extraProperties
+}
+
+func (k *Kinematics) require(field *big.Int) {
+	if k.explicitFields == nil {
+		k.explicitFields = big.NewInt(0)
+	}
+	k.explicitFields.Or(k.explicitFields, field)
+}
+
+// SetKinematicsGeodetic sets the KinematicsGeodetic field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *Kinematics) SetKinematicsGeodetic(kinematicsGeodetic *KinematicsGeodetic) {
+	k.KinematicsGeodetic = kinematicsGeodetic
+	k.require(kinematicsFieldKinematicsGeodetic)
+}
+
+// SetKinematicsGeocentric sets the KinematicsGeocentric field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *Kinematics) SetKinematicsGeocentric(kinematicsGeocentric *KinematicsGeocentric) {
+	k.KinematicsGeocentric = kinematicsGeocentric
+	k.require(kinematicsFieldKinematicsGeocentric)
+}
+
+func (k *Kinematics) UnmarshalJSON(data []byte) error {
+	type unmarshaler Kinematics
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*k = Kinematics(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *k)
+	if err != nil {
+		return err
+	}
+	k.extraProperties = extraProperties
+	k.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (k *Kinematics) MarshalJSON() ([]byte, error) {
+	type embed Kinematics
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*k),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, k.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (k *Kinematics) String() string {
+	if k == nil {
+		return "<nil>"
+	}
+	if len(k.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(k.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(k); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", k)
+}
+
+var (
+	kinematicsGeocentricFieldLocation                = big.NewInt(1 << 0)
+	kinematicsGeocentricFieldLocationUncertaintyEcef = big.NewInt(1 << 1)
+	kinematicsGeocentricFieldVelocityEcefMPerS       = big.NewInt(1 << 2)
+	kinematicsGeocentricFieldVelocityUncertaintyEcef = big.NewInt(1 << 3)
+	kinematicsGeocentricFieldAccelerationMPerS2      = big.NewInt(1 << 4)
+	kinematicsGeocentricFieldAttitudeEcef            = big.NewInt(1 << 5)
+	kinematicsGeocentricFieldMeasurementTime         = big.NewInt(1 << 6)
+)
+
+type KinematicsGeocentric struct {
+	// The location of the entity, measured in the ECEF reference frame.
+	Location *LocationGeocentricEcef `json:"location,omitempty" url:"location,omitempty"`
+	// Location uncertainty of this measurement, measured in the ECEF frame.
+	LocationUncertaintyEcef *TMat3 `json:"locationUncertaintyEcef,omitempty" url:"locationUncertaintyEcef,omitempty"`
+	// Velocity in the ECEF frame, measured in meters per second.
+	VelocityEcefMPerS *Vec3 `json:"velocityEcefMPerS,omitempty" url:"velocityEcefMPerS,omitempty"`
+	// A 3x3 covariance matrix representing the uncertainty of the velocity measurement.
+	VelocityUncertaintyEcef *TMat3 `json:"velocityUncertaintyEcef,omitempty" url:"velocityUncertaintyEcef,omitempty"`
+	// The entity's acceleration in meters per second squared.
+	AccelerationMPerS2 *Vec3 `json:"accelerationMPerS2,omitempty" url:"accelerationMPerS2,omitempty"`
+	// Quaternion that rotates the X unit vector in the entity's body frame (assumed to be front-left-up) [1,0,0]
+	//
+	//	to the entity's orientation unit vector in the ECEF frame at the entity's location.
+	AttitudeEcef *Quaternion `json:"attitudeEcef,omitempty" url:"attitudeEcef,omitempty"`
+	// The time when these kinematics were measured by the sensor. For tracks, this represents when the sensor made
+	//
+	//	the observation that produced these kinematics. For asset pose data, this represents the system time when the
+	//	pose was captured.
+	MeasurementTime *time.Time `json:"measurementTime,omitempty" url:"measurementTime,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (k *KinematicsGeocentric) GetLocation() *LocationGeocentricEcef {
+	if k == nil {
+		return nil
+	}
+	return k.Location
+}
+
+func (k *KinematicsGeocentric) GetLocationUncertaintyEcef() *TMat3 {
+	if k == nil {
+		return nil
+	}
+	return k.LocationUncertaintyEcef
+}
+
+func (k *KinematicsGeocentric) GetVelocityEcefMPerS() *Vec3 {
+	if k == nil {
+		return nil
+	}
+	return k.VelocityEcefMPerS
+}
+
+func (k *KinematicsGeocentric) GetVelocityUncertaintyEcef() *TMat3 {
+	if k == nil {
+		return nil
+	}
+	return k.VelocityUncertaintyEcef
+}
+
+func (k *KinematicsGeocentric) GetAccelerationMPerS2() *Vec3 {
+	if k == nil {
+		return nil
+	}
+	return k.AccelerationMPerS2
+}
+
+func (k *KinematicsGeocentric) GetAttitudeEcef() *Quaternion {
+	if k == nil {
+		return nil
+	}
+	return k.AttitudeEcef
+}
+
+func (k *KinematicsGeocentric) GetMeasurementTime() *time.Time {
+	if k == nil {
+		return nil
+	}
+	return k.MeasurementTime
+}
+
+func (k *KinematicsGeocentric) GetExtraProperties() map[string]interface{} {
+	if k == nil {
+		return nil
+	}
+	return k.extraProperties
+}
+
+func (k *KinematicsGeocentric) require(field *big.Int) {
+	if k.explicitFields == nil {
+		k.explicitFields = big.NewInt(0)
+	}
+	k.explicitFields.Or(k.explicitFields, field)
+}
+
+// SetLocation sets the Location field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeocentric) SetLocation(location *LocationGeocentricEcef) {
+	k.Location = location
+	k.require(kinematicsGeocentricFieldLocation)
+}
+
+// SetLocationUncertaintyEcef sets the LocationUncertaintyEcef field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeocentric) SetLocationUncertaintyEcef(locationUncertaintyEcef *TMat3) {
+	k.LocationUncertaintyEcef = locationUncertaintyEcef
+	k.require(kinematicsGeocentricFieldLocationUncertaintyEcef)
+}
+
+// SetVelocityEcefMPerS sets the VelocityEcefMPerS field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeocentric) SetVelocityEcefMPerS(velocityEcefMPerS *Vec3) {
+	k.VelocityEcefMPerS = velocityEcefMPerS
+	k.require(kinematicsGeocentricFieldVelocityEcefMPerS)
+}
+
+// SetVelocityUncertaintyEcef sets the VelocityUncertaintyEcef field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeocentric) SetVelocityUncertaintyEcef(velocityUncertaintyEcef *TMat3) {
+	k.VelocityUncertaintyEcef = velocityUncertaintyEcef
+	k.require(kinematicsGeocentricFieldVelocityUncertaintyEcef)
+}
+
+// SetAccelerationMPerS2 sets the AccelerationMPerS2 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeocentric) SetAccelerationMPerS2(accelerationMPerS2 *Vec3) {
+	k.AccelerationMPerS2 = accelerationMPerS2
+	k.require(kinematicsGeocentricFieldAccelerationMPerS2)
+}
+
+// SetAttitudeEcef sets the AttitudeEcef field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeocentric) SetAttitudeEcef(attitudeEcef *Quaternion) {
+	k.AttitudeEcef = attitudeEcef
+	k.require(kinematicsGeocentricFieldAttitudeEcef)
+}
+
+// SetMeasurementTime sets the MeasurementTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeocentric) SetMeasurementTime(measurementTime *time.Time) {
+	k.MeasurementTime = measurementTime
+	k.require(kinematicsGeocentricFieldMeasurementTime)
+}
+
+func (k *KinematicsGeocentric) UnmarshalJSON(data []byte) error {
+	type embed KinematicsGeocentric
+	var unmarshaler = struct {
+		embed
+		MeasurementTime *internal.DateTime `json:"measurementTime,omitempty"`
+	}{
+		embed: embed(*k),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*k = KinematicsGeocentric(unmarshaler.embed)
+	k.MeasurementTime = unmarshaler.MeasurementTime.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *k)
+	if err != nil {
+		return err
+	}
+	k.extraProperties = extraProperties
+	k.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (k *KinematicsGeocentric) MarshalJSON() ([]byte, error) {
+	type embed KinematicsGeocentric
+	var marshaler = struct {
+		embed
+		MeasurementTime *internal.DateTime `json:"measurementTime,omitempty"`
+	}{
+		embed:           embed(*k),
+		MeasurementTime: internal.NewOptionalDateTime(k.MeasurementTime),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, k.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (k *KinematicsGeocentric) String() string {
+	if k == nil {
+		return "<nil>"
+	}
+	if len(k.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(k.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(k); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", k)
+}
+
+var (
+	kinematicsGeodeticFieldLocation               = big.NewInt(1 << 0)
+	kinematicsGeodeticFieldLocationUncertaintyEnu = big.NewInt(1 << 1)
+	kinematicsGeodeticFieldVelocityEnuMPerS       = big.NewInt(1 << 2)
+	kinematicsGeodeticFieldVelocityUncertaintyEnu = big.NewInt(1 << 3)
+	kinematicsGeodeticFieldAccelerationMPerS2     = big.NewInt(1 << 4)
+	kinematicsGeodeticFieldAttitudeEnu            = big.NewInt(1 << 5)
+	kinematicsGeodeticFieldMeasurementTime        = big.NewInt(1 << 6)
+)
+
+type KinematicsGeodetic struct {
+	// The location of this entity.
+	Location *LocationGeodetic `json:"location,omitempty" url:"location,omitempty"`
+	// Location uncertainty of this measurement, measured in the ENU frame. When there are multiple altitude
+	//
+	//	measurements, this represents the most certain.
+	LocationUncertaintyEnu *TMat3 `json:"locationUncertaintyEnu,omitempty" url:"locationUncertaintyEnu,omitempty"`
+	// Velocity in the ENU frame, measured in meters per second.
+	VelocityEnuMPerS *Vec3 `json:"velocityEnuMPerS,omitempty" url:"velocityEnuMPerS,omitempty"`
+	// A 3x3 covariance matrix representing the uncertainty of the velocity measurement.
+	VelocityUncertaintyEnu *TMat3 `json:"velocityUncertaintyEnu,omitempty" url:"velocityUncertaintyEnu,omitempty"`
+	// The entity's acceleration in meters per second squared.
+	AccelerationMPerS2 *Vec3 `json:"accelerationMPerS2,omitempty" url:"accelerationMPerS2,omitempty"`
+	// Quaternion that rotates the X unit vector in the entity's body frame (assumed to be front-left-up) [1,0,0]
+	//
+	//	to the entity's orientation unit vector in the ENU frame at the entity's location.
+	AttitudeEnu *Quaternion `json:"attitudeEnu,omitempty" url:"attitudeEnu,omitempty"`
+	// The time when these kinematics were measured by the sensor. For tracks, this represents when the sensor made
+	//
+	//	the observation that produced these kinematics. For asset pose data, this represents the system time when the
+	//	pose was captured.
+	MeasurementTime *time.Time `json:"measurementTime,omitempty" url:"measurementTime,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (k *KinematicsGeodetic) GetLocation() *LocationGeodetic {
+	if k == nil {
+		return nil
+	}
+	return k.Location
+}
+
+func (k *KinematicsGeodetic) GetLocationUncertaintyEnu() *TMat3 {
+	if k == nil {
+		return nil
+	}
+	return k.LocationUncertaintyEnu
+}
+
+func (k *KinematicsGeodetic) GetVelocityEnuMPerS() *Vec3 {
+	if k == nil {
+		return nil
+	}
+	return k.VelocityEnuMPerS
+}
+
+func (k *KinematicsGeodetic) GetVelocityUncertaintyEnu() *TMat3 {
+	if k == nil {
+		return nil
+	}
+	return k.VelocityUncertaintyEnu
+}
+
+func (k *KinematicsGeodetic) GetAccelerationMPerS2() *Vec3 {
+	if k == nil {
+		return nil
+	}
+	return k.AccelerationMPerS2
+}
+
+func (k *KinematicsGeodetic) GetAttitudeEnu() *Quaternion {
+	if k == nil {
+		return nil
+	}
+	return k.AttitudeEnu
+}
+
+func (k *KinematicsGeodetic) GetMeasurementTime() *time.Time {
+	if k == nil {
+		return nil
+	}
+	return k.MeasurementTime
+}
+
+func (k *KinematicsGeodetic) GetExtraProperties() map[string]interface{} {
+	if k == nil {
+		return nil
+	}
+	return k.extraProperties
+}
+
+func (k *KinematicsGeodetic) require(field *big.Int) {
+	if k.explicitFields == nil {
+		k.explicitFields = big.NewInt(0)
+	}
+	k.explicitFields.Or(k.explicitFields, field)
+}
+
+// SetLocation sets the Location field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeodetic) SetLocation(location *LocationGeodetic) {
+	k.Location = location
+	k.require(kinematicsGeodeticFieldLocation)
+}
+
+// SetLocationUncertaintyEnu sets the LocationUncertaintyEnu field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeodetic) SetLocationUncertaintyEnu(locationUncertaintyEnu *TMat3) {
+	k.LocationUncertaintyEnu = locationUncertaintyEnu
+	k.require(kinematicsGeodeticFieldLocationUncertaintyEnu)
+}
+
+// SetVelocityEnuMPerS sets the VelocityEnuMPerS field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeodetic) SetVelocityEnuMPerS(velocityEnuMPerS *Vec3) {
+	k.VelocityEnuMPerS = velocityEnuMPerS
+	k.require(kinematicsGeodeticFieldVelocityEnuMPerS)
+}
+
+// SetVelocityUncertaintyEnu sets the VelocityUncertaintyEnu field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeodetic) SetVelocityUncertaintyEnu(velocityUncertaintyEnu *TMat3) {
+	k.VelocityUncertaintyEnu = velocityUncertaintyEnu
+	k.require(kinematicsGeodeticFieldVelocityUncertaintyEnu)
+}
+
+// SetAccelerationMPerS2 sets the AccelerationMPerS2 field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeodetic) SetAccelerationMPerS2(accelerationMPerS2 *Vec3) {
+	k.AccelerationMPerS2 = accelerationMPerS2
+	k.require(kinematicsGeodeticFieldAccelerationMPerS2)
+}
+
+// SetAttitudeEnu sets the AttitudeEnu field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeodetic) SetAttitudeEnu(attitudeEnu *Quaternion) {
+	k.AttitudeEnu = attitudeEnu
+	k.require(kinematicsGeodeticFieldAttitudeEnu)
+}
+
+// SetMeasurementTime sets the MeasurementTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (k *KinematicsGeodetic) SetMeasurementTime(measurementTime *time.Time) {
+	k.MeasurementTime = measurementTime
+	k.require(kinematicsGeodeticFieldMeasurementTime)
+}
+
+func (k *KinematicsGeodetic) UnmarshalJSON(data []byte) error {
+	type embed KinematicsGeodetic
+	var unmarshaler = struct {
+		embed
+		MeasurementTime *internal.DateTime `json:"measurementTime,omitempty"`
+	}{
+		embed: embed(*k),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*k = KinematicsGeodetic(unmarshaler.embed)
+	k.MeasurementTime = unmarshaler.MeasurementTime.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *k)
+	if err != nil {
+		return err
+	}
+	k.extraProperties = extraProperties
+	k.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (k *KinematicsGeodetic) MarshalJSON() ([]byte, error) {
+	type embed KinematicsGeodetic
+	var marshaler = struct {
+		embed
+		MeasurementTime *internal.DateTime `json:"measurementTime,omitempty"`
+	}{
+		embed:           embed(*k),
+		MeasurementTime: internal.NewOptionalDateTime(k.MeasurementTime),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, k.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (k *KinematicsGeodetic) String() string {
+	if k == nil {
+		return "<nil>"
+	}
+	if len(k.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(k.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(k); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", k)
+}
+
 // A line of bearing of a signal.
 var (
 	lineOfBearingFieldAngleOfArrival = big.NewInt(1 << 0)
@@ -8046,6 +9614,279 @@ func (l *Location) MarshalJSON() ([]byte, error) {
 }
 
 func (l *Location) String() string {
+	if l == nil {
+		return "<nil>"
+	}
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
+}
+
+// Location measurement in reference to the center of the earth using the ECEF
+//
+//	coordinate system. This is in the WGS84 coordinate frame.
+var (
+	locationGeocentricEcefFieldXMeters = big.NewInt(1 << 0)
+	locationGeocentricEcefFieldYMeters = big.NewInt(1 << 1)
+	locationGeocentricEcefFieldZMeters = big.NewInt(1 << 2)
+)
+
+type LocationGeocentricEcef struct {
+	// The plane of the equator, passing through extending from 90°W longitude (negative)
+	//
+	//	to 90°E longitude (positive).
+	XMeters *float64 `json:"xMeters,omitempty" url:"xMeters,omitempty"`
+	// The plane of the equator, passing through the origin and extending from 180° longitude
+	//
+	//	(negative) to the prime meridian.
+	YMeters *float64 `json:"yMeters,omitempty" url:"yMeters,omitempty"`
+	// The line between the North and South Poles, with positive values increasing northward.
+	ZMeters *float64 `json:"zMeters,omitempty" url:"zMeters,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (l *LocationGeocentricEcef) GetXMeters() *float64 {
+	if l == nil {
+		return nil
+	}
+	return l.XMeters
+}
+
+func (l *LocationGeocentricEcef) GetYMeters() *float64 {
+	if l == nil {
+		return nil
+	}
+	return l.YMeters
+}
+
+func (l *LocationGeocentricEcef) GetZMeters() *float64 {
+	if l == nil {
+		return nil
+	}
+	return l.ZMeters
+}
+
+func (l *LocationGeocentricEcef) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
+	return l.extraProperties
+}
+
+func (l *LocationGeocentricEcef) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetXMeters sets the XMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LocationGeocentricEcef) SetXMeters(xMeters *float64) {
+	l.XMeters = xMeters
+	l.require(locationGeocentricEcefFieldXMeters)
+}
+
+// SetYMeters sets the YMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LocationGeocentricEcef) SetYMeters(yMeters *float64) {
+	l.YMeters = yMeters
+	l.require(locationGeocentricEcefFieldYMeters)
+}
+
+// SetZMeters sets the ZMeters field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LocationGeocentricEcef) SetZMeters(zMeters *float64) {
+	l.ZMeters = zMeters
+	l.require(locationGeocentricEcefFieldZMeters)
+}
+
+func (l *LocationGeocentricEcef) UnmarshalJSON(data []byte) error {
+	type unmarshaler LocationGeocentricEcef
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LocationGeocentricEcef(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+	l.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LocationGeocentricEcef) MarshalJSON() ([]byte, error) {
+	type embed LocationGeocentricEcef
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*l),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, l.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (l *LocationGeocentricEcef) String() string {
+	if l == nil {
+		return "<nil>"
+	}
+	if len(l.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(l.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
+}
+
+// Geodetic location measurement in reference to the WGS84 ellipsoid. This also optionally
+//
+//	provides other altitude reference frames.
+var (
+	locationGeodeticFieldLatitudeDegrees      = big.NewInt(1 << 0)
+	locationGeodeticFieldLongitudeDegrees     = big.NewInt(1 << 1)
+	locationGeodeticFieldUniversalAltitudeHae = big.NewInt(1 << 2)
+	locationGeodeticFieldAdditionalAltitudes  = big.NewInt(1 << 3)
+)
+
+type LocationGeodetic struct {
+	// WGS84 latitude in decimal degrees.
+	LatitudeDegrees *float64 `json:"latitudeDegrees,omitempty" url:"latitudeDegrees,omitempty"`
+	// WGS84 longitude in decimal degrees.
+	LongitudeDegrees *float64 `json:"longitudeDegrees,omitempty" url:"longitudeDegrees,omitempty"`
+	// Altitude measurement in reference to the WGS84 defined ellipsoid. This is expected to
+	//
+	//	always be set if an altitude measurement is available and should be derived from the
+	//	most accurate altitude measurement available. If this is a 2D measurement, then this
+	//	message should not be set. If you are unable to calculate this value, then this
+	//	message should also not be set.
+	UniversalAltitudeHae *AltitudeAboveWgs84Ellipsoid `json:"universalAltitudeHae,omitempty" url:"universalAltitudeHae,omitempty"`
+	// This allows for multiple additional altitudes to be conveyed.
+	//
+	//	e.g. Barometric Pressure and Radar Altimeter readings
+	//	for an aircraft
+	AdditionalAltitudes []*Altitude `json:"additionalAltitudes,omitempty" url:"additionalAltitudes,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (l *LocationGeodetic) GetLatitudeDegrees() *float64 {
+	if l == nil {
+		return nil
+	}
+	return l.LatitudeDegrees
+}
+
+func (l *LocationGeodetic) GetLongitudeDegrees() *float64 {
+	if l == nil {
+		return nil
+	}
+	return l.LongitudeDegrees
+}
+
+func (l *LocationGeodetic) GetUniversalAltitudeHae() *AltitudeAboveWgs84Ellipsoid {
+	if l == nil {
+		return nil
+	}
+	return l.UniversalAltitudeHae
+}
+
+func (l *LocationGeodetic) GetAdditionalAltitudes() []*Altitude {
+	if l == nil {
+		return nil
+	}
+	return l.AdditionalAltitudes
+}
+
+func (l *LocationGeodetic) GetExtraProperties() map[string]interface{} {
+	if l == nil {
+		return nil
+	}
+	return l.extraProperties
+}
+
+func (l *LocationGeodetic) require(field *big.Int) {
+	if l.explicitFields == nil {
+		l.explicitFields = big.NewInt(0)
+	}
+	l.explicitFields.Or(l.explicitFields, field)
+}
+
+// SetLatitudeDegrees sets the LatitudeDegrees field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LocationGeodetic) SetLatitudeDegrees(latitudeDegrees *float64) {
+	l.LatitudeDegrees = latitudeDegrees
+	l.require(locationGeodeticFieldLatitudeDegrees)
+}
+
+// SetLongitudeDegrees sets the LongitudeDegrees field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LocationGeodetic) SetLongitudeDegrees(longitudeDegrees *float64) {
+	l.LongitudeDegrees = longitudeDegrees
+	l.require(locationGeodeticFieldLongitudeDegrees)
+}
+
+// SetUniversalAltitudeHae sets the UniversalAltitudeHae field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LocationGeodetic) SetUniversalAltitudeHae(universalAltitudeHae *AltitudeAboveWgs84Ellipsoid) {
+	l.UniversalAltitudeHae = universalAltitudeHae
+	l.require(locationGeodeticFieldUniversalAltitudeHae)
+}
+
+// SetAdditionalAltitudes sets the AdditionalAltitudes field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (l *LocationGeodetic) SetAdditionalAltitudes(additionalAltitudes []*Altitude) {
+	l.AdditionalAltitudes = additionalAltitudes
+	l.require(locationGeodeticFieldAdditionalAltitudes)
+}
+
+func (l *LocationGeodetic) UnmarshalJSON(data []byte) error {
+	type unmarshaler LocationGeodetic
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = LocationGeodetic(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+	l.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *LocationGeodetic) MarshalJSON() ([]byte, error) {
+	type embed LocationGeodetic
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*l),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, l.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (l *LocationGeodetic) String() string {
 	if l == nil {
 		return "<nil>"
 	}
@@ -14901,6 +16742,171 @@ func (t *TMat2) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+// A symmetric 3D matrix only representing the upper right triangle, useful for covariance matrices.
+var (
+	tMat3FieldMxx = big.NewInt(1 << 0)
+	tMat3FieldMxy = big.NewInt(1 << 1)
+	tMat3FieldMxz = big.NewInt(1 << 2)
+	tMat3FieldMyy = big.NewInt(1 << 3)
+	tMat3FieldMyz = big.NewInt(1 << 4)
+	tMat3FieldMzz = big.NewInt(1 << 5)
+)
+
+type TMat3 struct {
+	Mxx *float64 `json:"mxx,omitempty" url:"mxx,omitempty"`
+	Mxy *float64 `json:"mxy,omitempty" url:"mxy,omitempty"`
+	Mxz *float64 `json:"mxz,omitempty" url:"mxz,omitempty"`
+	Myy *float64 `json:"myy,omitempty" url:"myy,omitempty"`
+	Myz *float64 `json:"myz,omitempty" url:"myz,omitempty"`
+	Mzz *float64 `json:"mzz,omitempty" url:"mzz,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (t *TMat3) GetMxx() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.Mxx
+}
+
+func (t *TMat3) GetMxy() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.Mxy
+}
+
+func (t *TMat3) GetMxz() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.Mxz
+}
+
+func (t *TMat3) GetMyy() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.Myy
+}
+
+func (t *TMat3) GetMyz() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.Myz
+}
+
+func (t *TMat3) GetMzz() *float64 {
+	if t == nil {
+		return nil
+	}
+	return t.Mzz
+}
+
+func (t *TMat3) GetExtraProperties() map[string]interface{} {
+	if t == nil {
+		return nil
+	}
+	return t.extraProperties
+}
+
+func (t *TMat3) require(field *big.Int) {
+	if t.explicitFields == nil {
+		t.explicitFields = big.NewInt(0)
+	}
+	t.explicitFields.Or(t.explicitFields, field)
+}
+
+// SetMxx sets the Mxx field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TMat3) SetMxx(mxx *float64) {
+	t.Mxx = mxx
+	t.require(tMat3FieldMxx)
+}
+
+// SetMxy sets the Mxy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TMat3) SetMxy(mxy *float64) {
+	t.Mxy = mxy
+	t.require(tMat3FieldMxy)
+}
+
+// SetMxz sets the Mxz field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TMat3) SetMxz(mxz *float64) {
+	t.Mxz = mxz
+	t.require(tMat3FieldMxz)
+}
+
+// SetMyy sets the Myy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TMat3) SetMyy(myy *float64) {
+	t.Myy = myy
+	t.require(tMat3FieldMyy)
+}
+
+// SetMyz sets the Myz field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TMat3) SetMyz(myz *float64) {
+	t.Myz = myz
+	t.require(tMat3FieldMyz)
+}
+
+// SetMzz sets the Mzz field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TMat3) SetMzz(mzz *float64) {
+	t.Mzz = mzz
+	t.require(tMat3FieldMzz)
+}
+
+func (t *TMat3) UnmarshalJSON(data []byte) error {
+	type unmarshaler TMat3
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TMat3(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+	t.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TMat3) MarshalJSON() ([]byte, error) {
+	type embed TMat3
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*t),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (t *TMat3) String() string {
+	if t == nil {
+		return "<nil>"
+	}
+	if len(t.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(t.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
 // The target prioritization associated with an entity.
 var (
 	targetPriorityFieldHighValueTarget = big.NewInt(1 << 0)
@@ -16321,6 +18327,122 @@ func (u *UnauthorizedErrorBody) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", u)
+}
+
+var (
+	vec3FieldX = big.NewInt(1 << 0)
+	vec3FieldY = big.NewInt(1 << 1)
+	vec3FieldZ = big.NewInt(1 << 2)
+)
+
+type Vec3 struct {
+	X *float64 `json:"x,omitempty" url:"x,omitempty"`
+	Y *float64 `json:"y,omitempty" url:"y,omitempty"`
+	Z *float64 `json:"z,omitempty" url:"z,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (v *Vec3) GetX() *float64 {
+	if v == nil {
+		return nil
+	}
+	return v.X
+}
+
+func (v *Vec3) GetY() *float64 {
+	if v == nil {
+		return nil
+	}
+	return v.Y
+}
+
+func (v *Vec3) GetZ() *float64 {
+	if v == nil {
+		return nil
+	}
+	return v.Z
+}
+
+func (v *Vec3) GetExtraProperties() map[string]interface{} {
+	if v == nil {
+		return nil
+	}
+	return v.extraProperties
+}
+
+func (v *Vec3) require(field *big.Int) {
+	if v.explicitFields == nil {
+		v.explicitFields = big.NewInt(0)
+	}
+	v.explicitFields.Or(v.explicitFields, field)
+}
+
+// SetX sets the X field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *Vec3) SetX(x *float64) {
+	v.X = x
+	v.require(vec3FieldX)
+}
+
+// SetY sets the Y field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *Vec3) SetY(y *float64) {
+	v.Y = y
+	v.require(vec3FieldY)
+}
+
+// SetZ sets the Z field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (v *Vec3) SetZ(z *float64) {
+	v.Z = z
+	v.require(vec3FieldZ)
+}
+
+func (v *Vec3) UnmarshalJSON(data []byte) error {
+	type unmarshaler Vec3
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = Vec3(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+	v.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *Vec3) MarshalJSON() ([]byte, error) {
+	type embed Vec3
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*v),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, v.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (v *Vec3) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+	if len(v.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(v.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // Visual details associated with the display of an entity in the client.

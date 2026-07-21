@@ -5,10 +5,10 @@ package oauth
 import (
 	context "context"
 
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
 )
 
 type Client struct {
@@ -35,6 +35,14 @@ func NewClient(options *core.RequestOptions) *Client {
 }
 
 // Gets a new short-lived token using the specified client credentials
+//
+// Example:
+//
+//	request := &Lattice.GetTokenRequest{}
+//	client.Oauth.GetToken(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) GetToken(
 	ctx context.Context,
 	request *Lattice.GetTokenRequest,

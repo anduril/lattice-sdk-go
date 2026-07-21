@@ -35,10 +35,9 @@ provenance.sourceUpdateTime is greater than the provenance.sourceUpdateTime of t
 ```go
 request := &Lattice.Entity{}
 client.Entities.PublishEntity(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -79,13 +78,12 @@ client.Entities.PublishEntity(
 
 ```go
 request := &Lattice.GetEntityRequest{
-        EntityID: "entityId",
-    }
-client.Entities.GetEntity(
-        context.TODO(),
-        request,
-    )
+    EntityID: "entityId",
 }
+client.Entities.GetEntity(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -146,14 +144,13 @@ concurrently for the same field path, the last writer wins.
 
 ```go
 request := &Lattice.EntityOverride{
-        EntityID: "entityId",
-        FieldPath: "mil_view.disposition",
-    }
-client.Entities.OverrideEntity(
-        context.TODO(),
-        request,
-    )
+    EntityID: "entityId",
+    FieldPath: "mil_view.disposition",
 }
+client.Entities.OverrideEntity(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -235,14 +232,13 @@ This operation clears the override value from the specified field path on the en
 
 ```go
 request := &Lattice.RemoveEntityOverrideRequest{
-        EntityID: "entityId",
-        FieldPath: "mil_view.disposition",
-    }
-client.Entities.RemoveEntityOverride(
-        context.TODO(),
-        request,
-    )
+    EntityID: "entityId",
+    FieldPath: "mil_view.disposition",
 }
+client.Entities.RemoveEntityOverride(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -313,13 +309,12 @@ In this case you must start a new session by sending a request with an empty ses
 
 ```go
 request := &Lattice.EntityEventRequest{
-        SessionToken: "sessionToken",
-    }
-client.Entities.LongPollEntityEvents(
-        context.TODO(),
-        request,
-    )
+    SessionToken: "sessionToken",
 }
+client.Entities.LongPollEntityEvents(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -401,10 +396,9 @@ this provides real-time updates with minimal latency and reduced server load.
 ```go
 request := &Lattice.EntityStreamRequest{}
 client.Entities.StreamEntities(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -497,10 +491,9 @@ through other Tasks API endpoints.
 ```go
 request := &Lattice.TaskCreation{}
 client.Tasks.CreateTask(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -631,13 +624,12 @@ perspective.
 
 ```go
 request := &Lattice.GetTaskRequest{
-        TaskID: "taskId",
-    }
-client.Tasks.GetTask(
-        context.TODO(),
-        request,
-    )
+    TaskID: "taskId",
 }
+client.Tasks.GetTask(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -702,13 +694,12 @@ reaches these states, no further updates are allowed.
 
 ```go
 request := &Lattice.TaskStatusUpdate{
-        TaskID: "taskId",
-    }
-client.Tasks.UpdateTaskStatus(
-        context.TODO(),
-        request,
-    )
+    TaskID: "taskId",
 }
+client.Tasks.UpdateTaskStatus(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -801,13 +792,12 @@ This method initiates task cancellation based on the task's current state:
 
 ```go
 request := &Lattice.TaskCancellation{
-        TaskID: "taskId",
-    }
-client.Tasks.CancelTask(
-        context.TODO(),
-        request,
-    )
+    TaskID: "taskId",
 }
+client.Tasks.CancelTask(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -882,10 +872,9 @@ By default, this returns the latest task version for each matching task.
 ```go
 request := &Lattice.TaskQuery{}
 client.Tasks.QueryTasks(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -972,10 +961,9 @@ updates for task creation and status changes. Additionally, heartbeat messages a
 ```go
 request := &Lattice.TaskStreamRequest{}
 client.Tasks.StreamTasks(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1116,10 +1104,9 @@ period you will be expected to reinitiate a new request.
 ```go
 request := &Lattice.AgentListener{}
 client.Tasks.ListenAsAgent(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1191,10 +1178,9 @@ to provide progress information back to Tasks API.
 ```go
 request := &Lattice.AgentStreamRequest{}
 client.Tasks.StreamAsAgent(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1269,13 +1255,12 @@ The stream terminates automatically when the task reaches a terminal state
 
 ```go
 request := &Lattice.ManualControlStreamRequest{
-        TaskID: "taskId",
-    }
-client.Tasks.StreamManualControlFrames(
-        context.TODO(),
-        request,
-    )
+    TaskID: "taskId",
 }
+client.Tasks.StreamManualControlFrames(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1340,10 +1325,9 @@ Lists objects in your environment. You can define a prefix to list a subset of y
 ```go
 request := &Lattice.ListObjectsRequest{}
 client.Objects.ListObjects(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1430,13 +1414,12 @@ Fetches an object from your environment using the objectPath path parameter.
 
 ```go
 request := &Lattice.GetObjectRequest{
-        ObjectPath: "objectPath",
-    }
-client.Objects.GetObject(
-        context.TODO(),
-        request,
-    )
+    ObjectPath: "objectPath",
 }
+client.Objects.GetObject(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1507,11 +1490,10 @@ Uploads an object. The object must be 1 GiB or smaller.
 
 ```go
 client.Objects.UploadObject(
-        context.TODO(),
-        "<objectPath>",
-        request,
-    )
-}
+    context.TODO(),
+    "<objectPath>",
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1566,13 +1548,12 @@ Deletes an object from your environment given the objectPath path parameter.
 
 ```go
 request := &Lattice.DeleteObjectRequest{
-        ObjectPath: "objectPath",
-    }
-client.Objects.DeleteObject(
-        context.TODO(),
-        request,
-    )
+    ObjectPath: "objectPath",
 }
+client.Objects.DeleteObject(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1627,13 +1608,12 @@ Returns metadata for a specified object path. Use this to fetch metadata such as
 
 ```go
 request := &Lattice.GetObjectMetadataRequest{
-        ObjectPath: "objectPath",
-    }
-client.Objects.GetObjectMetadata(
-        context.TODO(),
-        request,
-    )
+    ObjectPath: "objectPath",
 }
+client.Objects.GetObjectMetadata(
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
@@ -1690,10 +1670,9 @@ Gets a new short-lived token using the specified client credentials
 ```go
 request := &Lattice.GetTokenRequest{}
 client.Oauth.GetToken(
-        context.TODO(),
-        request,
-    )
-}
+    context.TODO(),
+    request,
+)
 ```
 </dd>
 </dl>
