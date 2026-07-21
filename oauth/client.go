@@ -35,6 +35,14 @@ func NewClient(options *core.RequestOptions) *Client {
 }
 
 // Gets a new short-lived token using the specified client credentials
+//
+// Example:
+//
+//	request := &Lattice.GetTokenRequest{}
+//	client.Oauth.GetToken(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) GetToken(
 	ctx context.Context,
 	request *Lattice.GetTokenRequest,
