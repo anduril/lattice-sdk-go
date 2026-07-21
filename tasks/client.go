@@ -43,6 +43,14 @@ func NewClient(options *core.RequestOptions) *Client {
 //
 // Once created, a task enters the lifecycle workflow and can be tracked, updated, and managed
 // through other Tasks API endpoints.
+//
+// Example:
+//
+//	request := &Lattice.TaskCreation{}
+//	client.Tasks.CreateTask(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) CreateTask(
 	ctx context.Context,
 	request *Lattice.TaskCreation,
@@ -67,6 +75,16 @@ func (c *Client) CreateTask(
 //
 // By default, the method returns the latest definition version of the task from the manager's
 // perspective.
+//
+// Example:
+//
+//	request := &Lattice.GetTaskRequest{
+//	    TaskID: "taskId",
+//	}
+//	client.Tasks.GetTask(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) GetTask(
 	ctx context.Context,
 	request *Lattice.GetTaskRequest,
@@ -94,6 +112,16 @@ func (c *Client) GetTask(
 //
 // Terminal states (`STATUS_DONE_OK` and `STATUS_DONE_NOT_OK`) are permanent; once a task
 // reaches these states, no further updates are allowed.
+//
+// Example:
+//
+//	request := &Lattice.TaskStatusUpdate{
+//	    TaskID: "taskId",
+//	}
+//	client.Tasks.UpdateTaskStatus(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) UpdateTaskStatus(
 	ctx context.Context,
 	request *Lattice.TaskStatusUpdate,
@@ -120,6 +148,16 @@ func (c *Client) UpdateTaskStatus(
 //   - If the task can be cancelled, the agent must use `UpdateTaskStatus` and set the task status to `STATUS_DONE_NOT_OK`.
 //   - If the task cannot be cancelled, the agent must use `UpdateTaskStatus` to attach a `TaskError` to the task with the error code `ERROR_CODE_REJECTED`
 //     and a `message` explaining why the task cannot be cancelled.
+//
+// Example:
+//
+//	request := &Lattice.TaskCancellation{
+//	    TaskID: "taskId",
+//	}
+//	client.Tasks.CancelTask(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) CancelTask(
 	ctx context.Context,
 	request *Lattice.TaskCancellation,
@@ -148,6 +186,14 @@ func (c *Client) CancelTask(
 // set of results.
 //
 // By default, this returns the latest task version for each matching task.
+//
+// Example:
+//
+//	request := &Lattice.TaskQuery{}
+//	client.Tasks.QueryTasks(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) QueryTasks(
 	ctx context.Context,
 	request *Lattice.TaskQuery,
@@ -168,6 +214,14 @@ func (c *Client) QueryTasks(
 //
 // The stream delivers all existing non-terminal tasks when first connected, followed by real-time
 // updates for task creation and status changes. Additionally, heartbeat messages are sent periodically to maintain the connection.
+//
+// Example:
+//
+//	request := &Lattice.TaskStreamRequest{}
+//	client.Tasks.StreamTasks(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) StreamTasks(
 	ctx context.Context,
 	request *Lattice.TaskStreamRequest,
@@ -228,6 +282,14 @@ func (c *Client) StreamTasks(
 // This is a long polling API that will block until a new task is ready for delivery. If no new task is
 // available then the server will hold on to your request for up to 5 minutes, after that 5 minute timeout
 // period you will be expected to reinitiate a new request.
+//
+// Example:
+//
+//	request := &Lattice.AgentListener{}
+//	client.Tasks.ListenAsAgent(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) ListenAsAgent(
 	ctx context.Context,
 	request *Lattice.AgentListener,
@@ -261,6 +323,14 @@ func (c *Client) ListenAsAgent(
 //
 // When an agent receives a task, it should update the task status using the `UpdateStatus` endpoint
 // to provide progress information back to Tasks API.
+//
+// Example:
+//
+//	request := &Lattice.AgentStreamRequest{}
+//	client.Tasks.StreamAsAgent(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) StreamAsAgent(
 	ctx context.Context,
 	request *Lattice.AgentStreamRequest,
@@ -314,6 +384,16 @@ func (c *Client) StreamAsAgent(
 //
 // The stream terminates automatically when the task reaches a terminal state
 // (`STATUS_DONE_OK` or `STATUS_DONE_NOT_OK`).
+//
+// Example:
+//
+//	request := &Lattice.ManualControlStreamRequest{
+//	    TaskID: "taskId",
+//	}
+//	client.Tasks.StreamManualControlFrames(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) StreamManualControlFrames(
 	ctx context.Context,
 	request *Lattice.ManualControlStreamRequest,

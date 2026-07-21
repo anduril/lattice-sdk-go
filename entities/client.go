@@ -42,6 +42,14 @@ func NewClient(options *core.RequestOptions) *Client {
 // An entity ID must be provided when calling this endpoint. If the entity referenced by the entity ID does not exist
 // then it will be created. Otherwise the entity will be updated. An entity will only be updated if its
 // provenance.sourceUpdateTime is greater than the provenance.sourceUpdateTime of the existing entity.
+//
+// Example:
+//
+//	request := &Lattice.Entity{}
+//	client.Entities.PublishEntity(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) PublishEntity(
 	ctx context.Context,
 	request *Lattice.Entity,
@@ -58,6 +66,15 @@ func (c *Client) PublishEntity(
 	return response.Body, nil
 }
 
+// Example:
+//
+//	request := &Lattice.GetEntityRequest{
+//	    EntityID: "entityId",
+//	}
+//	client.Entities.GetEntity(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) GetEntity(
 	ctx context.Context,
 	request *Lattice.GetEntityRequest,
@@ -81,6 +98,17 @@ func (c *Client) GetEntity(
 //
 // Note that overrides are applied in an eventually consistent manner. If multiple overrides are created
 // concurrently for the same field path, the last writer wins.
+//
+// Example:
+//
+//	request := &Lattice.EntityOverride{
+//	    EntityID: "entityId",
+//	    FieldPath: "mil_view.disposition",
+//	}
+//	client.Entities.OverrideEntity(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) OverrideEntity(
 	ctx context.Context,
 	request *Lattice.EntityOverride,
@@ -98,6 +126,17 @@ func (c *Client) OverrideEntity(
 }
 
 // This operation clears the override value from the specified field path on the entity.
+//
+// Example:
+//
+//	request := &Lattice.RemoveEntityOverrideRequest{
+//	    EntityID: "entityId",
+//	    FieldPath: "mil_view.disposition",
+//	}
+//	client.Entities.RemoveEntityOverride(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) RemoveEntityOverride(
 	ctx context.Context,
 	request *Lattice.RemoveEntityOverrideRequest,
@@ -123,6 +162,16 @@ func (c *Client) RemoveEntityOverride(
 // connection with no results and you may resume polling with the same session token. If your session falls behind
 // more than 3x the total number of entities in the environment, the server will terminate your session.
 // In this case you must start a new session by sending a request with an empty session token.
+//
+// Example:
+//
+//	request := &Lattice.EntityEventRequest{
+//	    SessionToken: "sessionToken",
+//	}
+//	client.Entities.LongPollEntityEvents(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) LongPollEntityEvents(
 	ctx context.Context,
 	request *Lattice.EntityEventRequest,
@@ -158,6 +207,14 @@ func (c *Client) LongPollEntityEvents(
 //
 // The connection automatically recovers from temporary disconnections, resuming the stream where it left off. Unlike polling approaches,
 // this provides real-time updates with minimal latency and reduced server load.
+//
+// Example:
+//
+//	request := &Lattice.EntityStreamRequest{}
+//	client.Entities.StreamEntities(
+//	    context.TODO(),
+//	    request,
+//	)
 func (c *Client) StreamEntities(
 	ctx context.Context,
 	request *Lattice.EntityStreamRequest,
