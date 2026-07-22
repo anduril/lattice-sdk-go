@@ -30,15 +30,18 @@ type Client struct {
 
 func NewClient(opts ...option.RequestOption) *Client {
 	options := core.NewRequestOptions(opts...)
-	if options.BaseURL == "" && (options.Server != "") {
+	if options.Server != "" {
 		server := options.Server
 		if server == "" {
 			server = "example.developer.anduril.com"
 		}
-		options.BaseURL = fmt.Sprintf(
-			"https://%s",
-			server,
-		)
+		switch options.BaseURL {
+		case "", Lattice.Environments.Default:
+			options.BaseURL = fmt.Sprintf(
+				"https://%s",
+				server,
+			)
+		}
 	}
 	oauthTokenProvider := core.NewTokenProvider(
 		0,
