@@ -159,6 +159,22 @@ func TestSettersTaskCreation(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetRetryStrategy", func(t *testing.T) {
+		obj := &TaskCreation{}
+		var fernTestValueRetryStrategy *RetryStrategy
+		obj.SetRetryStrategy(fernTestValueRetryStrategy)
+		assert.Equal(t, fernTestValueRetryStrategy, obj.RetryStrategy)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+	t.Run("SetDeliveryConstraints", func(t *testing.T) {
+		obj := &TaskCreation{}
+		var fernTestValueDeliveryConstraints *DeliveryConstraints
+		obj.SetDeliveryConstraints(fernTestValueDeliveryConstraints)
+		assert.Equal(t, fernTestValueDeliveryConstraints, obj.DeliveryConstraints)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 }
 
 func TestSettersMarkExplicitTaskCreation(t *testing.T) {
@@ -387,6 +403,68 @@ func TestSettersMarkExplicitTaskCreation(t *testing.T) {
 
 		// Act
 		obj.SetInitialEntities(fernTestValueInitialEntities)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetRetryStrategy_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskCreation{}
+		var fernTestValueRetryStrategy *RetryStrategy
+
+		// Act
+		obj.SetRetryStrategy(fernTestValueRetryStrategy)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetDeliveryConstraints_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &TaskCreation{}
+		var fernTestValueDeliveryConstraints *DeliveryConstraints
+
+		// Act
+		obj.SetDeliveryConstraints(fernTestValueDeliveryConstraints)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
