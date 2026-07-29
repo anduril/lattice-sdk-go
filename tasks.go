@@ -76,6 +76,8 @@ var (
 	taskCreationFieldRelations           = big.NewInt(1 << 5)
 	taskCreationFieldIsExecutedElsewhere = big.NewInt(1 << 6)
 	taskCreationFieldInitialEntities     = big.NewInt(1 << 7)
+	taskCreationFieldRetryStrategy       = big.NewInt(1 << 8)
+	taskCreationFieldDeliveryConstraints = big.NewInt(1 << 9)
 )
 
 type TaskCreation struct {
@@ -99,6 +101,10 @@ type TaskCreation struct {
 	// Indicates an initial set of entities that can be used to execute an entity aware
 	// task. For example, an entity Objective, an entity Keep In Zone, etc.
 	InitialEntities []*TaskEntity `json:"initialEntities,omitempty" url:"-"`
+	// Any retry strategy for task execution or update.
+	RetryStrategy *RetryStrategy `json:"retryStrategy,omitempty" url:"-"`
+	// Any scheduling constraints for Lattice delivery of the task.
+	DeliveryConstraints *DeliveryConstraints `json:"deliveryConstraints,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -165,6 +171,20 @@ func (t *TaskCreation) SetIsExecutedElsewhere(isExecutedElsewhere *bool) {
 func (t *TaskCreation) SetInitialEntities(initialEntities []*TaskEntity) {
 	t.InitialEntities = initialEntities
 	t.require(taskCreationFieldInitialEntities)
+}
+
+// SetRetryStrategy sets the RetryStrategy field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetRetryStrategy(retryStrategy *RetryStrategy) {
+	t.RetryStrategy = retryStrategy
+	t.require(taskCreationFieldRetryStrategy)
+}
+
+// SetDeliveryConstraints sets the DeliveryConstraints field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetDeliveryConstraints(deliveryConstraints *DeliveryConstraints) {
+	t.DeliveryConstraints = deliveryConstraints
+	t.require(taskCreationFieldDeliveryConstraints)
 }
 
 func (t *TaskCreation) UnmarshalJSON(data []byte) error {

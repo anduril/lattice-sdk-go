@@ -581,6 +581,22 @@ task. For example, an entity Objective, an entity Keep In Zone, etc.
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**retryStrategy:** `*Lattice.RetryStrategy` — Any retry strategy for task execution or update.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**deliveryConstraints:** `*Lattice.DeliveryConstraints` — Any scheduling constraints for Lattice delivery of the task.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
