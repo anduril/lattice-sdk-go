@@ -5,7 +5,12 @@
       "name": "Publish entity - default",
       "request": {
         "urlPathTemplate": "/api/v1/entities",
-        "method": "PUT"
+        "method": "PUT",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -32,6 +37,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/entities/{entityId}",
         "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "entityId": {
             "equalTo": "entityId"
@@ -63,6 +73,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/entities/{entityId}/override/{fieldPath}",
         "method": "PUT",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "entityId": {
             "equalTo": "entityId"
@@ -97,6 +112,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/entities/{entityId}/override/{fieldPath}",
         "method": "DELETE",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "entityId": {
             "equalTo": "entityId"
@@ -130,7 +150,12 @@
       "name": "Poll entity events - default",
       "request": {
         "urlPathTemplate": "/api/v1/entities/events",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -156,7 +181,12 @@
       "name": "Stream entity events - default",
       "request": {
         "urlPathTemplate": "/api/v1/entities/stream",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -182,7 +212,12 @@
       "name": "Create task - default",
       "request": {
         "urlPathTemplate": "/api/v1/tasks",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 201,
@@ -209,6 +244,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/tasks/{taskId}",
         "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "taskId": {
             "equalTo": "taskId"
@@ -240,6 +280,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/tasks/{taskId}/status",
         "method": "PUT",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "taskId": {
             "equalTo": "taskId"
@@ -271,6 +316,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/tasks/{taskId}/cancel",
         "method": "PUT",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "taskId": {
             "equalTo": "taskId"
@@ -301,7 +351,12 @@
       "name": "Query tasks - default",
       "request": {
         "urlPathTemplate": "/api/v1/tasks/query",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -327,7 +382,12 @@
       "name": "Stream tasks - default",
       "request": {
         "urlPathTemplate": "/api/v1/tasks/stream",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -353,7 +413,12 @@
       "name": "Listen as agent - default",
       "request": {
         "urlPathTemplate": "/api/v1/agent/listen",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -379,7 +444,12 @@
       "name": "Stream as agent - default",
       "request": {
         "urlPathTemplate": "/api/v1/agent/stream",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -406,6 +476,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/tasks/{taskId}/manual-control/stream",
         "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "taskId": {
             "equalTo": "taskId"
@@ -436,7 +511,12 @@
       "name": "List objects - default",
       "request": {
         "urlPathTemplate": "/api/v1/objects",
-        "method": "GET"
+        "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
@@ -464,6 +544,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/objects/{objectPath}",
         "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "objectPath": {
             "equalTo": "objectPath"
@@ -495,6 +580,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/objects/{objectPath}",
         "method": "DELETE",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "objectPath": {
             "equalTo": "objectPath"
@@ -526,6 +616,11 @@
       "request": {
         "urlPathTemplate": "/api/v1/objects/{objectPath}",
         "method": "HEAD",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
         "pathParameters": {
           "objectPath": {
             "equalTo": "objectPath"
@@ -556,7 +651,12 @@
       "name": "Get OAuth2 token - default",
       "request": {
         "urlPathTemplate": "/api/v1/oauth/token",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,
