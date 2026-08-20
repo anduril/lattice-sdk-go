@@ -86,6 +86,7 @@ func TestEntitiesPublishEntityWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.Entity{}
 	_, invocationErr := client.Entities.PublishEntity(
@@ -109,6 +110,7 @@ func TestEntitiesGetEntityWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.GetEntityRequest{
 		EntityID: "entityId",
@@ -134,6 +136,7 @@ func TestEntitiesOverrideEntityWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.EntityOverride{
 		EntityID:  "entityId",
@@ -160,6 +163,7 @@ func TestEntitiesRemoveEntityOverrideWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.RemoveEntityOverrideRequest{
 		EntityID:  "entityId",
@@ -186,6 +190,7 @@ func TestEntitiesLongPollEntityEventsWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.EntityEventRequest{
 		SessionToken: "sessionToken",
@@ -211,6 +216,7 @@ func TestEntitiesStreamEntitiesWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.EntityStreamRequest{}
 	_, invocationErr := client.Entities.StreamEntities(

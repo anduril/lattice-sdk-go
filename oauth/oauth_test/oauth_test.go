@@ -86,6 +86,7 @@ func TestOauthGetTokenWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.GetTokenRequest{}
 	_, invocationErr := client.Oauth.GetToken(
