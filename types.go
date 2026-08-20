@@ -16099,16 +16099,17 @@ func (s *Sensors) String() string {
 
 // A component that describes an entity's signal characteristics.
 var (
-	signalFieldFrequencyCenter         = big.NewInt(1 << 0)
-	signalFieldFrequencyRange          = big.NewInt(1 << 1)
-	signalFieldBandwidthHz             = big.NewInt(1 << 2)
-	signalFieldSignalToNoiseRatio      = big.NewInt(1 << 3)
-	signalFieldLineOfBearing           = big.NewInt(1 << 4)
-	signalFieldFixed                   = big.NewInt(1 << 5)
-	signalFieldEmitterNotations        = big.NewInt(1 << 6)
-	signalFieldPulseWidthS             = big.NewInt(1 << 7)
-	signalFieldPulseRepetitionInterval = big.NewInt(1 << 8)
-	signalFieldScanCharacteristics     = big.NewInt(1 << 9)
+	signalFieldFrequencyCenter           = big.NewInt(1 << 0)
+	signalFieldFrequencyRange            = big.NewInt(1 << 1)
+	signalFieldBandwidthHz               = big.NewInt(1 << 2)
+	signalFieldSignalToNoiseRatio        = big.NewInt(1 << 3)
+	signalFieldLineOfBearing             = big.NewInt(1 << 4)
+	signalFieldFixed                     = big.NewInt(1 << 5)
+	signalFieldEmitterNotations          = big.NewInt(1 << 6)
+	signalFieldPulseWidthS               = big.NewInt(1 << 7)
+	signalFieldPulseRepetitionInterval   = big.NewInt(1 << 8)
+	signalFieldScanCharacteristics       = big.NewInt(1 << 9)
+	signalFieldReceivedSignalStrengthDbm = big.NewInt(1 << 10)
 )
 
 type Signal struct {
@@ -16128,6 +16129,8 @@ type Signal struct {
 	PulseRepetitionInterval *PulseRepetitionInterval `json:"pulseRepetitionInterval,omitempty" url:"pulseRepetitionInterval,omitempty"`
 	// describes how a signal is observing the environment
 	ScanCharacteristics *ScanCharacteristics `json:"scanCharacteristics,omitempty" url:"scanCharacteristics,omitempty"`
+	// Indicates the received signal strength (RSSI) of this signal in decibels relative to one milliwatt (dBm).
+	ReceivedSignalStrengthDbm *Measurement `json:"receivedSignalStrengthDbm,omitempty" url:"receivedSignalStrengthDbm,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -16204,6 +16207,13 @@ func (s *Signal) GetScanCharacteristics() *ScanCharacteristics {
 		return nil
 	}
 	return s.ScanCharacteristics
+}
+
+func (s *Signal) GetReceivedSignalStrengthDbm() *Measurement {
+	if s == nil {
+		return nil
+	}
+	return s.ReceivedSignalStrengthDbm
 }
 
 func (s *Signal) GetExtraProperties() map[string]interface{} {
@@ -16288,6 +16298,13 @@ func (s *Signal) SetPulseRepetitionInterval(pulseRepetitionInterval *PulseRepeti
 func (s *Signal) SetScanCharacteristics(scanCharacteristics *ScanCharacteristics) {
 	s.ScanCharacteristics = scanCharacteristics
 	s.require(signalFieldScanCharacteristics)
+}
+
+// SetReceivedSignalStrengthDbm sets the ReceivedSignalStrengthDbm field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *Signal) SetReceivedSignalStrengthDbm(receivedSignalStrengthDbm *Measurement) {
+	s.ReceivedSignalStrengthDbm = receivedSignalStrengthDbm
+	s.require(signalFieldReceivedSignalStrengthDbm)
 }
 
 func (s *Signal) UnmarshalJSON(data []byte) error {
