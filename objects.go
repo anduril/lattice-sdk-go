@@ -119,11 +119,13 @@ var (
 type ListObjectsRequest struct {
 	// Filters the objects based on the specified prefix path. If no path is specified, all objects are returned.
 	Prefix *string `json:"-" url:"prefix,omitempty"`
-	// Sets the age for the oldest objects to query across the environment.
+	// Filters out objects whose `last_updated_at` is earlier than this timestamp.
+	//
+	// `last_updated_at` records when an object arrived on the node that holds it, so this filter selects objects that arrived since the given time. It is not the time the object was authored: a copy that reaches a node later carries the later arrival time.
 	SinceTimestamp *time.Time `json:"-" url:"sinceTimestamp,omitempty"`
-	// Base64 and URL-encoded cursor returned by the service to continue paging.
+	// Opaque cursor for continuing the same list request. Start a new listing without the previous cursor if any query parameter or listing scope changes.
 	PageToken *string `json:"-" url:"pageToken,omitempty"`
-	// Lists objects across all environment nodes in a Lattice Mesh.
+	// Lists objects across all environment nodes in a Lattice Mesh. When false or unset, only objects held by the local node are returned.
 	AllObjectsInMesh *bool `json:"-" url:"allObjectsInMesh,omitempty"`
 	// Sets the maximum number of items that should be returned on a single page.
 	MaxPageSize *int `json:"-" url:"maxPageSize,omitempty"`
@@ -390,8 +392,11 @@ var (
 type PathMetadata struct {
 	ContentIdentifier *ContentIdentifier `json:"content_identifier" url:"content_identifier"`
 	SizeBytes         int64              `json:"size_bytes" url:"size_bytes"`
-	LastUpdatedAt     time.Time          `json:"last_updated_at" url:"last_updated_at"`
-	ExpiryTime        *time.Time         `json:"expiry_time,omitempty" url:"expiry_time,omitempty"`
+	// When this object arrived on the node that holds it, according to that node's clock. Because an object is never modified in place, this is effectively the time the object was created on that node.
+	//
+	// The value is local to the node holding the object and may differ when the same object is held on multiple nodes. It is not propagated from the node where the object originated.
+	LastUpdatedAt time.Time  `json:"last_updated_at" url:"last_updated_at"`
+	ExpiryTime    *time.Time `json:"expiry_time,omitempty" url:"expiry_time,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
