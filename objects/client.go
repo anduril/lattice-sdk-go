@@ -187,7 +187,7 @@ func (c *Client) DeleteObject(
 	return nil
 }
 
-// Returns metadata for a specified object path. Use this to fetch metadata such as object size (size_bytes), its expiry time (expiry_time), or its latest update timestamp (last_updated_at).
+// Returns metadata for a specified object path. Use this to fetch metadata such as object size (size_bytes), its expiry time (expiry_time), or when it arrived on the node holding it (last_updated_at).
 //
 // Example:
 //
