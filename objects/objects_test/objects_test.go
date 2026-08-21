@@ -86,7 +86,6 @@ func TestObjectsListObjectsWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.ListObjectsRequest{}
 	_, invocationErr := client.Objects.ListObjects(
@@ -110,7 +109,6 @@ func TestObjectsDeleteObjectWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.DeleteObjectRequest{
 		ObjectPath: "objectPath",
@@ -136,7 +134,6 @@ func TestObjectsGetObjectMetadataWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.GetObjectMetadataRequest{
 		ObjectPath: "objectPath",

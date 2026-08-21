@@ -86,7 +86,6 @@ func TestTasksCreateTaskWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.TaskCreation{}
 	_, invocationErr := client.Tasks.CreateTask(
@@ -110,7 +109,6 @@ func TestTasksGetTaskWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.GetTaskRequest{
 		TaskID: "taskId",
@@ -136,7 +134,6 @@ func TestTasksUpdateTaskStatusWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.TaskStatusUpdate{
 		TaskID: "taskId",
@@ -162,7 +159,6 @@ func TestTasksCancelTaskWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.TaskCancellation{
 		TaskID: "taskId",
@@ -188,7 +184,6 @@ func TestTasksQueryTasksWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.TaskQuery{}
 	_, invocationErr := client.Tasks.QueryTasks(
@@ -212,7 +207,6 @@ func TestTasksStreamTasksWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.TaskStreamRequest{}
 	_, invocationErr := client.Tasks.StreamTasks(
@@ -236,7 +230,6 @@ func TestTasksListenAsAgentWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.AgentListener{}
 	_, invocationErr := client.Tasks.ListenAsAgent(
@@ -260,7 +253,6 @@ func TestTasksStreamAsAgentWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.AgentStreamRequest{}
 	_, invocationErr := client.Tasks.StreamAsAgent(
@@ -284,7 +276,6 @@ func TestTasksStreamManualControlFramesWithWireMock(
 	}
 	client := client.NewClient(
 		option.WithBaseURL(WireMockBaseURL),
-		option.WithClientCredentials("test_client_id", "test_client_secret"),
 	)
 	request := &Lattice.ManualControlStreamRequest{
 		TaskID: "taskId",

@@ -651,7 +651,12 @@
       "name": "Get OAuth2 token - default",
       "request": {
         "urlPathTemplate": "/api/v1/oauth/token",
-        "method": "POST"
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
       },
       "response": {
         "status": 200,

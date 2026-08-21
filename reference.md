@@ -1366,11 +1366,7 @@ client.Objects.ListObjects(
 <dl>
 <dd>
 
-**sinceTimestamp:** `*time.Time` 
-
-Filters out objects whose `last_updated_at` is earlier than this timestamp.
-
-`last_updated_at` records when an object arrived on the node that holds it, so this filter selects objects that arrived since the given time. It is not the time the object was authored: a copy that reaches a node later carries the later arrival time.
+**sinceTimestamp:** `*time.Time` — Sets the age for the oldest objects to query across the environment.
     
 </dd>
 </dl>
@@ -1378,7 +1374,7 @@ Filters out objects whose `last_updated_at` is earlier than this timestamp.
 <dl>
 <dd>
 
-**pageToken:** `*string` — Opaque cursor for continuing the same list request. Start a new listing without the previous cursor if any query parameter or listing scope changes.
+**pageToken:** `*string` — Base64 and URL-encoded cursor returned by the service to continue paging.
     
 </dd>
 </dl>
@@ -1386,7 +1382,7 @@ Filters out objects whose `last_updated_at` is earlier than this timestamp.
 <dl>
 <dd>
 
-**allObjectsInMesh:** `*bool` — Lists objects across all environment nodes in a Lattice Mesh. When false or unset, only objects held by the local node are returned.
+**allObjectsInMesh:** `*bool` — Lists objects across all environment nodes in a Lattice Mesh.
     
 </dd>
 </dl>
@@ -1612,7 +1608,7 @@ client.Objects.DeleteObject(
 <dl>
 <dd>
 
-Returns metadata for a specified object path. Use this to fetch metadata such as object size (size_bytes), its expiry time (expiry_time), or when it arrived on the node holding it (last_updated_at).
+Returns metadata for a specified object path. Use this to fetch metadata such as object size (size_bytes), its expiry time (expiry_time), or its latest update timestamp (last_updated_at).
 </dd>
 </dl>
 </dd>
