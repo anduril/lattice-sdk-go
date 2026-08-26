@@ -138,7 +138,7 @@ func (c *Client) GetObject(
 //
 //	client.Objects.UploadObject(
 //	    context.TODO(),
-//	    "<objectPath>",
+//	    "objectPath",
 //	    request,
 //	)
 func (c *Client) UploadObject(

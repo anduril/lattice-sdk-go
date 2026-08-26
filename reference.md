@@ -1511,7 +1511,7 @@ Uploads an object. The object must be 1 GiB or smaller.
 ```go
 client.Objects.UploadObject(
     context.TODO(),
-    "<objectPath>",
+    "objectPath",
     request,
 )
 ```
