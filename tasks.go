@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -1253,8 +1253,9 @@ func (c *CompleteRequest) String() string {
 
 // DeliveryConstraints defines when Lattice should deliver the task to the agent.
 var (
-	deliveryConstraintsFieldDeliverAfter  = big.NewInt(1 << 0)
-	deliveryConstraintsFieldDeliverBefore = big.NewInt(1 << 1)
+	deliveryConstraintsFieldDeliverAfter           = big.NewInt(1 << 0)
+	deliveryConstraintsFieldDeliverBefore          = big.NewInt(1 << 1)
+	deliveryConstraintsFieldRequireAcknowledgement = big.NewInt(1 << 2)
 )
 
 type DeliveryConstraints struct {
@@ -1266,6 +1267,15 @@ type DeliveryConstraints struct {
 	//	out with DELIVERY_ERROR_CODE_TIMEOUT.
 	//	This field is only required for tasks with retry strategies.
 	DeliverBefore *time.Time `json:"deliverBefore,omitempty" url:"deliverBefore,omitempty"`
+	// Requires the agent to acknowledge the request before Lattice considers it delivered.
+	//
+	//	Without this, a request sent over a streaming agent connection is marked delivered as soon
+	//	as the send returns, which only proves it reached a local buffer and not that the agent
+	//	received it. With this set, the task is not marked delivered until the agent reports a
+	//	status confirming receipt; Lattice re-sends until it does, and eventually fails delivery
+	//	with DELIVERY_ERROR_CODE_NOT_ACKNOWLEDGED. Requires deliver_before, which bounds that
+	//	retrying.
+	RequireAcknowledgement *bool `json:"requireAcknowledgement,omitempty" url:"requireAcknowledgement,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -1286,6 +1296,13 @@ func (d *DeliveryConstraints) GetDeliverBefore() *time.Time {
 		return nil
 	}
 	return d.DeliverBefore
+}
+
+func (d *DeliveryConstraints) GetRequireAcknowledgement() *bool {
+	if d == nil {
+		return nil
+	}
+	return d.RequireAcknowledgement
 }
 
 func (d *DeliveryConstraints) GetExtraProperties() map[string]interface{} {
@@ -1314,6 +1331,13 @@ func (d *DeliveryConstraints) SetDeliverAfter(deliverAfter *time.Time) {
 func (d *DeliveryConstraints) SetDeliverBefore(deliverBefore *time.Time) {
 	d.DeliverBefore = deliverBefore
 	d.require(deliveryConstraintsFieldDeliverBefore)
+}
+
+// SetRequireAcknowledgement sets the RequireAcknowledgement field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (d *DeliveryConstraints) SetRequireAcknowledgement(requireAcknowledgement *bool) {
+	d.RequireAcknowledgement = requireAcknowledgement
+	d.require(deliveryConstraintsFieldRequireAcknowledgement)
 }
 
 func (d *DeliveryConstraints) UnmarshalJSON(data []byte) error {
@@ -1477,10 +1501,11 @@ func (d *DeliveryError) String() string {
 type DeliveryErrorCode string
 
 const (
-	DeliveryErrorCodeDeliveryErrorCodeInvalid     DeliveryErrorCode = "DELIVERY_ERROR_CODE_INVALID"
-	DeliveryErrorCodeDeliveryErrorCodeUnavailable DeliveryErrorCode = "DELIVERY_ERROR_CODE_UNAVAILABLE"
-	DeliveryErrorCodeDeliveryErrorCodeTimeout     DeliveryErrorCode = "DELIVERY_ERROR_CODE_TIMEOUT"
-	DeliveryErrorCodeDeliveryErrorCodeRejected    DeliveryErrorCode = "DELIVERY_ERROR_CODE_REJECTED"
+	DeliveryErrorCodeDeliveryErrorCodeInvalid         DeliveryErrorCode = "DELIVERY_ERROR_CODE_INVALID"
+	DeliveryErrorCodeDeliveryErrorCodeUnavailable     DeliveryErrorCode = "DELIVERY_ERROR_CODE_UNAVAILABLE"
+	DeliveryErrorCodeDeliveryErrorCodeTimeout         DeliveryErrorCode = "DELIVERY_ERROR_CODE_TIMEOUT"
+	DeliveryErrorCodeDeliveryErrorCodeRejected        DeliveryErrorCode = "DELIVERY_ERROR_CODE_REJECTED"
+	DeliveryErrorCodeDeliveryErrorCodeNotAcknowledged DeliveryErrorCode = "DELIVERY_ERROR_CODE_NOT_ACKNOWLEDGED"
 )
 
 func NewDeliveryErrorCodeFromString(s string) (DeliveryErrorCode, error) {
@@ -1493,6 +1518,8 @@ func NewDeliveryErrorCodeFromString(s string) (DeliveryErrorCode, error) {
 		return DeliveryErrorCodeDeliveryErrorCodeTimeout, nil
 	case "DELIVERY_ERROR_CODE_REJECTED":
 		return DeliveryErrorCodeDeliveryErrorCodeRejected, nil
+	case "DELIVERY_ERROR_CODE_NOT_ACKNOWLEDGED":
+		return DeliveryErrorCodeDeliveryErrorCodeNotAcknowledged, nil
 	}
 	var t DeliveryErrorCode
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

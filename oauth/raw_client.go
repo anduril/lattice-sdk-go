@@ -6,10 +6,10 @@ import (
 	context "context"
 	http "net/http"
 
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
 )
 
 type RawClient struct {

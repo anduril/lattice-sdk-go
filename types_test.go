@@ -13527,6 +13527,14 @@ func TestSettersGroupDetails(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetPlatformSubcomponents", func(t *testing.T) {
+		obj := &GroupDetails{}
+		var fernTestValuePlatformSubcomponents *PlatformSubcomponents
+		obj.SetPlatformSubcomponents(fernTestValuePlatformSubcomponents)
+		assert.Equal(t, fernTestValuePlatformSubcomponents, obj.PlatformSubcomponents)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 	t.Run("SetEchelon", func(t *testing.T) {
 		obj := &GroupDetails{}
 		var fernTestValueEchelon *Echelon
@@ -13569,6 +13577,39 @@ func TestGettersGroupDetails(t *testing.T) {
 			}
 		}()
 		_ = obj.GetTeam() // Should return zero value
+	})
+
+	t.Run("GetPlatformSubcomponents", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GroupDetails{}
+		var expected *PlatformSubcomponents
+		obj.PlatformSubcomponents = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetPlatformSubcomponents(), "getter should return the property value")
+	})
+
+	t.Run("GetPlatformSubcomponents_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GroupDetails{}
+		obj.PlatformSubcomponents = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetPlatformSubcomponents(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetPlatformSubcomponents_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *GroupDetails
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetPlatformSubcomponents() // Should return zero value
 	})
 
 	t.Run("GetEchelon", func(t *testing.T) {
@@ -13615,6 +13656,37 @@ func TestSettersMarkExplicitGroupDetails(t *testing.T) {
 
 		// Act
 		obj.SetTeam(fernTestValueTeam)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetPlatformSubcomponents_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &GroupDetails{}
+		var fernTestValuePlatformSubcomponents *PlatformSubcomponents
+
+		// Act
+		obj.SetPlatformSubcomponents(fernTestValuePlatformSubcomponents)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
@@ -35213,6 +35285,39 @@ func TestJSONMarshalingPayloads(t *testing.T) {
 	})
 }
 
+func TestJSONMarshalingPlatformSubcomponents(t *testing.T) {
+	t.Run("MarshalUnmarshal", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &PlatformSubcomponents{}
+
+		// Act - Marshal to JSON
+		data, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed")
+		assert.NotNil(t, data, "marshaled data should not be nil")
+		assert.NotEmpty(t, data, "marshaled data should not be empty")
+
+		// Unmarshal back and verify round-trip
+		var unmarshaled PlatformSubcomponents
+		err = json.Unmarshal(data, &unmarshaled)
+		assert.NoError(t, err, "round-trip unmarshal should succeed")
+	})
+
+	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
+		t.Parallel()
+		var obj PlatformSubcomponents
+		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
+		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
+	})
+
+	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
+		t.Parallel()
+		var obj PlatformSubcomponents
+		err := json.Unmarshal([]byte(`{}`), &obj)
+		assert.NoError(t, err, "unmarshaling empty object should succeed")
+	})
+}
+
 func TestJSONMarshalingPose(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
@@ -38098,6 +38203,22 @@ func TestStringPayloads(t *testing.T) {
 	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *Payloads
+		result := obj.String()
+		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
+	})
+}
+
+func TestStringPlatformSubcomponents(t *testing.T) {
+	t.Run("StringMethod", func(t *testing.T) {
+		t.Parallel()
+		obj := &PlatformSubcomponents{}
+		result := obj.String()
+		assert.NotEmpty(t, result, "String() should return a non-empty representation")
+	})
+
+	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *PlatformSubcomponents
 		result := obj.String()
 		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
 	})
@@ -43718,6 +43839,29 @@ func TestExtraPropertiesPayloads(t *testing.T) {
 	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *Payloads
+		extraProps := obj.GetExtraProperties()
+		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
+	})
+}
+
+func TestExtraPropertiesPlatformSubcomponents(t *testing.T) {
+	t.Run("GetExtraProperties", func(t *testing.T) {
+		t.Parallel()
+		obj := &PlatformSubcomponents{}
+		// Should not panic when calling GetExtraProperties()
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("GetExtraProperties() panicked: %v", r)
+			}
+		}()
+		extraProps := obj.GetExtraProperties()
+		// Result can be nil or an empty/non-empty map
+		_ = extraProps
+	})
+
+	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *PlatformSubcomponents
 		extraProps := obj.GetExtraProperties()
 		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
 	})

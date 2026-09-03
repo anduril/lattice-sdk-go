@@ -5,7 +5,7 @@ package Lattice
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -7668,13 +7668,15 @@ func (g *GroupChild) String() string {
 
 // Details related to grouping for this entity
 var (
-	groupDetailsFieldTeam    = big.NewInt(1 << 0)
-	groupDetailsFieldEchelon = big.NewInt(1 << 1)
+	groupDetailsFieldTeam                  = big.NewInt(1 << 0)
+	groupDetailsFieldPlatformSubcomponents = big.NewInt(1 << 1)
+	groupDetailsFieldEchelon               = big.NewInt(1 << 2)
 )
 
 type GroupDetails struct {
-	Team    *Team    `json:"team,omitempty" url:"team,omitempty"`
-	Echelon *Echelon `json:"echelon,omitempty" url:"echelon,omitempty"`
+	Team                  *Team                  `json:"team,omitempty" url:"team,omitempty"`
+	PlatformSubcomponents *PlatformSubcomponents `json:"platformSubcomponents,omitempty" url:"platformSubcomponents,omitempty"`
+	Echelon               *Echelon               `json:"echelon,omitempty" url:"echelon,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -7688,6 +7690,13 @@ func (g *GroupDetails) GetTeam() *Team {
 		return nil
 	}
 	return g.Team
+}
+
+func (g *GroupDetails) GetPlatformSubcomponents() *PlatformSubcomponents {
+	if g == nil {
+		return nil
+	}
+	return g.PlatformSubcomponents
 }
 
 func (g *GroupDetails) GetEchelon() *Echelon {
@@ -7716,6 +7725,13 @@ func (g *GroupDetails) require(field *big.Int) {
 func (g *GroupDetails) SetTeam(team *Team) {
 	g.Team = team
 	g.require(groupDetailsFieldTeam)
+}
+
+// SetPlatformSubcomponents sets the PlatformSubcomponents field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GroupDetails) SetPlatformSubcomponents(platformSubcomponents *PlatformSubcomponents) {
+	g.PlatformSubcomponents = platformSubcomponents
+	g.require(groupDetailsFieldPlatformSubcomponents)
 }
 
 // SetEchelon sets the Echelon field and marks it as non-optional;
@@ -13038,6 +13054,76 @@ func (p *Payloads) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Payloads) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+// Describes a PlatformSubcomponents group type. Comprised of entities which
+//
+//	are subcomponents of the parent platform and the parent platform itself.
+//	Subcomponents are assumed to be positionally related to the parent group.
+//	relationship to a radar entity.
+type PlatformSubcomponents struct {
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PlatformSubcomponents) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PlatformSubcomponents) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+func (p *PlatformSubcomponents) UnmarshalJSON(data []byte) error {
+	type unmarshaler PlatformSubcomponents
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PlatformSubcomponents(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PlatformSubcomponents) MarshalJSON() ([]byte, error) {
+	type embed PlatformSubcomponents
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PlatformSubcomponents) String() string {
 	if p == nil {
 		return "<nil>"
 	}

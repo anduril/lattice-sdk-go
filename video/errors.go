@@ -4,7 +4,7 @@ package video
 
 import (
 	json "encoding/json"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
 )
 
 // The request was malformed or violated a precondition. Possible causes include missing
