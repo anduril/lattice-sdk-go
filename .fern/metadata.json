@@ -1,5 +1,5 @@
 {
-  "cliVersion": "5.112.1",
+  "cliVersion": "5.113.1",
   "generatorName": "fernapi/fern-go-sdk",
   "generatorVersion": "1.57.10",
   "generatorConfig": {
@@ -11,7 +11,7 @@
     "inlinePathParameters": true,
     "inlineFileProperties": true
   },
-  "originGitCommit": "7f86d3ee50de3b9fe46375cdbdf2a7fee2aa8e5c",
+  "originGitCommit": "639ede3911b4c92eda8c2a20bcc4d18516e8a486",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "requestedVersion": "4.25.0",

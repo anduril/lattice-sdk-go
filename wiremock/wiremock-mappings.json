@@ -673,7 +673,7 @@
       }
     },
     {
-      "id": "218757a1-7997-4aea-9538-5e1ec52a0839",
+      "id": "dc42dbdd-2264-4dd2-9b7f-c6d4a8cac478",
       "name": "List egress streams - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/egress_streams",
@@ -691,7 +691,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "218757a1-7997-4aea-9538-5e1ec52a0839",
+      "uuid": "dc42dbdd-2264-4dd2-9b7f-c6d4a8cac478",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -705,7 +705,7 @@
       "postServeActions": []
     },
     {
-      "id": "dc747804-b67e-4b0d-84d2-54fc4bbcd430",
+      "id": "9812f628-0ebf-4f2e-a5e4-037be4e7c033",
       "name": "Create egress stream - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/egress_streams",
@@ -723,7 +723,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "dc747804-b67e-4b0d-84d2-54fc4bbcd430",
+      "uuid": "9812f628-0ebf-4f2e-a5e4-037be4e7c033",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -736,7 +736,7 @@
       }
     },
     {
-      "id": "4be81ec9-339f-4143-abb0-c7ea358c2f32",
+      "id": "fed7c160-e70d-498c-abad-e78c38fd2412",
       "name": "Get egress stream - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/egress_streams/{egressId}",
@@ -759,7 +759,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "4be81ec9-339f-4143-abb0-c7ea358c2f32",
+      "uuid": "fed7c160-e70d-498c-abad-e78c38fd2412",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -772,7 +772,7 @@
       }
     },
     {
-      "id": "12203e09-7767-493c-a146-e6fdd72d5a08",
+      "id": "0b596ec3-85dd-47c0-8e3d-ba6777f442eb",
       "name": "Delete egress stream - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/egress_streams/{egressId}",
@@ -795,7 +795,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "12203e09-7767-493c-a146-e6fdd72d5a08",
+      "uuid": "0b596ec3-85dd-47c0-8e3d-ba6777f442eb",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -808,7 +808,7 @@
       }
     },
     {
-      "id": "17880dd2-3718-4e32-8d54-ed7dff640dfb",
+      "id": "e9ede5ac-e482-44a4-b3f5-24b1ac0de247",
       "name": "List ingress streams - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/ingress_streams",
@@ -826,7 +826,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "17880dd2-3718-4e32-8d54-ed7dff640dfb",
+      "uuid": "e9ede5ac-e482-44a4-b3f5-24b1ac0de247",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -840,7 +840,7 @@
       "postServeActions": []
     },
     {
-      "id": "6ccb2a88-3937-4eb4-ac1c-0bc27c5ed177",
+      "id": "5ba5c913-9c84-4687-adbc-7c0913571c9a",
       "name": "Create ingress stream - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/ingress_streams",
@@ -858,7 +858,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "6ccb2a88-3937-4eb4-ac1c-0bc27c5ed177",
+      "uuid": "5ba5c913-9c84-4687-adbc-7c0913571c9a",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -871,7 +871,7 @@
       }
     },
     {
-      "id": "a8118d3e-65b1-431b-ae33-5e2c6062c10a",
+      "id": "067eaa81-40ba-4820-86b6-ba62d5de3269",
       "name": "Get ingress stream - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/ingress_streams/{ingressId}",
@@ -894,7 +894,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "a8118d3e-65b1-431b-ae33-5e2c6062c10a",
+      "uuid": "067eaa81-40ba-4820-86b6-ba62d5de3269",
       "persistent": true,
       "priority": 3,
       "metadata": {
@@ -907,7 +907,7 @@
       }
     },
     {
-      "id": "3177cb59-180d-4ed8-886e-b377570b36a1",
+      "id": "d9f65d12-54fd-40bb-8c9b-533417d3b0dc",
       "name": "Delete ingress stream - default",
       "request": {
         "urlPathTemplate": "/api/v1/video/ingress_streams/{ingressId}",
@@ -930,7 +930,7 @@
           "Content-Type": "application/json"
         }
       },
-      "uuid": "3177cb59-180d-4ed8-886e-b377570b36a1",
+      "uuid": "d9f65d12-54fd-40bb-8c9b-533417d3b0dc",
       "persistent": true,
       "priority": 3,
       "metadata": {

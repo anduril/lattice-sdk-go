@@ -1736,7 +1736,7 @@ client.Oauth.GetToken(
 </details>
 
 ## Video
-<details><summary><code>client.Video.Video.ListEgressStreams() -> *video.ListEgressStreamsResponse</code></summary>
+<details><summary><code>client.Video.ListEgressStreams() -> *video.ListEgressStreamsResponse</code></summary>
 <dl>
 <dd>
 
@@ -1766,7 +1766,7 @@ Returns a list of active egress stream objects.
 
 ```go
 request := &video.ListEgressStreamsRequest{}
-client.Video.Video.ListEgressStreams(
+client.Video.ListEgressStreams(
     context.TODO(),
     request,
 )
@@ -1813,7 +1813,7 @@ To retrieve the next page, pass the `next_page_token` from the previous
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.CreateEgressStream(request) -> *video.CreateEgressStreamResponse</code></summary>
+<details><summary><code>client.Video.CreateEgressStream(request) -> *video.CreateEgressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -1842,7 +1842,7 @@ Creates an egress stream that publishes a live stream to a downstream consumer.
 
 ```go
 request := &video.CreateEgressStreamRequest{}
-client.Video.Video.CreateEgressStream(
+client.Video.CreateEgressStream(
     context.TODO(),
     request,
 )
@@ -1888,7 +1888,7 @@ client.Video.Video.CreateEgressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.GetEgressStream(EgressID) -> *video.GetEgressStreamResponse</code></summary>
+<details><summary><code>client.Video.GetEgressStream(EgressID) -> *video.GetEgressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -1918,7 +1918,7 @@ Retrieves an egress stream object and its associated metadata.
 request := &video.GetEgressStreamRequest{
     EgressID: "egressId",
 }
-client.Video.Video.GetEgressStream(
+client.Video.GetEgressStream(
     context.TODO(),
     request,
 )
@@ -1948,7 +1948,7 @@ client.Video.Video.GetEgressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.DeleteEgressStream(EgressID) -> *video.DeleteEgressStreamResponse</code></summary>
+<details><summary><code>client.Video.DeleteEgressStream(EgressID) -> *video.DeleteEgressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -1979,7 +1979,7 @@ Deletes the egress stream for a live stream. Returns `NOT_FOUND` if no matching 
 request := &video.DeleteEgressStreamRequest{
     EgressID: "egressId",
 }
-client.Video.Video.DeleteEgressStream(
+client.Video.DeleteEgressStream(
     context.TODO(),
     request,
 )
@@ -2009,7 +2009,7 @@ client.Video.Video.DeleteEgressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.ListIngressStreams() -> *video.ListIngressStreamsResponse</code></summary>
+<details><summary><code>client.Video.ListIngressStreams() -> *video.ListIngressStreamsResponse</code></summary>
 <dl>
 <dd>
 
@@ -2039,7 +2039,7 @@ Returns a list of top level ingress stream objects, including ingress streams an
 
 ```go
 request := &video.ListIngressStreamsRequest{}
-client.Video.Video.ListIngressStreams(
+client.Video.ListIngressStreams(
     context.TODO(),
     request,
 )
@@ -2086,7 +2086,7 @@ To retrieve the next page, pass the `next_page_token` from the previous
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.CreateIngressStream(request) -> *video.CreateIngressStreamResponse</code></summary>
+<details><summary><code>client.Video.CreateIngressStream(request) -> *video.CreateIngressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -2115,7 +2115,7 @@ Creates a video ingress stream, returning metadata that you can use to stream li
 
 ```go
 request := &video.CreateIngressStreamRequest{}
-client.Video.Video.CreateIngressStream(
+client.Video.CreateIngressStream(
     context.TODO(),
     request,
 )
@@ -2203,7 +2203,7 @@ Receive an SRT push from the producer. The service returns a URL and session_id
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.GetIngressStream(IngressID) -> *video.GetIngressStreamResponse</code></summary>
+<details><summary><code>client.Video.GetIngressStream(IngressID) -> *video.GetIngressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -2234,7 +2234,7 @@ Retrieves a top level ingress stream object and its associated metadata. This in
 request := &video.GetIngressStreamRequest{
     IngressID: "ingressId",
 }
-client.Video.Video.GetIngressStream(
+client.Video.GetIngressStream(
     context.TODO(),
     request,
 )
@@ -2264,7 +2264,7 @@ client.Video.Video.GetIngressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.DeleteIngressStream(IngressID) -> *video.DeleteIngressStreamResponse</code></summary>
+<details><summary><code>client.Video.DeleteIngressStream(IngressID) -> *video.DeleteIngressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -2295,7 +2295,7 @@ Deletes a video ingress stream and transitions the stream to `STREAM_STATUS_ARCH
 request := &video.DeleteIngressStreamRequest{
     IngressID: "ingressId",
 }
-client.Video.Video.DeleteIngressStream(
+client.Video.DeleteIngressStream(
     context.TODO(),
     request,
 )

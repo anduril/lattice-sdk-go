@@ -3,13 +3,16 @@
 package client
 
 import (
+	context "context"
+
 	core "github.com/anduril/lattice-sdk-go/v4/core"
 	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	video "github.com/anduril/lattice-sdk-go/v4/video/video"
+	option "github.com/anduril/lattice-sdk-go/v4/option"
+	video "github.com/anduril/lattice-sdk-go/v4/video"
 )
 
 type Client struct {
-	Video *video.Client
+	WithRawResponse *RawClient
 
 	options *core.RequestOptions
 	baseURL string
@@ -18,9 +21,9 @@ type Client struct {
 
 func NewClient(options *core.RequestOptions) *Client {
 	return &Client{
-		Video:   video.NewClient(options),
-		options: options,
-		baseURL: options.BaseURL,
+		WithRawResponse: NewRawClient(options),
+		options:         options,
+		baseURL:         options.BaseURL,
 		caller: internal.NewCaller(
 			&internal.CallerParams{
 				Client:         options.HTTPClient,
@@ -29,4 +32,228 @@ func NewClient(options *core.RequestOptions) *Client {
 			},
 		),
 	}
+}
+
+// Returns a list of active egress stream objects.
+//
+//	Results are ordered by egress stream create time. If the
+//	egress backend is unreachable, the listed streams might be stale or degraded.
+//
+// Example:
+//
+//	request := &video.ListEgressStreamsRequest{}
+//	client.Video.ListEgressStreams(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) ListEgressStreams(
+	ctx context.Context,
+	request *video.ListEgressStreamsRequest,
+	opts ...option.RequestOption,
+) (*video.ListEgressStreamsResponse, error) {
+	response, err := c.WithRawResponse.ListEgressStreams(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Creates an egress stream that publishes a live stream to a downstream consumer.
+//
+//	A stream in `STREAM_STATUS_UNAVAILABLE` is rejected as not-live.
+//
+// Example:
+//
+//	request := &video.CreateEgressStreamRequest{}
+//	client.Video.CreateEgressStream(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) CreateEgressStream(
+	ctx context.Context,
+	request *video.CreateEgressStreamRequest,
+	opts ...option.RequestOption,
+) (*video.CreateEgressStreamResponse, error) {
+	response, err := c.WithRawResponse.CreateEgressStream(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Retrieves an egress stream object and its associated metadata.
+//
+// Example:
+//
+//	request := &video.GetEgressStreamRequest{
+//	    EgressID: "egressId",
+//	}
+//	client.Video.GetEgressStream(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) GetEgressStream(
+	ctx context.Context,
+	request *video.GetEgressStreamRequest,
+	opts ...option.RequestOption,
+) (*video.GetEgressStreamResponse, error) {
+	response, err := c.WithRawResponse.GetEgressStream(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Deletes the egress stream for a live stream. Returns `NOT_FOUND` if no matching active
+//
+//	egress stream exists.
+//
+// Example:
+//
+//	request := &video.DeleteEgressStreamRequest{
+//	    EgressID: "egressId",
+//	}
+//	client.Video.DeleteEgressStream(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) DeleteEgressStream(
+	ctx context.Context,
+	request *video.DeleteEgressStreamRequest,
+	opts ...option.RequestOption,
+) (*video.DeleteEgressStreamResponse, error) {
+	response, err := c.WithRawResponse.DeleteEgressStream(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Returns a list of top level ingress stream objects, including ingress streams and internal
+//
+//	Anduril streams. Will only return active streams.
+//	Results are ordered by ingress stream create time.
+//
+// Example:
+//
+//	request := &video.ListIngressStreamsRequest{}
+//	client.Video.ListIngressStreams(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) ListIngressStreams(
+	ctx context.Context,
+	request *video.ListIngressStreamsRequest,
+	opts ...option.RequestOption,
+) (*video.ListIngressStreamsResponse, error) {
+	response, err := c.WithRawResponse.ListIngressStreams(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Creates a video ingress stream, returning metadata that you can use to stream live video to
+//
+//	Lattice. Exactly one of `rtsp` or `srt` must be set on the request.
+//
+// Example:
+//
+//	request := &video.CreateIngressStreamRequest{}
+//	client.Video.CreateIngressStream(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) CreateIngressStream(
+	ctx context.Context,
+	request *video.CreateIngressStreamRequest,
+	opts ...option.RequestOption,
+) (*video.CreateIngressStreamResponse, error) {
+	response, err := c.WithRawResponse.CreateIngressStream(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Retrieves a top level ingress stream object and its associated metadata. This includes
+//
+//	ingress streams and internal Anduril streams.
+//
+// Example:
+//
+//	request := &video.GetIngressStreamRequest{
+//	    IngressID: "ingressId",
+//	}
+//	client.Video.GetIngressStream(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) GetIngressStream(
+	ctx context.Context,
+	request *video.GetIngressStreamRequest,
+	opts ...option.RequestOption,
+) (*video.GetIngressStreamResponse, error) {
+	response, err := c.WithRawResponse.GetIngressStream(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
+// Deletes a video ingress stream and transitions the stream to `STREAM_STATUS_ARCHIVED`.
+//
+//	Any egress streams consuming this stream will be stopped automatically.
+//
+// Example:
+//
+//	request := &video.DeleteIngressStreamRequest{
+//	    IngressID: "ingressId",
+//	}
+//	client.Video.DeleteIngressStream(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) DeleteIngressStream(
+	ctx context.Context,
+	request *video.DeleteIngressStreamRequest,
+	opts ...option.RequestOption,
+) (*video.DeleteIngressStreamResponse, error) {
+	response, err := c.WithRawResponse.DeleteIngressStream(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
 }
