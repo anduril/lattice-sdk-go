@@ -1735,3 +1735,593 @@ client.Oauth.GetToken(
 </dl>
 </details>
 
+## Video
+<details><summary><code>client.Video.Video.ListEgressStreams() -> *video.ListEgressStreamsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a list of active egress stream objects.
+ Results are ordered by egress stream create time. If the
+ egress backend is unreachable, the listed streams might be stale or degraded.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.ListEgressStreamsRequest{}
+client.Video.Video.ListEgressStreams(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**pageSize:** `*int` 
+
+Desired number of egress streams per page. Defaults to 50 if left blank,
+ and capped at 100. The response may contain fewer than max page size.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `*string` 
+
+To retrieve the next page, pass the `next_page_token` from the previous
+ response. Leave empty for the first page.
+
+ Keep the rest of the request identical between pages, otherwise the
+ server may reject it.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.Video.CreateEgressStream(request) -> *video.CreateEgressStreamResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates an egress stream that publishes a live stream to a downstream consumer.
+ A stream in `STREAM_STATUS_UNAVAILABLE` is rejected as not-live.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.CreateEgressStreamRequest{}
+client.Video.Video.CreateEgressStream(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ingressID:** `*string` — Identifier of the live ingress stream to re-publish as an egress stream.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**rtsp:** `*video.RtspSettings` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**srt:** `*video.SrtSettings` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.Video.GetEgressStream(EgressID) -> *video.GetEgressStreamResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves an egress stream object and its associated metadata.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.GetEgressStreamRequest{
+    EgressID: "egressId",
+}
+client.Video.Video.GetEgressStream(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**egressID:** `string` — Identifier of the egress stream to retrieve.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.Video.DeleteEgressStream(EgressID) -> *video.DeleteEgressStreamResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deletes the egress stream for a live stream. Returns `NOT_FOUND` if no matching active
+ egress stream exists.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.DeleteEgressStreamRequest{
+    EgressID: "egressId",
+}
+client.Video.Video.DeleteEgressStream(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**egressID:** `string` — Identifier of the egress stream to delete.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.Video.ListIngressStreams() -> *video.ListIngressStreamsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns a list of top level ingress stream objects, including ingress streams and internal
+ Anduril streams. Will only return active streams.
+ Results are ordered by ingress stream create time.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.ListIngressStreamsRequest{}
+client.Video.Video.ListIngressStreams(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**pageSize:** `*int` 
+
+Desired number of ingress streams per page. Defaults to 50 if left blank,
+ and capped at 100. The response may contain fewer than requested.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `*string` 
+
+To retrieve the next page, pass the `next_page_token` from the previous
+ response. Leave empty for the first page.
+
+ Keep the rest of the request identical between pages, otherwise the
+ server may reject it.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.Video.CreateIngressStream(request) -> *video.CreateIngressStreamResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a video ingress stream, returning metadata that you can use to stream live video to
+ Lattice. Exactly one of `rtsp` or `srt` must be set on the request.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.CreateIngressStreamRequest{}
+client.Video.Video.CreateIngressStream(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ingressID:** `*string` 
+
+Caller-supplied identifier for the new stream. If omitted, the service generates a GUID.
+ If supplied, a consistent and recognizable pattern is recommended. A common convention
+ is a group prefix (organization, platform, or asset) followed by a specific identifier
+ using underscore or dot as a separator, for example, `drone_1`, `vessel_2`, or
+ `teamalpha.drone1`.
+
+ When supplied, an ingress_id must be between 4 and 36 characters long and use only
+ printable ASCII characters with no spaces; the 36-character ceiling leaves room for a
+ full GUID. A value outside that length range, or one containing spaces, control
+ characters, or non-ASCII characters, is rejected, as is an ingress_id that another
+ ingress stream is already using.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**title:** `*string` 
+
+Human-readable title for the stream. A title is required: surrounding whitespace is
+ trimmed before it is stored, and what remains must be non-empty, valid UTF-8, and no
+ longer than 64 characters. Otherwise the request is rejected.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**mpegTs:** `*video.MpegTsSettings` 
+
+Receive an MPEG-TS push from the producer. The service allocates a UDP port and
+ returns the URL the producer must push to in CreateIngressStreamResponse.
+
+ MPEG-TS ingress may be disabled per deployment. When it is disabled, a request
+ that selects mpeg_ts is rejected with a gRPC error rather than accepted, so
+ callers should be prepared to fall back to another protocol.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**rtsp:** `*video.RtspSettings` — Pull from a caller-supplied RTSP URL.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**srt:** `*video.SrtSettings` 
+
+Receive an SRT push from the producer. The service returns a URL and session_id
+ in CreateIngressStreamResponse.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.Video.GetIngressStream(IngressID) -> *video.GetIngressStreamResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Retrieves a top level ingress stream object and its associated metadata. This includes
+ ingress streams and internal Anduril streams.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.GetIngressStreamRequest{
+    IngressID: "ingressId",
+}
+client.Video.Video.GetIngressStream(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ingressID:** `string` — Identifier of the ingress stream to retrieve.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.Video.DeleteIngressStream(IngressID) -> *video.DeleteIngressStreamResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Deletes a video ingress stream and transitions the stream to `STREAM_STATUS_ARCHIVED`.
+ Any egress streams consuming this stream will be stopped automatically.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &video.DeleteIngressStreamRequest{
+    IngressID: "ingressId",
+}
+client.Video.Video.DeleteIngressStream(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**ingressID:** `string` — Identifier of the ingress stream to delete.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+

@@ -671,9 +671,279 @@
           }
         }
       }
+    },
+    {
+      "id": "218757a1-7997-4aea-9538-5e1ec52a0839",
+      "name": "List egress streams - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/egress_streams",
+        "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"egressStreams\": [\n    {\n      \"egressId\": \"egressId\",\n      \"ingressId\": \"ingressId\"\n    }\n  ],\n  \"nextPageToken\": \"nextPageToken\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "218757a1-7997-4aea-9538-5e1ec52a0839",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "dc747804-b67e-4b0d-84d2-54fc4bbcd430",
+      "name": "Create egress stream - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/egress_streams",
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"egressId\": \"egressId\",\n  \"rtsp\": {\n    \"url\": \"url\"\n  },\n  \"srt\": {\n    \"url\": \"url\",\n    \"sessionId\": \"sessionId\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "dc747804-b67e-4b0d-84d2-54fc4bbcd430",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "4be81ec9-339f-4143-abb0-c7ea358c2f32",
+      "name": "Get egress stream - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/egress_streams/{egressId}",
+        "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
+        "pathParameters": {
+          "egressId": {
+            "equalTo": "egressId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"egressStream\": {\n    \"egressId\": \"egressId\",\n    \"ingressId\": \"ingressId\",\n    \"rtsp\": {\n      \"url\": \"url\"\n    },\n    \"srt\": {\n      \"url\": \"url\",\n      \"sessionId\": \"sessionId\"\n    }\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "4be81ec9-339f-4143-abb0-c7ea358c2f32",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "12203e09-7767-493c-a146-e6fdd72d5a08",
+      "name": "Delete egress stream - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/egress_streams/{egressId}",
+        "method": "DELETE",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
+        "pathParameters": {
+          "egressId": {
+            "equalTo": "egressId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "12203e09-7767-493c-a146-e6fdd72d5a08",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "17880dd2-3718-4e32-8d54-ed7dff640dfb",
+      "name": "List ingress streams - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/ingress_streams",
+        "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"ingressStreams\": [\n    {\n      \"ingressId\": \"ingressId\",\n      \"title\": \"title\",\n      \"status\": \"STREAM_STATUS_UNSPECIFIED\",\n      \"createdAt\": \"2024-01-15T09:30:00Z\",\n      \"updatedAt\": \"2024-01-15T09:30:00Z\",\n      \"egressIds\": [\n        \"egressIds\"\n      ]\n    }\n  ],\n  \"nextPageToken\": \"nextPageToken\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "17880dd2-3718-4e32-8d54-ed7dff640dfb",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      },
+      "postServeActions": []
+    },
+    {
+      "id": "6ccb2a88-3937-4eb4-ac1c-0bc27c5ed177",
+      "name": "Create ingress stream - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/ingress_streams",
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"ingressId\": \"ingressId\",\n  \"mpegTs\": {\n    \"url\": \"url\"\n  },\n  \"srt\": {\n    \"url\": \"url\",\n    \"sessionId\": \"sessionId\"\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "6ccb2a88-3937-4eb4-ac1c-0bc27c5ed177",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "a8118d3e-65b1-431b-ae33-5e2c6062c10a",
+      "name": "Get ingress stream - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/ingress_streams/{ingressId}",
+        "method": "GET",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
+        "pathParameters": {
+          "ingressId": {
+            "equalTo": "ingressId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"ingressStream\": {\n    \"ingressId\": \"ingressId\",\n    \"title\": \"title\",\n    \"status\": \"STREAM_STATUS_UNSPECIFIED\",\n    \"mpegTs\": {\n      \"url\": \"url\"\n    },\n    \"rtsp\": {\n      \"url\": \"url\"\n    },\n    \"srt\": {\n      \"url\": \"url\",\n      \"sessionId\": \"sessionId\"\n    },\n    \"createdAt\": \"2024-01-15T09:30:00Z\",\n    \"updatedAt\": \"2024-01-15T09:30:00Z\",\n    \"egressIds\": [\n      \"egressIds\"\n    ]\n  }\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "a8118d3e-65b1-431b-ae33-5e2c6062c10a",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
+      "id": "3177cb59-180d-4ed8-886e-b377570b36a1",
+      "name": "Delete ingress stream - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/ingress_streams/{ingressId}",
+        "method": "DELETE",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
+        "pathParameters": {
+          "ingressId": {
+            "equalTo": "ingressId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "3177cb59-180d-4ed8-886e-b377570b36a1",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
     }
   ],
   "meta": {
-    "total": 20
+    "total": 28
   }
 }
