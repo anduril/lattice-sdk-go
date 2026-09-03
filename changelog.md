@@ -2,6 +2,16 @@
 
 ## [5.0.0] - 2026-09-03
 
+### Breaking Changes
+- **`client.Video`** — video stream methods moved up one level from `client.Video.Video.X()` to `client.Video.X()`, so drop the extra `.Video` accessor (e.g. replace `client.Video.Video.ListEgressStreams(...)` with `client.Video.ListEgressStreams(...)`).
+
+### Added
+- **Video stream types** — ingress/egress management request and response types (`CreateIngressStreamRequest`/`Response`, `CreateEgressStreamRequest`/`Response`, plus matching `Get`/`List`/`Delete` types) along with `IngressStream` and `EgressStream` models.
+- **Transport settings** — connection and transport types added, including `RtspSettings`, `SrtSettings`, `MpegTsSettings`, `RtspIngress`, `SrtIngress`, `MpegTsIngress`, `RtspEgress`, and `SrtEgress`.
+- **`IngressStreamStatus`** — new lifecycle enum (`STREAM_STATUS_LIVE`, `STREAM_STATUS_INACTIVE`, etc.) with a `NewIngressStreamStatusFromString` helper.
+- **`DeliveryConstraints.RequireAcknowledgement`** — new optional field with `GetRequireAcknowledgement()`/`SetRequireAcknowledgement()` accessors requiring agents to acknowledge task delivery.
+- **`DeliveryErrorCode` value** — new `DELIVERY_ERROR_CODE_NOT_ACKNOWLEDGED` enum value, plus a new `PlatformSubcomponents` group detail type on `GroupDetails`.
+
 ## [4.25.0] - 2026-09-03
 
 **Added**
