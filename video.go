@@ -1,11 +1,11 @@
 // Code generated from our API definition. DO NOT EDIT.
 
-package video
+package Lattice
 
 import (
 	json "encoding/json"
 	fmt "fmt"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
 	big "math/big"
 	time "time"
 )
@@ -106,9 +106,12 @@ type CreateIngressStreamRequest struct {
 	//
 	//	returns the URL the producer must push to in CreateIngressStreamResponse.
 	//
-	//	MPEG-TS ingress may be disabled per deployment. When it is disabled, a request
-	//	that selects mpeg_ts is rejected with a gRPC error rather than accepted, so
-	//	callers should be prepared to fall back to another protocol.
+	//	MPEG-TS ingress is supported only at the edge, in closed networks. When Lattice
+	//	runs in a cloud environment reached over the public internet, MPEG-TS ingress may
+	//	be disabled per deployment. When it is disabled, a request that selects mpeg_ts is
+	//	rejected with a gRPC error rather than accepted, so callers should be prepared to
+	//	fall back to RTSP or SRT. An MPEG-TS stream created at the edge can still be listed
+	//	and inspected on the IngressStream read model even when cloud ingress is disabled.
 	MpegTs *MpegTsSettings `json:"mpegTs,omitempty" url:"-"`
 	// Pull from a caller-supplied RTSP URL.
 	Rtsp *RtspSettings `json:"rtsp,omitempty" url:"-"`
@@ -504,9 +507,12 @@ type CreateIngressStreamResponse struct {
 	//
 	//	`ingress_id` if one was provided, otherwise a service-generated GUID.
 	IngressID *string `json:"ingressId,omitempty" url:"ingressId,omitempty"`
-	// Connection details for an MPEG-TS push. Only returned when MPEG-TS ingress is
+	// Connection details for an MPEG-TS push. Only returned when the request selected
 	//
-	//	enabled for the deployment and the request selected mpeg_ts.
+	//	mpeg_ts and MPEG-TS ingress is enabled for the deployment. MPEG-TS ingress is
+	//	supported only at the edge, in closed networks; in a cloud environment reached over
+	//	the public internet it may be disabled per deployment, in which case the create
+	//	request is rejected and this field is never populated.
 	MpegTs *MpegTsIngress `json:"mpegTs,omitempty" url:"mpegTs,omitempty"`
 	Srt    *SrtIngress    `json:"srt,omitempty" url:"srt,omitempty"`
 
@@ -1532,6 +1538,12 @@ func (l *ListIngressStreamsResponse) String() string {
 }
 
 // MPEG-TS ingress connection details.
+//
+//	MPEG-TS ingress is supported only at the edge, in closed networks; in a cloud
+//	environment reached over the public internet it may be disabled per deployment. These
+//	details are populated only when a stream was successfully created with mpeg_ts. An
+//	MPEG-TS stream created at the edge can still be listed and inspected on the
+//	IngressStream read model even when cloud ingress is disabled.
 var (
 	mpegTsIngressFieldURL = big.NewInt(1 << 0)
 )
@@ -1621,8 +1633,13 @@ func (m *MpegTsIngress) String() string {
 //
 //	from a service-wide pool and returns the push URL in CreateIngressStreamResponse.
 //
-//	MPEG-TS ingress may be disabled per deployment. When it is disabled, a
-//	CreateIngressStream request that selects mpeg_ts is rejected with a gRPC error.
+//	MPEG-TS ingress is supported only at the edge, in closed networks. When Lattice runs
+//	in a cloud environment reached over the public internet, MPEG-TS ingress may be
+//	disabled per deployment. When it is disabled, a CreateIngressStream request that
+//	selects mpeg_ts is rejected with a gRPC error rather than accepted, so callers should
+//	be prepared to fall back to RTSP or SRT. An MPEG-TS stream created at the edge can
+//	still be listed and inspected on the IngressStream read model even when cloud ingress
+//	is disabled.
 type MpegTsSettings = map[string]any
 
 // RTSP egress connection details.

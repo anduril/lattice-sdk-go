@@ -7,10 +7,10 @@ import (
 	io "io"
 	http "net/http"
 
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
 )
 
 type Client struct {
@@ -65,6 +65,23 @@ func (c *Client) ListObjects(
 		c.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &Lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
 	prepareCall := func(pageRequest *core.PageRequest[*string]) *internal.CallParams {
 		if pageRequest.Cursor != nil {
 			queryParams.Set("pageToken", *pageRequest.Cursor)
@@ -83,7 +100,7 @@ func (c *Client) ListObjects(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        pageRequest.Response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		}
 	}
 	readPageResponse := func(response *Lattice.ListResponse) *core.PageResponse[*string, *Lattice.PathMetadata, *Lattice.ListResponse] {

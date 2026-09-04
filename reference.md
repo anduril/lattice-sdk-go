@@ -1736,7 +1736,7 @@ client.Oauth.GetToken(
 </details>
 
 ## Video
-<details><summary><code>client.Video.Video.ListEgressStreams() -> *video.ListEgressStreamsResponse</code></summary>
+<details><summary><code>client.Video.ListEgressStreams() -> *Lattice.ListEgressStreamsResponse</code></summary>
 <dl>
 <dd>
 
@@ -1765,8 +1765,8 @@ Returns a list of active egress stream objects.
 <dd>
 
 ```go
-request := &video.ListEgressStreamsRequest{}
-client.Video.Video.ListEgressStreams(
+request := &Lattice.ListEgressStreamsRequest{}
+client.Video.ListEgressStreams(
     context.TODO(),
     request,
 )
@@ -1813,7 +1813,7 @@ To retrieve the next page, pass the `next_page_token` from the previous
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.CreateEgressStream(request) -> *video.CreateEgressStreamResponse</code></summary>
+<details><summary><code>client.Video.CreateEgressStream(request) -> *Lattice.CreateEgressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -1841,8 +1841,8 @@ Creates an egress stream that publishes a live stream to a downstream consumer.
 <dd>
 
 ```go
-request := &video.CreateEgressStreamRequest{}
-client.Video.Video.CreateEgressStream(
+request := &Lattice.CreateEgressStreamRequest{}
+client.Video.CreateEgressStream(
     context.TODO(),
     request,
 )
@@ -1868,7 +1868,7 @@ client.Video.Video.CreateEgressStream(
 <dl>
 <dd>
 
-**rtsp:** `*video.RtspSettings` 
+**rtsp:** `*Lattice.RtspSettings` 
     
 </dd>
 </dl>
@@ -1876,7 +1876,7 @@ client.Video.Video.CreateEgressStream(
 <dl>
 <dd>
 
-**srt:** `*video.SrtSettings` 
+**srt:** `*Lattice.SrtSettings` 
     
 </dd>
 </dl>
@@ -1888,7 +1888,7 @@ client.Video.Video.CreateEgressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.GetEgressStream(EgressID) -> *video.GetEgressStreamResponse</code></summary>
+<details><summary><code>client.Video.GetEgressStream(EgressID) -> *Lattice.GetEgressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -1915,10 +1915,10 @@ Retrieves an egress stream object and its associated metadata.
 <dd>
 
 ```go
-request := &video.GetEgressStreamRequest{
+request := &Lattice.GetEgressStreamRequest{
     EgressID: "egressId",
 }
-client.Video.Video.GetEgressStream(
+client.Video.GetEgressStream(
     context.TODO(),
     request,
 )
@@ -1948,7 +1948,7 @@ client.Video.Video.GetEgressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.DeleteEgressStream(EgressID) -> *video.DeleteEgressStreamResponse</code></summary>
+<details><summary><code>client.Video.DeleteEgressStream(EgressID) -> *Lattice.DeleteEgressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -1976,10 +1976,10 @@ Deletes the egress stream for a live stream. Returns `NOT_FOUND` if no matching 
 <dd>
 
 ```go
-request := &video.DeleteEgressStreamRequest{
+request := &Lattice.DeleteEgressStreamRequest{
     EgressID: "egressId",
 }
-client.Video.Video.DeleteEgressStream(
+client.Video.DeleteEgressStream(
     context.TODO(),
     request,
 )
@@ -2009,7 +2009,7 @@ client.Video.Video.DeleteEgressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.ListIngressStreams() -> *video.ListIngressStreamsResponse</code></summary>
+<details><summary><code>client.Video.ListIngressStreams() -> *Lattice.ListIngressStreamsResponse</code></summary>
 <dl>
 <dd>
 
@@ -2038,8 +2038,8 @@ Returns a list of top level ingress stream objects, including ingress streams an
 <dd>
 
 ```go
-request := &video.ListIngressStreamsRequest{}
-client.Video.Video.ListIngressStreams(
+request := &Lattice.ListIngressStreamsRequest{}
+client.Video.ListIngressStreams(
     context.TODO(),
     request,
 )
@@ -2086,7 +2086,7 @@ To retrieve the next page, pass the `next_page_token` from the previous
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.CreateIngressStream(request) -> *video.CreateIngressStreamResponse</code></summary>
+<details><summary><code>client.Video.CreateIngressStream(request) -> *Lattice.CreateIngressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -2114,8 +2114,8 @@ Creates a video ingress stream, returning metadata that you can use to stream li
 <dd>
 
 ```go
-request := &video.CreateIngressStreamRequest{}
-client.Video.Video.CreateIngressStream(
+request := &Lattice.CreateIngressStreamRequest{}
+client.Video.CreateIngressStream(
     context.TODO(),
     request,
 )
@@ -2165,14 +2165,17 @@ Human-readable title for the stream. A title is required: surrounding whitespace
 <dl>
 <dd>
 
-**mpegTs:** `*video.MpegTsSettings` 
+**mpegTs:** `*Lattice.MpegTsSettings` 
 
 Receive an MPEG-TS push from the producer. The service allocates a UDP port and
  returns the URL the producer must push to in CreateIngressStreamResponse.
 
- MPEG-TS ingress may be disabled per deployment. When it is disabled, a request
- that selects mpeg_ts is rejected with a gRPC error rather than accepted, so
- callers should be prepared to fall back to another protocol.
+ MPEG-TS ingress is supported only at the edge, in closed networks. When Lattice
+ runs in a cloud environment reached over the public internet, MPEG-TS ingress may
+ be disabled per deployment. When it is disabled, a request that selects mpeg_ts is
+ rejected with a gRPC error rather than accepted, so callers should be prepared to
+ fall back to RTSP or SRT. An MPEG-TS stream created at the edge can still be listed
+ and inspected on the IngressStream read model even when cloud ingress is disabled.
     
 </dd>
 </dl>
@@ -2180,7 +2183,7 @@ Receive an MPEG-TS push from the producer. The service allocates a UDP port and
 <dl>
 <dd>
 
-**rtsp:** `*video.RtspSettings` — Pull from a caller-supplied RTSP URL.
+**rtsp:** `*Lattice.RtspSettings` — Pull from a caller-supplied RTSP URL.
     
 </dd>
 </dl>
@@ -2188,7 +2191,7 @@ Receive an MPEG-TS push from the producer. The service allocates a UDP port and
 <dl>
 <dd>
 
-**srt:** `*video.SrtSettings` 
+**srt:** `*Lattice.SrtSettings` 
 
 Receive an SRT push from the producer. The service returns a URL and session_id
  in CreateIngressStreamResponse.
@@ -2203,7 +2206,7 @@ Receive an SRT push from the producer. The service returns a URL and session_id
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.GetIngressStream(IngressID) -> *video.GetIngressStreamResponse</code></summary>
+<details><summary><code>client.Video.GetIngressStream(IngressID) -> *Lattice.GetIngressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -2231,10 +2234,10 @@ Retrieves a top level ingress stream object and its associated metadata. This in
 <dd>
 
 ```go
-request := &video.GetIngressStreamRequest{
+request := &Lattice.GetIngressStreamRequest{
     IngressID: "ingressId",
 }
-client.Video.Video.GetIngressStream(
+client.Video.GetIngressStream(
     context.TODO(),
     request,
 )
@@ -2264,7 +2267,7 @@ client.Video.Video.GetIngressStream(
 </dl>
 </details>
 
-<details><summary><code>client.Video.Video.DeleteIngressStream(IngressID) -> *video.DeleteIngressStreamResponse</code></summary>
+<details><summary><code>client.Video.DeleteIngressStream(IngressID) -> *Lattice.DeleteIngressStreamResponse</code></summary>
 <dl>
 <dd>
 
@@ -2292,10 +2295,10 @@ Deletes a video ingress stream and transitions the stream to `STREAM_STATUS_ARCH
 <dd>
 
 ```go
-request := &video.DeleteIngressStreamRequest{
+request := &Lattice.DeleteIngressStreamRequest{
     IngressID: "ingressId",
 }
-client.Video.Video.DeleteIngressStream(
+client.Video.DeleteIngressStream(
     context.TODO(),
     request,
 )

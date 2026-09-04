@@ -6,10 +6,10 @@ import (
 	context "context"
 	http "net/http"
 
-	Lattice "github.com/anduril/lattice-sdk-go/v4"
-	core "github.com/anduril/lattice-sdk-go/v4/core"
-	internal "github.com/anduril/lattice-sdk-go/v4/internal"
-	option "github.com/anduril/lattice-sdk-go/v4/option"
+	Lattice "github.com/anduril/lattice-sdk-go/v5"
+	core "github.com/anduril/lattice-sdk-go/v5/core"
+	internal "github.com/anduril/lattice-sdk-go/v5/internal"
+	option "github.com/anduril/lattice-sdk-go/v5/option"
 )
 
 type Client struct {
@@ -233,6 +233,18 @@ func (c *Client) StreamEntities(
 	)
 	headers.Add("Accept", "text/event-stream")
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	streamer := internal.NewStreamer[Lattice.StreamEntitiesResponse](c.caller)
 	return streamer.Stream(
 		ctx,
@@ -250,7 +262,7 @@ func (c *Client) StreamEntities(
 			Terminator:      internal.DefaultSSETerminator,
 			Format:          core.StreamFormatSSE,
 			Request:         request,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 }
