@@ -5,10 +5,10 @@ package video
 import (
 	context "context"
 
+	Lattice "github.com/anduril/lattice-sdk-go/v4"
 	core "github.com/anduril/lattice-sdk-go/v4/core"
 	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	option "github.com/anduril/lattice-sdk-go/v4/option"
-	video "github.com/anduril/lattice-sdk-go/v4/video"
 )
 
 type Client struct {
@@ -41,16 +41,16 @@ func NewClient(options *core.RequestOptions) *Client {
 //
 // Example:
 //
-//	request := &video.ListEgressStreamsRequest{}
-//	client.Video.Video.ListEgressStreams(
+//	request := &Lattice.ListEgressStreamsRequest{}
+//	client.Video.ListEgressStreams(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) ListEgressStreams(
 	ctx context.Context,
-	request *video.ListEgressStreamsRequest,
+	request *Lattice.ListEgressStreamsRequest,
 	opts ...option.RequestOption,
-) (*video.ListEgressStreamsResponse, error) {
+) (*Lattice.ListEgressStreamsResponse, error) {
 	response, err := c.WithRawResponse.ListEgressStreams(
 		ctx,
 		request,
@@ -68,16 +68,16 @@ func (c *Client) ListEgressStreams(
 //
 // Example:
 //
-//	request := &video.CreateEgressStreamRequest{}
-//	client.Video.Video.CreateEgressStream(
+//	request := &Lattice.CreateEgressStreamRequest{}
+//	client.Video.CreateEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) CreateEgressStream(
 	ctx context.Context,
-	request *video.CreateEgressStreamRequest,
+	request *Lattice.CreateEgressStreamRequest,
 	opts ...option.RequestOption,
-) (*video.CreateEgressStreamResponse, error) {
+) (*Lattice.CreateEgressStreamResponse, error) {
 	response, err := c.WithRawResponse.CreateEgressStream(
 		ctx,
 		request,
@@ -93,18 +93,18 @@ func (c *Client) CreateEgressStream(
 //
 // Example:
 //
-//	request := &video.GetEgressStreamRequest{
+//	request := &Lattice.GetEgressStreamRequest{
 //	    EgressID: "egressId",
 //	}
-//	client.Video.Video.GetEgressStream(
+//	client.Video.GetEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) GetEgressStream(
 	ctx context.Context,
-	request *video.GetEgressStreamRequest,
+	request *Lattice.GetEgressStreamRequest,
 	opts ...option.RequestOption,
-) (*video.GetEgressStreamResponse, error) {
+) (*Lattice.GetEgressStreamResponse, error) {
 	response, err := c.WithRawResponse.GetEgressStream(
 		ctx,
 		request,
@@ -122,18 +122,18 @@ func (c *Client) GetEgressStream(
 //
 // Example:
 //
-//	request := &video.DeleteEgressStreamRequest{
+//	request := &Lattice.DeleteEgressStreamRequest{
 //	    EgressID: "egressId",
 //	}
-//	client.Video.Video.DeleteEgressStream(
+//	client.Video.DeleteEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) DeleteEgressStream(
 	ctx context.Context,
-	request *video.DeleteEgressStreamRequest,
+	request *Lattice.DeleteEgressStreamRequest,
 	opts ...option.RequestOption,
-) (*video.DeleteEgressStreamResponse, error) {
+) (*Lattice.DeleteEgressStreamResponse, error) {
 	response, err := c.WithRawResponse.DeleteEgressStream(
 		ctx,
 		request,
@@ -152,16 +152,16 @@ func (c *Client) DeleteEgressStream(
 //
 // Example:
 //
-//	request := &video.ListIngressStreamsRequest{}
-//	client.Video.Video.ListIngressStreams(
+//	request := &Lattice.ListIngressStreamsRequest{}
+//	client.Video.ListIngressStreams(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) ListIngressStreams(
 	ctx context.Context,
-	request *video.ListIngressStreamsRequest,
+	request *Lattice.ListIngressStreamsRequest,
 	opts ...option.RequestOption,
-) (*video.ListIngressStreamsResponse, error) {
+) (*Lattice.ListIngressStreamsResponse, error) {
 	response, err := c.WithRawResponse.ListIngressStreams(
 		ctx,
 		request,
@@ -179,16 +179,16 @@ func (c *Client) ListIngressStreams(
 //
 // Example:
 //
-//	request := &video.CreateIngressStreamRequest{}
-//	client.Video.Video.CreateIngressStream(
+//	request := &Lattice.CreateIngressStreamRequest{}
+//	client.Video.CreateIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) CreateIngressStream(
 	ctx context.Context,
-	request *video.CreateIngressStreamRequest,
+	request *Lattice.CreateIngressStreamRequest,
 	opts ...option.RequestOption,
-) (*video.CreateIngressStreamResponse, error) {
+) (*Lattice.CreateIngressStreamResponse, error) {
 	response, err := c.WithRawResponse.CreateIngressStream(
 		ctx,
 		request,
@@ -206,18 +206,18 @@ func (c *Client) CreateIngressStream(
 //
 // Example:
 //
-//	request := &video.GetIngressStreamRequest{
+//	request := &Lattice.GetIngressStreamRequest{
 //	    IngressID: "ingressId",
 //	}
-//	client.Video.Video.GetIngressStream(
+//	client.Video.GetIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) GetIngressStream(
 	ctx context.Context,
-	request *video.GetIngressStreamRequest,
+	request *Lattice.GetIngressStreamRequest,
 	opts ...option.RequestOption,
-) (*video.GetIngressStreamResponse, error) {
+) (*Lattice.GetIngressStreamResponse, error) {
 	response, err := c.WithRawResponse.GetIngressStream(
 		ctx,
 		request,
@@ -235,18 +235,18 @@ func (c *Client) GetIngressStream(
 //
 // Example:
 //
-//	request := &video.DeleteIngressStreamRequest{
+//	request := &Lattice.DeleteIngressStreamRequest{
 //	    IngressID: "ingressId",
 //	}
-//	client.Video.Video.DeleteIngressStream(
+//	client.Video.DeleteIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
 func (c *Client) DeleteIngressStream(
 	ctx context.Context,
-	request *video.DeleteIngressStreamRequest,
+	request *Lattice.DeleteIngressStreamRequest,
 	opts ...option.RequestOption,
-) (*video.DeleteIngressStreamResponse, error) {
+) (*Lattice.DeleteIngressStreamResponse, error) {
 	response, err := c.WithRawResponse.DeleteIngressStream(
 		ctx,
 		request,

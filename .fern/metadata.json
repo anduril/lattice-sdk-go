@@ -1,5 +1,5 @@
 {
-  "cliVersion": "5.112.1",
+  "cliVersion": "5.114.1",
   "generatorName": "fernapi/fern-go-sdk",
   "generatorVersion": "1.57.10",
   "generatorConfig": {
@@ -9,9 +9,10 @@
     "union": "v1",
     "packageName": "Lattice",
     "inlinePathParameters": true,
-    "inlineFileProperties": true
+    "inlineFileProperties": true,
+    "errorCodes": "per-endpoint"
   },
-  "originGitCommit": "7f86d3ee50de3b9fe46375cdbdf2a7fee2aa8e5c",
+  "originGitCommit": "81dd1084edba15ee2ca71a66fdb24f9fffbb8015",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "requestedVersion": "4.25.0",

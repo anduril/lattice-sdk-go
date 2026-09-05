@@ -48,6 +48,18 @@ func (r *RawClient) PublishEntity(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
@@ -62,7 +74,7 @@ func (r *RawClient) PublishEntity(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -94,6 +106,23 @@ func (r *RawClient) GetEntity(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
@@ -107,7 +136,7 @@ func (r *RawClient) GetEntity(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -141,6 +170,23 @@ func (r *RawClient) OverrideEntity(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
@@ -155,7 +201,7 @@ func (r *RawClient) OverrideEntity(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -188,6 +234,23 @@ func (r *RawClient) RemoveEntityOverride(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Entity
 	raw, err := r.caller.Call(
 		ctx,
@@ -201,7 +264,7 @@ func (r *RawClient) RemoveEntityOverride(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -231,6 +294,33 @@ func (r *RawClient) LongPollEntityEvents(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+		408: func(apiError *core.APIError) error {
+			return &Lattice.RequestTimeoutError{
+				APIError: apiError,
+			}
+		},
+		429: func(apiError *core.APIError) error {
+			return &Lattice.TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.EntityEventResponse
 	raw, err := r.caller.Call(
 		ctx,
@@ -245,7 +335,7 @@ func (r *RawClient) LongPollEntityEvents(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {

@@ -6,10 +6,10 @@ import (
 	context "context"
 	http "net/http"
 
+	Lattice "github.com/anduril/lattice-sdk-go/v4"
 	core "github.com/anduril/lattice-sdk-go/v4/core"
 	internal "github.com/anduril/lattice-sdk-go/v4/internal"
 	option "github.com/anduril/lattice-sdk-go/v4/option"
-	video "github.com/anduril/lattice-sdk-go/v4/video"
 )
 
 type RawClient struct {
@@ -34,9 +34,9 @@ func NewRawClient(options *core.RequestOptions) *RawClient {
 
 func (r *RawClient) ListEgressStreams(
 	ctx context.Context,
-	request *video.ListEgressStreamsRequest,
+	request *Lattice.ListEgressStreamsRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.ListEgressStreamsResponse], error) {
+) (*core.Response[*Lattice.ListEgressStreamsResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -55,7 +55,34 @@ func (r *RawClient) ListEgressStreams(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	var response *video.ListEgressStreamsResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.ListEgressStreamsResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -68,13 +95,13 @@ func (r *RawClient) ListEgressStreams(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.ListEgressStreamsResponse]{
+	return &core.Response[*Lattice.ListEgressStreamsResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -83,9 +110,9 @@ func (r *RawClient) ListEgressStreams(
 
 func (r *RawClient) CreateEgressStream(
 	ctx context.Context,
-	request *video.CreateEgressStreamRequest,
+	request *Lattice.CreateEgressStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.CreateEgressStreamResponse], error) {
+) (*core.Response[*Lattice.CreateEgressStreamResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -98,7 +125,44 @@ func (r *RawClient) CreateEgressStream(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	var response *video.CreateEgressStreamResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		409: func(apiError *core.APIError) error {
+			return &ConflictError{
+				APIError: apiError,
+			}
+		},
+		429: func(apiError *core.APIError) error {
+			return &TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.CreateEgressStreamResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -112,13 +176,13 @@ func (r *RawClient) CreateEgressStream(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.CreateEgressStreamResponse]{
+	return &core.Response[*Lattice.CreateEgressStreamResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -127,9 +191,9 @@ func (r *RawClient) CreateEgressStream(
 
 func (r *RawClient) GetEgressStream(
 	ctx context.Context,
-	request *video.GetEgressStreamRequest,
+	request *Lattice.GetEgressStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.GetEgressStreamResponse], error) {
+) (*core.Response[*Lattice.GetEgressStreamResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -144,7 +208,34 @@ func (r *RawClient) GetEgressStream(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	var response *video.GetEgressStreamResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.GetEgressStreamResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -157,13 +248,13 @@ func (r *RawClient) GetEgressStream(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.GetEgressStreamResponse]{
+	return &core.Response[*Lattice.GetEgressStreamResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -172,9 +263,9 @@ func (r *RawClient) GetEgressStream(
 
 func (r *RawClient) DeleteEgressStream(
 	ctx context.Context,
-	request *video.DeleteEgressStreamRequest,
+	request *Lattice.DeleteEgressStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.DeleteEgressStreamResponse], error) {
+) (*core.Response[*Lattice.DeleteEgressStreamResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -189,7 +280,34 @@ func (r *RawClient) DeleteEgressStream(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	var response *video.DeleteEgressStreamResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.DeleteEgressStreamResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -202,13 +320,13 @@ func (r *RawClient) DeleteEgressStream(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.DeleteEgressStreamResponse]{
+	return &core.Response[*Lattice.DeleteEgressStreamResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -217,9 +335,9 @@ func (r *RawClient) DeleteEgressStream(
 
 func (r *RawClient) ListIngressStreams(
 	ctx context.Context,
-	request *video.ListIngressStreamsRequest,
+	request *Lattice.ListIngressStreamsRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.ListIngressStreamsResponse], error) {
+) (*core.Response[*Lattice.ListIngressStreamsResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -238,7 +356,39 @@ func (r *RawClient) ListIngressStreams(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	var response *video.ListIngressStreamsResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &InternalServerError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.ListIngressStreamsResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -251,13 +401,13 @@ func (r *RawClient) ListIngressStreams(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.ListIngressStreamsResponse]{
+	return &core.Response[*Lattice.ListIngressStreamsResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -266,9 +416,9 @@ func (r *RawClient) ListIngressStreams(
 
 func (r *RawClient) CreateIngressStream(
 	ctx context.Context,
-	request *video.CreateIngressStreamRequest,
+	request *Lattice.CreateIngressStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.CreateIngressStreamResponse], error) {
+) (*core.Response[*Lattice.CreateIngressStreamResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -281,7 +431,44 @@ func (r *RawClient) CreateIngressStream(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
-	var response *video.CreateIngressStreamResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		409: func(apiError *core.APIError) error {
+			return &ConflictError{
+				APIError: apiError,
+			}
+		},
+		429: func(apiError *core.APIError) error {
+			return &TooManyRequestsError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.CreateIngressStreamResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -295,13 +482,13 @@ func (r *RawClient) CreateIngressStream(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.CreateIngressStreamResponse]{
+	return &core.Response[*Lattice.CreateIngressStreamResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -310,9 +497,9 @@ func (r *RawClient) CreateIngressStream(
 
 func (r *RawClient) GetIngressStream(
 	ctx context.Context,
-	request *video.GetIngressStreamRequest,
+	request *Lattice.GetIngressStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.GetIngressStreamResponse], error) {
+) (*core.Response[*Lattice.GetIngressStreamResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -327,7 +514,34 @@ func (r *RawClient) GetIngressStream(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	var response *video.GetIngressStreamResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.GetIngressStreamResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -340,13 +554,13 @@ func (r *RawClient) GetIngressStream(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.GetIngressStreamResponse]{
+	return &core.Response[*Lattice.GetIngressStreamResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,
@@ -355,9 +569,9 @@ func (r *RawClient) GetIngressStream(
 
 func (r *RawClient) DeleteIngressStream(
 	ctx context.Context,
-	request *video.DeleteIngressStreamRequest,
+	request *Lattice.DeleteIngressStreamRequest,
 	opts ...option.RequestOption,
-) (*core.Response[*video.DeleteIngressStreamResponse], error) {
+) (*core.Response[*Lattice.DeleteIngressStreamResponse], error) {
 	options := core.NewRequestOptions(opts...)
 	baseURL := internal.ResolveBaseURL(
 		options.BaseURL,
@@ -372,7 +586,34 @@ func (r *RawClient) DeleteIngressStream(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
-	var response *video.DeleteIngressStreamResponse
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		403: func(apiError *core.APIError) error {
+			return &ForbiddenError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &NotFoundError{
+				APIError: apiError,
+			}
+		},
+		503: func(apiError *core.APIError) error {
+			return &ServiceUnavailableError{
+				APIError: apiError,
+			}
+		},
+	}
+	var response *Lattice.DeleteIngressStreamResponse
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -385,13 +626,13 @@ func (r *RawClient) DeleteIngressStream(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(video.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &core.Response[*video.DeleteIngressStreamResponse]{
+	return &core.Response[*Lattice.DeleteIngressStreamResponse]{
 		StatusCode: raw.StatusCode,
 		Header:     raw.Header,
 		Body:       response,

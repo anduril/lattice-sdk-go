@@ -233,6 +233,18 @@ func (c *Client) StreamEntities(
 	)
 	headers.Add("Accept", "text/event-stream")
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	streamer := internal.NewStreamer[Lattice.StreamEntitiesResponse](c.caller)
 	return streamer.Stream(
 		ctx,
@@ -250,7 +262,7 @@ func (c *Client) StreamEntities(
 			Terminator:      internal.DefaultSSETerminator,
 			Format:          core.StreamFormatSSE,
 			Request:         request,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 }

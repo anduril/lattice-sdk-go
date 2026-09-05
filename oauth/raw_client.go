@@ -49,6 +49,18 @@ func (r *RawClient) GetToken(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/x-www-form-urlencoded")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.GetTokenResponse
 	raw, err := r.caller.Call(
 		ctx,
@@ -63,7 +75,7 @@ func (r *RawClient) GetToken(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
