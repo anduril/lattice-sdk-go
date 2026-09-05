@@ -240,6 +240,18 @@ func (c *Client) StreamTasks(
 	)
 	headers.Add("Accept", "text/event-stream")
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	streamer := internal.NewStreamer[Lattice.StreamTasksResponse](c.caller)
 	return streamer.Stream(
 		ctx,
@@ -257,7 +269,7 @@ func (c *Client) StreamTasks(
 			Terminator:      internal.DefaultSSETerminator,
 			Format:          core.StreamFormatSSE,
 			Request:         request,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 }
@@ -349,6 +361,18 @@ func (c *Client) StreamAsAgent(
 	)
 	headers.Add("Accept", "text/event-stream")
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	streamer := internal.NewStreamer[Lattice.StreamAsAgentResponse](c.caller)
 	return streamer.Stream(
 		ctx,
@@ -366,7 +390,7 @@ func (c *Client) StreamAsAgent(
 			Terminator:      internal.DefaultSSETerminator,
 			Format:          core.StreamFormatSSE,
 			Request:         request,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 }
@@ -415,6 +439,18 @@ func (c *Client) StreamManualControlFrames(
 	)
 	headers.Add("Accept", "text/event-stream")
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	streamer := internal.NewStreamer[Lattice.StreamManualControlFramesResponse](c.caller)
 	return streamer.Stream(
 		ctx,
@@ -432,7 +468,7 @@ func (c *Client) StreamManualControlFrames(
 			Terminator:      internal.DefaultSSETerminator,
 			Format:          core.StreamFormatSSE,
 			Request:         request,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 }

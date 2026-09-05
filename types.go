@@ -7597,6 +7597,126 @@ func (g *GeoVisualDetails) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
+// The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
+var (
+	googleRPCStatusFieldCode    = big.NewInt(1 << 0)
+	googleRPCStatusFieldMessage = big.NewInt(1 << 1)
+	googleRPCStatusFieldDetails = big.NewInt(1 << 2)
+)
+
+type GoogleRPCStatus struct {
+	// The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+	Code *int `json:"code,omitempty" url:"code,omitempty"`
+	// A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+	Message *string `json:"message,omitempty" url:"message,omitempty"`
+	// A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+	Details []*GoogleProtobufAny `json:"details,omitempty" url:"details,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (g *GoogleRPCStatus) GetCode() *int {
+	if g == nil {
+		return nil
+	}
+	return g.Code
+}
+
+func (g *GoogleRPCStatus) GetMessage() *string {
+	if g == nil {
+		return nil
+	}
+	return g.Message
+}
+
+func (g *GoogleRPCStatus) GetDetails() []*GoogleProtobufAny {
+	if g == nil {
+		return nil
+	}
+	return g.Details
+}
+
+func (g *GoogleRPCStatus) GetExtraProperties() map[string]interface{} {
+	if g == nil {
+		return nil
+	}
+	return g.extraProperties
+}
+
+func (g *GoogleRPCStatus) require(field *big.Int) {
+	if g.explicitFields == nil {
+		g.explicitFields = big.NewInt(0)
+	}
+	g.explicitFields.Or(g.explicitFields, field)
+}
+
+// SetCode sets the Code field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GoogleRPCStatus) SetCode(code *int) {
+	g.Code = code
+	g.require(googleRPCStatusFieldCode)
+}
+
+// SetMessage sets the Message field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GoogleRPCStatus) SetMessage(message *string) {
+	g.Message = message
+	g.require(googleRPCStatusFieldMessage)
+}
+
+// SetDetails sets the Details field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GoogleRPCStatus) SetDetails(details []*GoogleProtobufAny) {
+	g.Details = details
+	g.require(googleRPCStatusFieldDetails)
+}
+
+func (g *GoogleRPCStatus) UnmarshalJSON(data []byte) error {
+	type unmarshaler GoogleRPCStatus
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*g = GoogleRPCStatus(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *g)
+	if err != nil {
+		return err
+	}
+	g.extraProperties = extraProperties
+	g.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (g *GoogleRPCStatus) MarshalJSON() ([]byte, error) {
+	type embed GoogleRPCStatus
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*g),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, g.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (g *GoogleRPCStatus) String() string {
+	if g == nil {
+		return "<nil>"
+	}
+	if len(g.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(g.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(g); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", g)
+}
+
 // A GroupChild relationship is a uni-directional relationship indicating that (1) this entity
 //
 //	represents an Entity Group and (2) the related entity is a child member of this group. The presence of this
@@ -7668,13 +7788,15 @@ func (g *GroupChild) String() string {
 
 // Details related to grouping for this entity
 var (
-	groupDetailsFieldTeam    = big.NewInt(1 << 0)
-	groupDetailsFieldEchelon = big.NewInt(1 << 1)
+	groupDetailsFieldTeam                  = big.NewInt(1 << 0)
+	groupDetailsFieldPlatformSubcomponents = big.NewInt(1 << 1)
+	groupDetailsFieldEchelon               = big.NewInt(1 << 2)
 )
 
 type GroupDetails struct {
-	Team    *Team    `json:"team,omitempty" url:"team,omitempty"`
-	Echelon *Echelon `json:"echelon,omitempty" url:"echelon,omitempty"`
+	Team                  *Team                  `json:"team,omitempty" url:"team,omitempty"`
+	PlatformSubcomponents *PlatformSubcomponents `json:"platformSubcomponents,omitempty" url:"platformSubcomponents,omitempty"`
+	Echelon               *Echelon               `json:"echelon,omitempty" url:"echelon,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -7688,6 +7810,13 @@ func (g *GroupDetails) GetTeam() *Team {
 		return nil
 	}
 	return g.Team
+}
+
+func (g *GroupDetails) GetPlatformSubcomponents() *PlatformSubcomponents {
+	if g == nil {
+		return nil
+	}
+	return g.PlatformSubcomponents
 }
 
 func (g *GroupDetails) GetEchelon() *Echelon {
@@ -7716,6 +7845,13 @@ func (g *GroupDetails) require(field *big.Int) {
 func (g *GroupDetails) SetTeam(team *Team) {
 	g.Team = team
 	g.require(groupDetailsFieldTeam)
+}
+
+// SetPlatformSubcomponents sets the PlatformSubcomponents field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (g *GroupDetails) SetPlatformSubcomponents(platformSubcomponents *PlatformSubcomponents) {
+	g.PlatformSubcomponents = platformSubcomponents
+	g.require(groupDetailsFieldPlatformSubcomponents)
 }
 
 // SetEchelon sets the Echelon field and marks it as non-optional;
@@ -13038,6 +13174,76 @@ func (p *Payloads) MarshalJSON() ([]byte, error) {
 }
 
 func (p *Payloads) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	if len(p.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(p.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(p); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", p)
+}
+
+// Describes a PlatformSubcomponents group type. Comprised of entities which
+//
+//	are subcomponents of the parent platform and the parent platform itself.
+//	Subcomponents are assumed to be positionally related to the parent group.
+//	relationship to a radar entity.
+type PlatformSubcomponents struct {
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (p *PlatformSubcomponents) GetExtraProperties() map[string]interface{} {
+	if p == nil {
+		return nil
+	}
+	return p.extraProperties
+}
+
+func (p *PlatformSubcomponents) require(field *big.Int) {
+	if p.explicitFields == nil {
+		p.explicitFields = big.NewInt(0)
+	}
+	p.explicitFields.Or(p.explicitFields, field)
+}
+
+func (p *PlatformSubcomponents) UnmarshalJSON(data []byte) error {
+	type unmarshaler PlatformSubcomponents
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*p = PlatformSubcomponents(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *p)
+	if err != nil {
+		return err
+	}
+	p.extraProperties = extraProperties
+	p.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (p *PlatformSubcomponents) MarshalJSON() ([]byte, error) {
+	type embed PlatformSubcomponents
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*p),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, p.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (p *PlatformSubcomponents) String() string {
 	if p == nil {
 		return "<nil>"
 	}

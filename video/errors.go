@@ -4,6 +4,7 @@ package video
 
 import (
 	json "encoding/json"
+	v4 "github.com/anduril/lattice-sdk-go/v4"
 	core "github.com/anduril/lattice-sdk-go/v4/core"
 )
 
@@ -13,11 +14,11 @@ import (
 // not being live.
 type BadRequestError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (b *BadRequestError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -39,11 +40,11 @@ func (b *BadRequestError) Unwrap() error {
 // stream already exists for the requested source.
 type ConflictError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (c *ConflictError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -63,11 +64,11 @@ func (c *ConflictError) Unwrap() error {
 // The caller is authenticated but lacks permission for the requested resource.
 type ForbiddenError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (f *ForbiddenError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -89,11 +90,11 @@ func (f *ForbiddenError) Unwrap() error {
 // with backoff.
 type InternalServerError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (i *InternalServerError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -113,11 +114,11 @@ func (i *InternalServerError) Unwrap() error {
 // The specified ingress or egress stream was not found.
 type NotFoundError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (n *NotFoundError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -139,11 +140,11 @@ func (n *NotFoundError) Unwrap() error {
 // (typically around 2 seconds); clients should retry per that hint.
 type ServiceUnavailableError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (s *ServiceUnavailableError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -165,11 +166,11 @@ func (s *ServiceUnavailableError) Unwrap() error {
 // limit, so this reflects deployment-wide capacity rather than caller behavior.
 type TooManyRequestsError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (t *TooManyRequestsError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -190,11 +191,11 @@ func (t *TooManyRequestsError) Unwrap() error {
 // not be resolved to a user identity.
 type UnauthorizedError struct {
 	*core.APIError
-	Body *GoogleRPCStatus
+	Body *v4.GoogleRPCStatus
 }
 
 func (u *UnauthorizedError) UnmarshalJSON(data []byte) error {
-	var body *GoogleRPCStatus
+	var body *v4.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}

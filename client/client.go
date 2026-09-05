@@ -15,7 +15,7 @@ import (
 	objects "github.com/anduril/lattice-sdk-go/v4/objects"
 	option "github.com/anduril/lattice-sdk-go/v4/option"
 	tasks "github.com/anduril/lattice-sdk-go/v4/tasks"
-	client "github.com/anduril/lattice-sdk-go/v4/video/client"
+	video "github.com/anduril/lattice-sdk-go/v4/video"
 )
 
 type Client struct {
@@ -23,7 +23,7 @@ type Client struct {
 	Tasks    *tasks.Client
 	Objects  *objects.Client
 	Oauth    *oauth.Client
-	Video    *client.Client
+	Video    *video.Client
 
 	options *core.RequestOptions
 	baseURL string
@@ -82,7 +82,7 @@ func NewClient(opts ...option.RequestOption) *Client {
 		Tasks:    tasks.NewClient(options),
 		Objects:  objects.NewClient(options),
 		Oauth:    oauth.NewClient(options),
-		Video:    client.NewClient(options),
+		Video:    video.NewClient(options),
 		options:  options,
 		baseURL:  options.BaseURL,
 		caller: internal.NewCaller(

@@ -60,6 +60,28 @@ func (r *RawClient) GetObject(
 		headers.Add("Priority", *request.Priority)
 	}
 
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &Lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
 	response := bytes.NewBuffer(nil)
 	raw, err := r.caller.Call(
 		ctx,
@@ -73,7 +95,7 @@ func (r *RawClient) GetObject(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -107,6 +129,33 @@ func (r *RawClient) UploadObject(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		413: func(apiError *core.APIError) error {
+			return &Lattice.ContentTooLargeError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &Lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+		507: func(apiError *core.APIError) error {
+			return &Lattice.InsufficientStorageError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.PathMetadata
 	raw, err := r.caller.Call(
 		ctx,
@@ -121,7 +170,7 @@ func (r *RawClient) UploadObject(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -153,6 +202,28 @@ func (r *RawClient) DeleteObject(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &Lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -164,7 +235,7 @@ func (r *RawClient) DeleteObject(
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -196,6 +267,23 @@ func (r *RawClient) GetObjectMetadata(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		500: func(apiError *core.APIError) error {
+			return &Lattice.InternalServerError{
+				APIError: apiError,
+			}
+		},
+	}
 	raw, err := r.caller.Call(
 		ctx,
 		&internal.CallParams{
@@ -207,7 +295,7 @@ func (r *RawClient) GetObjectMetadata(
 			BodyProperties:  options.BodyProperties,
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {

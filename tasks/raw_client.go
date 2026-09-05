@@ -49,6 +49,18 @@ func (r *RawClient) CreateTask(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Task
 	raw, err := r.caller.Call(
 		ctx,
@@ -63,7 +75,7 @@ func (r *RawClient) CreateTask(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -95,6 +107,23 @@ func (r *RawClient) GetTask(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Task
 	raw, err := r.caller.Call(
 		ctx,
@@ -108,7 +137,7 @@ func (r *RawClient) GetTask(
 			QueryParameters: options.QueryParameters,
 			Client:          options.HTTPClient,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -141,6 +170,23 @@ func (r *RawClient) UpdateTaskStatus(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Task
 	raw, err := r.caller.Call(
 		ctx,
@@ -155,7 +201,7 @@ func (r *RawClient) UpdateTaskStatus(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -188,6 +234,23 @@ func (r *RawClient) CancelTask(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.Task
 	raw, err := r.caller.Call(
 		ctx,
@@ -202,7 +265,7 @@ func (r *RawClient) CancelTask(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -232,6 +295,23 @@ func (r *RawClient) QueryTasks(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+		404: func(apiError *core.APIError) error {
+			return &Lattice.NotFoundError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.TaskQueryResults
 	raw, err := r.caller.Call(
 		ctx,
@@ -246,7 +326,7 @@ func (r *RawClient) QueryTasks(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
@@ -276,6 +356,18 @@ func (r *RawClient) ListenAsAgent(
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/json")
+	errorCodes := internal.ErrorCodes{
+		400: func(apiError *core.APIError) error {
+			return &Lattice.BadRequestError{
+				APIError: apiError,
+			}
+		},
+		401: func(apiError *core.APIError) error {
+			return &Lattice.UnauthorizedError{
+				APIError: apiError,
+			}
+		},
+	}
 	var response *Lattice.AgentRequest
 	raw, err := r.caller.Call(
 		ctx,
@@ -290,7 +382,7 @@ func (r *RawClient) ListenAsAgent(
 			Client:          options.HTTPClient,
 			Request:         request,
 			Response:        &response,
-			ErrorDecoder:    internal.NewErrorDecoder(Lattice.ErrorCodes),
+			ErrorDecoder:    internal.NewErrorDecoder(errorCodes),
 		},
 	)
 	if err != nil {
