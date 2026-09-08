@@ -1,6 +1,6 @@
 // Code generated from our API definition. DO NOT EDIT.
 
-package video
+package Lattice
 
 import (
 	json "encoding/json"
