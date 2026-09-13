@@ -23,10 +23,12 @@ type DeleteObjectRequest struct {
 }
 
 func (d *DeleteObjectRequest) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetObjectPath sets the ObjectPath field and marks it as non-optional;
@@ -55,10 +57,12 @@ type GetObjectRequest struct {
 }
 
 func (g *GetObjectRequest) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetAcceptEncoding sets the AcceptEncoding field and marks it as non-optional;
@@ -95,10 +99,12 @@ type GetObjectMetadataRequest struct {
 }
 
 func (g *GetObjectMetadataRequest) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetObjectPath sets the ObjectPath field and marks it as non-optional;
@@ -135,10 +141,12 @@ type ListObjectsRequest struct {
 }
 
 func (l *ListObjectsRequest) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetPrefix sets the Prefix field and marks it as non-optional;
@@ -220,10 +228,12 @@ func (c *ContentIdentifier) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *ContentIdentifier) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetPath sets the Path field and marks it as non-optional;
@@ -320,10 +330,12 @@ func (l *ListResponse) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *ListResponse) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetPathMetadatas sets the PathMetadatas field and marks it as non-optional;
@@ -441,10 +453,12 @@ func (p *PathMetadata) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PathMetadata) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetContentIdentifier sets the ContentIdentifier field and marks it as non-optional;
