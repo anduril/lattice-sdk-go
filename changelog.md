@@ -2,6 +2,15 @@
 
 ## [5.1.0] - 2026-09-15
 
+### Added
+- **`ExecutionConstraints`** — new type with `StartAfter` and `CompleteBefore` fields describing when an agent may execute a task after delivery.
+- **`ExecutionConstraints`** field with getters and setters (`GetExecutionConstraints()` / `SetExecutionConstraints()`) added to `Task` and `TaskCreation`.
+- **`ExplicitFieldsFromJSON`** — internal helper that computes the explicit-fields bitmask from a raw JSON object.
+
+### Changed
+- **`HandleExplicitFields`** — now supports wrapper structs whose fields shadow an embedded struct, preserving overridden serialization (such as custom date formats) when removing `omitempty`.
+- **`DeliveryConstraints`** — field documentation clarified to describe Lattice delivery scheduling to the agent.
+
 ## [5.0.0] - 2026-09-04
 
 ### Breaking Changes
