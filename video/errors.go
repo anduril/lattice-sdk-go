@@ -36,7 +36,7 @@ func (b *BadRequestError) Unwrap() error {
 }
 
 // The supplied identifier is already in use. For ingress creation this means the
-// requested `ingress_id` is taken by another stream; for egress creation an egress
+// requested `ingressId` is taken by another stream; for egress creation an egress
 // stream already exists for the requested source.
 type ConflictError struct {
 	*core.APIError
