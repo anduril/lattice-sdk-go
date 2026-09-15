@@ -2,6 +2,10 @@
 
 ## [5.1.0] - 2026-09-15
 
+### Added
+- **`ExecutionConstraints`** — new type with `StartAfter` and `CompleteBefore` fields for specifying when an agent may execute a task after delivery.
+- **`ExecutionConstraints`** field — added to `Task` and `TaskCreation` with corresponding `GetExecutionConstraints()` and `SetExecutionConstraints()` accessors.
+
 ## [5.0.0] - 2026-09-04
 
 ### Breaking Changes
