@@ -51,10 +51,12 @@ func (a *AcmDetails) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AcmDetails) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetAcmType sets the AcmType field and marks it as non-optional;
@@ -155,10 +157,12 @@ func (a *ActiveTarget) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *ActiveTarget) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 func (a *ActiveTarget) UnmarshalJSON(data []byte) error {
@@ -234,10 +238,12 @@ func (a *Agent) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *Agent) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetEntityID sets the EntityID field and marks it as non-optional;
@@ -367,10 +373,12 @@ func (a *Alert) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *Alert) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetAlertCode sets the AlertCode field and marks it as non-optional;
@@ -504,10 +512,12 @@ func (a *AlertCondition) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AlertCondition) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetConditionCode sets the ConditionCode field and marks it as non-optional;
@@ -635,10 +645,12 @@ func (a *Aliases) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *Aliases) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetAlternateIDs sets the AlternateIDs field and marks it as non-optional;
@@ -736,10 +748,12 @@ func (a *AlternateID) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AlternateID) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetID sets the ID field and marks it as non-optional;
@@ -966,10 +980,12 @@ func (a *Altitude) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *Altitude) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetHaeWgs84 sets the HaeWgs84 field and marks it as non-optional;
@@ -1104,10 +1120,12 @@ func (a *AltitudeAboveGroundLevel) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AltitudeAboveGroundLevel) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -1209,10 +1227,12 @@ func (a *AltitudeAboveMeanSeaLevelEgm96) GetExtraProperties() map[string]interfa
 }
 
 func (a *AltitudeAboveMeanSeaLevelEgm96) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -1315,10 +1335,12 @@ func (a *AltitudeAboveMeanSeaLevelPressure) GetExtraProperties() map[string]inte
 }
 
 func (a *AltitudeAboveMeanSeaLevelPressure) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -1418,10 +1440,12 @@ func (a *AltitudeAboveSeaFloor) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AltitudeAboveSeaFloor) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -1524,10 +1548,12 @@ func (a *AltitudeAboveStandardDatumPlanePressure) GetExtraProperties() map[strin
 }
 
 func (a *AltitudeAboveStandardDatumPlanePressure) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -1627,10 +1653,12 @@ func (a *AltitudeAboveWgs84Ellipsoid) GetExtraProperties() map[string]interface{
 }
 
 func (a *AltitudeAboveWgs84Ellipsoid) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -1730,10 +1758,12 @@ func (a *AltitudeBelowSeaSurface) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AltitudeBelowSeaSurface) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -1821,10 +1851,12 @@ func (a *AltitudeProvenance) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AltitudeProvenance) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetSourceType sets the SourceType field and marks it as non-optional;
@@ -1967,10 +1999,12 @@ func (a *AngleOfArrival) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AngleOfArrival) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetRelativePose sets the RelativePose field and marks it as non-optional;
@@ -2067,10 +2101,12 @@ func (b *BadRequestErrorBody) GetExtraProperties() map[string]interface{} {
 }
 
 func (b *BadRequestErrorBody) require(field *big.Int) {
-	if b.explicitFields == nil {
-		b.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if b.explicitFields != nil {
+		next.Set(b.explicitFields)
 	}
-	b.explicitFields.Or(b.explicitFields, field)
+	next.Or(next, field)
+	b.explicitFields = next
 }
 
 // SetError sets the Error field and marks it as non-optional;
@@ -2159,10 +2195,12 @@ func (b *Bandwidth) GetExtraProperties() map[string]interface{} {
 }
 
 func (b *Bandwidth) require(field *big.Int) {
-	if b.explicitFields == nil {
-		b.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if b.explicitFields != nil {
+		next.Set(b.explicitFields)
 	}
-	b.explicitFields.Or(b.explicitFields, field)
+	next.Or(next, field)
+	b.explicitFields = next
 }
 
 // SetBandwidthHz sets the BandwidthHz field and marks it as non-optional;
@@ -2253,10 +2291,12 @@ func (b *BandwidthRange) GetExtraProperties() map[string]interface{} {
 }
 
 func (b *BandwidthRange) require(field *big.Int) {
-	if b.explicitFields == nil {
-		b.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if b.explicitFields != nil {
+		next.Set(b.explicitFields)
 	}
-	b.explicitFields.Or(b.explicitFields, field)
+	next.Or(next, field)
+	b.explicitFields = next
 }
 
 // SetMinimumBandwidth sets the MinimumBandwidth field and marks it as non-optional;
@@ -2360,10 +2400,12 @@ func (c *Classification) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *Classification) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetDefault sets the Default field and marks it as non-optional;
@@ -2468,10 +2510,12 @@ func (c *ClassificationInformation) GetExtraProperties() map[string]interface{} 
 }
 
 func (c *ClassificationInformation) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetLevel sets the Level field and marks it as non-optional;
@@ -2636,10 +2680,12 @@ func (c *Color) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *Color) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetRed sets the Red field and marks it as non-optional;
@@ -2785,10 +2831,12 @@ func (c *ComponentHealth) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *ComponentHealth) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetID sets the ID field and marks it as non-optional;
@@ -2952,10 +3000,12 @@ func (c *ComponentMessage) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *ComponentMessage) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetStatus sets the Status field and marks it as non-optional;
@@ -3081,10 +3131,12 @@ func (c *ControlAreaDetails) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *ControlAreaDetails) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetType sets the Type field and marks it as non-optional;
@@ -3240,10 +3292,12 @@ func (c *Correlation) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *Correlation) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetPrimary sets the Primary field and marks it as non-optional;
@@ -3380,10 +3434,12 @@ func (c *CorrelationMembership) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *CorrelationMembership) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetCorrelationSetID sets the CorrelationSetID field and marks it as non-optional;
@@ -3513,10 +3569,12 @@ func (c *CorrelationMetadata) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *CorrelationMetadata) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetProvenance sets the Provenance field and marks it as non-optional;
@@ -3689,10 +3747,12 @@ func (c *CronWindow) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *CronWindow) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetCronExpression sets the CronExpression field and marks it as non-optional;
@@ -3781,10 +3841,12 @@ func (d *DecorrelatedAll) GetExtraProperties() map[string]interface{} {
 }
 
 func (d *DecorrelatedAll) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetMetadata sets the Metadata field and marks it as non-optional;
@@ -3876,10 +3938,12 @@ func (d *DecorrelatedSingle) GetExtraProperties() map[string]interface{} {
 }
 
 func (d *DecorrelatedSingle) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetEntityID sets the EntityID field and marks it as non-optional;
@@ -3984,10 +4048,12 @@ func (d *Decorrelation) GetExtraProperties() map[string]interface{} {
 }
 
 func (d *Decorrelation) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetAll sets the All field and marks it as non-optional;
@@ -4076,10 +4142,12 @@ func (d *Dimensions) GetExtraProperties() map[string]interface{} {
 }
 
 func (d *Dimensions) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetLengthM sets the LengthM field and marks it as non-optional;
@@ -4164,10 +4232,12 @@ func (e *Echelon) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *Echelon) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetArmyEchelon sets the ArmyEchelon field and marks it as non-optional;
@@ -4308,10 +4378,12 @@ func (e *EmitterNotation) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *EmitterNotation) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetEmitterNotation sets the EmitterNotation field and marks it as non-optional;
@@ -4815,10 +4887,12 @@ func (e *Entity) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *Entity) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetEntityID sets the EntityID field and marks it as non-optional;
@@ -5197,10 +5271,12 @@ func (e *EntityManagerPose) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *EntityManagerPose) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetPos sets the Pos field and marks it as non-optional;
@@ -5334,10 +5410,12 @@ func (e *EntityManagerTMat3) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *EntityManagerTMat3) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetMxx sets the Mxx field and marks it as non-optional;
@@ -5471,10 +5549,12 @@ func (e *Enu) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *Enu) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetE sets the E field and marks it as non-optional;
@@ -5601,10 +5681,12 @@ func (e *ErrorEllipse) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *ErrorEllipse) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetProbability sets the Probability field and marks it as non-optional;
@@ -5720,10 +5802,12 @@ func (f *FieldClassificationInformation) GetExtraProperties() map[string]interfa
 }
 
 func (f *FieldClassificationInformation) require(field *big.Int) {
-	if f.explicitFields == nil {
-		f.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if f.explicitFields != nil {
+		next.Set(f.explicitFields)
 	}
-	f.explicitFields.Or(f.explicitFields, field)
+	next.Or(next, field)
+	f.explicitFields = next
 }
 
 // SetFieldPath sets the FieldPath field and marks it as non-optional;
@@ -5902,10 +5986,12 @@ func (f *FieldOfView) GetExtraProperties() map[string]interface{} {
 }
 
 func (f *FieldOfView) require(field *big.Int) {
-	if f.explicitFields == nil {
-		f.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if f.explicitFields != nil {
+		next.Set(f.explicitFields)
 	}
-	f.explicitFields.Or(f.explicitFields, field)
+	next.Or(next, field)
+	f.explicitFields = next
 }
 
 // SetFovID sets the FovID field and marks it as non-optional;
@@ -6069,10 +6155,12 @@ func (f *Fixed) GetExtraProperties() map[string]interface{} {
 }
 
 func (f *Fixed) require(field *big.Int) {
-	if f.explicitFields == nil {
-		f.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if f.explicitFields != nil {
+		next.Set(f.explicitFields)
 	}
-	f.explicitFields.Or(f.explicitFields, field)
+	next.Or(next, field)
+	f.explicitFields = next
 }
 
 func (f *Fixed) UnmarshalJSON(data []byte) error {
@@ -6148,10 +6236,12 @@ func (f *Frequency) GetExtraProperties() map[string]interface{} {
 }
 
 func (f *Frequency) require(field *big.Int) {
-	if f.explicitFields == nil {
-		f.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if f.explicitFields != nil {
+		next.Set(f.explicitFields)
 	}
-	f.explicitFields.Or(f.explicitFields, field)
+	next.Or(next, field)
+	f.explicitFields = next
 }
 
 // SetFrequencyHz sets the FrequencyHz field and marks it as non-optional;
@@ -6244,10 +6334,12 @@ func (f *FrequencyRange) GetExtraProperties() map[string]interface{} {
 }
 
 func (f *FrequencyRange) require(field *big.Int) {
-	if f.explicitFields == nil {
-		f.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if f.explicitFields != nil {
+		next.Set(f.explicitFields)
 	}
-	f.explicitFields.Or(f.explicitFields, field)
+	next.Or(next, field)
+	f.explicitFields = next
 }
 
 // SetMinimumFrequencyHz sets the MinimumFrequencyHz field and marks it as non-optional;
@@ -6409,10 +6501,12 @@ func (f *Fuel) GetExtraProperties() map[string]interface{} {
 }
 
 func (f *Fuel) require(field *big.Int) {
-	if f.explicitFields == nil {
-		f.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if f.explicitFields != nil {
+		next.Set(f.explicitFields)
 	}
-	f.explicitFields.Or(f.explicitFields, field)
+	next.Or(next, field)
+	f.explicitFields = next
 }
 
 // SetFuelID sets the FuelID field and marks it as non-optional;
@@ -6578,10 +6672,12 @@ func (g *GeoDetails) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoDetails) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetType sets the Type field and marks it as non-optional;
@@ -6758,10 +6854,12 @@ func (g *GeoEllipse) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoEllipse) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetSemiMajorAxisM sets the SemiMajorAxisM field and marks it as non-optional;
@@ -6888,10 +6986,12 @@ func (g *GeoEllipsoid) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoEllipsoid) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetForwardAxisM sets the ForwardAxisM field and marks it as non-optional;
@@ -6989,10 +7089,12 @@ func (g *GeoLine) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoLine) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetPositions sets the Positions field and marks it as non-optional;
@@ -7076,10 +7178,12 @@ func (g *GeoPoint) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoPoint) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetPosition sets the Position field and marks it as non-optional;
@@ -7177,10 +7281,12 @@ func (g *GeoPolygon) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoPolygon) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetRings sets the Rings field and marks it as non-optional;
@@ -7283,10 +7389,12 @@ func (g *GeoPolygonPosition) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoPolygonPosition) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetPosition sets the Position field and marks it as non-optional;
@@ -7411,10 +7519,12 @@ func (g *GeoShape) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoShape) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetPoint sets the Point field and marks it as non-optional;
@@ -7535,10 +7645,12 @@ func (g *GeoVisualDetails) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GeoVisualDetails) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetFillColor sets the FillColor field and marks it as non-optional;
@@ -7648,10 +7760,12 @@ func (g *GoogleRPCStatus) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GoogleRPCStatus) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetCode sets the Code field and marks it as non-optional;
@@ -7738,10 +7852,12 @@ func (g *GroupChild) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GroupChild) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 func (g *GroupChild) UnmarshalJSON(data []byte) error {
@@ -7834,10 +7950,12 @@ func (g *GroupDetails) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GroupDetails) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetTeam sets the Team field and marks it as non-optional;
@@ -7924,10 +8042,12 @@ func (g *GroupParent) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GroupParent) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 func (g *GroupParent) UnmarshalJSON(data []byte) error {
@@ -8051,10 +8171,12 @@ func (h *Health) GetExtraProperties() map[string]interface{} {
 }
 
 func (h *Health) require(field *big.Int) {
-	if h.explicitFields == nil {
-		h.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if h.explicitFields != nil {
+		next.Set(h.explicitFields)
 	}
-	h.explicitFields.Or(h.explicitFields, field)
+	next.Or(next, field)
+	h.explicitFields = next
 }
 
 // SetConnectionStatus sets the ConnectionStatus field and marks it as non-optional;
@@ -8233,10 +8355,12 @@ func (h *HeartbeatObject) GetExtraProperties() map[string]interface{} {
 }
 
 func (h *HeartbeatObject) require(field *big.Int) {
-	if h.explicitFields == nil {
-		h.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if h.explicitFields != nil {
+		next.Set(h.explicitFields)
 	}
-	h.explicitFields.Or(h.explicitFields, field)
+	next.Or(next, field)
+	h.explicitFields = next
 }
 
 // SetTimestamp sets the Timestamp field and marks it as non-optional;
@@ -8354,10 +8478,12 @@ func (h *HighValueTarget) GetExtraProperties() map[string]interface{} {
 }
 
 func (h *HighValueTarget) require(field *big.Int) {
-	if h.explicitFields == nil {
-		h.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if h.explicitFields != nil {
+		next.Set(h.explicitFields)
 	}
-	h.explicitFields.Or(h.explicitFields, field)
+	next.Or(next, field)
+	h.explicitFields = next
 }
 
 // SetIsHighValueTarget sets the IsHighValueTarget field and marks it as non-optional;
@@ -8472,10 +8598,12 @@ func (h *HighValueTargetMatch) GetExtraProperties() map[string]interface{} {
 }
 
 func (h *HighValueTargetMatch) require(field *big.Int) {
-	if h.explicitFields == nil {
-		h.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if h.explicitFields != nil {
+		next.Set(h.explicitFields)
 	}
-	h.explicitFields.Or(h.explicitFields, field)
+	next.Or(next, field)
+	h.explicitFields = next
 }
 
 // SetHighValueTargetListID sets the HighValueTargetListID field and marks it as non-optional;
@@ -8613,10 +8741,12 @@ func (i *Indicators) GetExtraProperties() map[string]interface{} {
 }
 
 func (i *Indicators) require(field *big.Int) {
-	if i.explicitFields == nil {
-		i.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if i.explicitFields != nil {
+		next.Set(i.explicitFields)
 	}
-	i.explicitFields.Or(i.explicitFields, field)
+	next.Or(next, field)
+	i.explicitFields = next
 }
 
 // SetSimulated sets the Simulated field and marks it as non-optional;
@@ -8748,10 +8878,12 @@ func (k *Kinematics) GetExtraProperties() map[string]interface{} {
 }
 
 func (k *Kinematics) require(field *big.Int) {
-	if k.explicitFields == nil {
-		k.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if k.explicitFields != nil {
+		next.Set(k.explicitFields)
 	}
-	k.explicitFields.Or(k.explicitFields, field)
+	next.Or(next, field)
+	k.explicitFields = next
 }
 
 // SetKinematicsGeodetic sets the KinematicsGeodetic field and marks it as non-optional;
@@ -8905,10 +9037,12 @@ func (k *KinematicsGeocentric) GetExtraProperties() map[string]interface{} {
 }
 
 func (k *KinematicsGeocentric) require(field *big.Int) {
-	if k.explicitFields == nil {
-		k.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if k.explicitFields != nil {
+		next.Set(k.explicitFields)
 	}
-	k.explicitFields.Or(k.explicitFields, field)
+	next.Or(next, field)
+	k.explicitFields = next
 }
 
 // SetLocation sets the Location field and marks it as non-optional;
@@ -9107,10 +9241,12 @@ func (k *KinematicsGeodetic) GetExtraProperties() map[string]interface{} {
 }
 
 func (k *KinematicsGeodetic) require(field *big.Int) {
-	if k.explicitFields == nil {
-		k.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if k.explicitFields != nil {
+		next.Set(k.explicitFields)
 	}
-	k.explicitFields.Or(k.explicitFields, field)
+	next.Or(next, field)
+	k.explicitFields = next
 }
 
 // SetLocation sets the Location field and marks it as non-optional;
@@ -9263,10 +9399,12 @@ func (l *LineOfBearing) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *LineOfBearing) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetAngleOfArrival sets the AngleOfArrival field and marks it as non-optional;
@@ -9362,10 +9500,12 @@ func (l *LinearRing) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *LinearRing) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetPositions sets the Positions field and marks it as non-optional;
@@ -9486,10 +9626,12 @@ func (l *Lla) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *Lla) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetLon sets the Lon field and marks it as non-optional;
@@ -9681,10 +9823,12 @@ func (l *Location) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *Location) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetPosition sets the Position field and marks it as non-optional;
@@ -9821,10 +9965,12 @@ func (l *LocationGeocentricEcef) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *LocationGeocentricEcef) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetXMeters sets the XMeters field and marks it as non-optional;
@@ -9961,10 +10107,12 @@ func (l *LocationGeodetic) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *LocationGeodetic) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetLatitudeDegrees sets the LatitudeDegrees field and marks it as non-optional;
@@ -10092,10 +10240,12 @@ func (l *LocationUncertainty) GetExtraProperties() map[string]interface{} {
 }
 
 func (l *LocationUncertainty) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetPositionEnuCov sets the PositionEnuCov field and marks it as non-optional;
@@ -10270,10 +10420,12 @@ func (m *MeanKeplerianElements) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *MeanKeplerianElements) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetEpoch sets the Epoch field and marks it as non-optional;
@@ -10430,10 +10582,12 @@ func (m *Measurement) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *Measurement) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetValue sets the Value field and marks it as non-optional;
@@ -10522,10 +10676,12 @@ func (m *Media) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *Media) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetMedia sets the Media field and marks it as non-optional;
@@ -10627,10 +10783,12 @@ func (m *MediaItem) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *MediaItem) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetItemIdentifier sets the ItemIdentifier field and marks it as non-optional;
@@ -10742,10 +10900,12 @@ func (m *MergedFrom) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *MergedFrom) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 func (m *MergedFrom) UnmarshalJSON(data []byte) error {
@@ -10819,10 +10979,12 @@ func (m *MilStd2525C) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *MilStd2525C) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetSidc sets the Sidc field and marks it as non-optional;
@@ -10922,10 +11084,12 @@ func (m *MilView) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *MilView) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetDisposition sets the Disposition field and marks it as non-optional;
@@ -11471,10 +11635,12 @@ func (m *Mode5) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *Mode5) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetMode5InterrogationResponse sets the Mode5InterrogationResponse field and marks it as non-optional;
@@ -11612,10 +11778,12 @@ func (m *ModeS) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *ModeS) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetID sets the ID field and marks it as non-optional;
@@ -11725,10 +11893,12 @@ func (m *Munition) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *Munition) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetMunitionID sets the MunitionID field and marks it as non-optional;
@@ -11811,10 +11981,12 @@ func (n *NonPrimaryMembership) GetExtraProperties() map[string]interface{} {
 }
 
 func (n *NonPrimaryMembership) require(field *big.Int) {
-	if n.explicitFields == nil {
-		n.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if n.explicitFields != nil {
+		next.Set(n.explicitFields)
 	}
-	n.explicitFields.Or(n.explicitFields, field)
+	next.Or(next, field)
+	n.explicitFields = next
 }
 
 func (n *NonPrimaryMembership) UnmarshalJSON(data []byte) error {
@@ -11910,10 +12082,12 @@ func (o *Ontology) GetExtraProperties() map[string]interface{} {
 }
 
 func (o *Ontology) require(field *big.Int) {
-	if o.explicitFields == nil {
-		o.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if o.explicitFields != nil {
+		next.Set(o.explicitFields)
 	}
-	o.explicitFields.Or(o.explicitFields, field)
+	next.Or(next, field)
+	o.explicitFields = next
 }
 
 // SetPlatformType sets the PlatformType field and marks it as non-optional;
@@ -12044,10 +12218,12 @@ func (o *Orbit) GetExtraProperties() map[string]interface{} {
 }
 
 func (o *Orbit) require(field *big.Int) {
-	if o.explicitFields == nil {
-		o.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if o.explicitFields != nil {
+		next.Set(o.explicitFields)
 	}
-	o.explicitFields.Or(o.explicitFields, field)
+	next.Or(next, field)
+	o.explicitFields = next
 }
 
 // SetOrbitMeanElements sets the OrbitMeanElements field and marks it as non-optional;
@@ -12147,10 +12323,12 @@ func (o *OrbitMeanElements) GetExtraProperties() map[string]interface{} {
 }
 
 func (o *OrbitMeanElements) require(field *big.Int) {
-	if o.explicitFields == nil {
-		o.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if o.explicitFields != nil {
+		next.Set(o.explicitFields)
 	}
-	o.explicitFields.Or(o.explicitFields, field)
+	next.Or(next, field)
+	o.explicitFields = next
 }
 
 // SetMetadata sets the Metadata field and marks it as non-optional;
@@ -12295,10 +12473,12 @@ func (o *OrbitMeanElementsMetadata) GetExtraProperties() map[string]interface{} 
 }
 
 func (o *OrbitMeanElementsMetadata) require(field *big.Int) {
-	if o.explicitFields == nil {
-		o.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if o.explicitFields != nil {
+		next.Set(o.explicitFields)
 	}
-	o.explicitFields.Or(o.explicitFields, field)
+	next.Or(next, field)
+	o.explicitFields = next
 }
 
 // SetCreationDate sets the CreationDate field and marks it as non-optional;
@@ -12538,10 +12718,12 @@ func (o *Override) GetExtraProperties() map[string]interface{} {
 }
 
 func (o *Override) require(field *big.Int) {
-	if o.explicitFields == nil {
-		o.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if o.explicitFields != nil {
+		next.Set(o.explicitFields)
 	}
-	o.explicitFields.Or(o.explicitFields, field)
+	next.Or(next, field)
+	o.explicitFields = next
 }
 
 // SetRequestID sets the RequestID field and marks it as non-optional;
@@ -12736,10 +12918,12 @@ func (o *Overrides) GetExtraProperties() map[string]interface{} {
 }
 
 func (o *Overrides) require(field *big.Int) {
-	if o.explicitFields == nil {
-		o.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if o.explicitFields != nil {
+		next.Set(o.explicitFields)
 	}
-	o.explicitFields.Or(o.explicitFields, field)
+	next.Or(next, field)
+	o.explicitFields = next
 }
 
 // SetOverride sets the Override field and marks it as non-optional;
@@ -12821,10 +13005,12 @@ func (p *Payload) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *Payload) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetConfig sets the Config field and marks it as non-optional;
@@ -12948,10 +13134,12 @@ func (p *PayloadConfiguration) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PayloadConfiguration) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetCapabilityID sets the CapabilityID field and marks it as non-optional;
@@ -13133,10 +13321,12 @@ func (p *Payloads) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *Payloads) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetPayloadConfigurations sets the PayloadConfigurations field and marks it as non-optional;
@@ -13210,10 +13400,12 @@ func (p *PlatformSubcomponents) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PlatformSubcomponents) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 func (p *PlatformSubcomponents) UnmarshalJSON(data []byte) error {
@@ -13317,10 +13509,12 @@ func (p *Pose) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *Pose) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetPos sets the Pos field and marks it as non-optional;
@@ -13474,10 +13668,12 @@ func (p *Position) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *Position) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetLatitudeDegrees sets the LatitudeDegrees field and marks it as non-optional;
@@ -13661,10 +13857,12 @@ func (p *PowerLevel) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PowerLevel) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetCapacity sets the Capacity field and marks it as non-optional;
@@ -13833,10 +14031,12 @@ func (p *PowerSource) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PowerSource) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetPowerStatus sets the PowerStatus field and marks it as non-optional;
@@ -14013,10 +14213,12 @@ func (p *PowerState) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PowerState) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetSourceIDToState sets the SourceIDToState field and marks it as non-optional;
@@ -14098,10 +14300,12 @@ func (p *PrimaryCorrelation) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PrimaryCorrelation) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetSecondaryEntityIDs sets the SecondaryEntityIDs field and marks it as non-optional;
@@ -14170,10 +14374,12 @@ func (p *PrimaryMembership) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PrimaryMembership) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 func (p *PrimaryMembership) UnmarshalJSON(data []byte) error {
@@ -14281,10 +14487,12 @@ func (p *ProjectedFrustum) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *ProjectedFrustum) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetUpperLeft sets the UpperLeft field and marks it as non-optional;
@@ -14431,10 +14639,12 @@ func (p *Provenance) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *Provenance) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetIntegrationName sets the IntegrationName field and marks it as non-optional;
@@ -14552,10 +14762,12 @@ func (p *PulseRepetitionInterval) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *PulseRepetitionInterval) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetPulseRepetitionIntervalS sets the PulseRepetitionIntervalS field and marks it as non-optional;
@@ -14664,10 +14876,12 @@ func (q *Quaternion) GetExtraProperties() map[string]interface{} {
 }
 
 func (q *Quaternion) require(field *big.Int) {
-	if q.explicitFields == nil {
-		q.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if q.explicitFields != nil {
+		next.Set(q.explicitFields)
 	}
-	q.explicitFields.Or(q.explicitFields, field)
+	next.Or(next, field)
+	q.explicitFields = next
 }
 
 // SetX sets the X field and marks it as non-optional;
@@ -14801,10 +15015,12 @@ func (r *RangeRings) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RangeRings) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetMinDistanceM sets the MinDistanceM field and marks it as non-optional;
@@ -14928,10 +15144,12 @@ func (r *Relationship) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *Relationship) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetRelatedEntityID sets the RelatedEntityID field and marks it as non-optional;
@@ -15063,10 +15281,12 @@ func (r *RelationshipType) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RelationshipType) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetTrackedBy sets the TrackedBy field and marks it as non-optional;
@@ -15176,10 +15396,12 @@ func (r *Relationships) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *Relationships) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetRelationships sets the Relationships field and marks it as non-optional;
@@ -15272,10 +15494,12 @@ func (r *RfConfiguration) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RfConfiguration) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetFrequencyRangeHz sets the FrequencyRangeHz field and marks it as non-optional;
@@ -15374,10 +15598,12 @@ func (r *RouteDetails) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RouteDetails) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetDestinationName sets the DestinationName field and marks it as non-optional;
@@ -15483,10 +15709,12 @@ func (s *ScanCharacteristics) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *ScanCharacteristics) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetScanType sets the ScanType field and marks it as non-optional;
@@ -15663,10 +15891,12 @@ func (s *Schedule) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Schedule) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetWindows sets the Windows field and marks it as non-optional;
@@ -15788,10 +16018,12 @@ func (s *Schedules) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Schedules) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetSchedules sets the Schedules field and marks it as non-optional;
@@ -15883,10 +16115,12 @@ func (s *SecondaryCorrelation) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *SecondaryCorrelation) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetPrimaryEntityID sets the PrimaryEntityID field and marks it as non-optional;
@@ -16035,10 +16269,12 @@ func (s *Sensor) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Sensor) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetSensorID sets the SensorID field and marks it as non-optional;
@@ -16248,10 +16484,12 @@ func (s *Sensors) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Sensors) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetSensors sets the Sensors field and marks it as non-optional;
@@ -16430,10 +16668,12 @@ func (s *Signal) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Signal) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetFrequencyCenter sets the FrequencyCenter field and marks it as non-optional;
@@ -16598,10 +16838,12 @@ func (s *Status) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Status) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetPlatformActivity sets the PlatformActivity field and marks it as non-optional;
@@ -16699,10 +16941,12 @@ func (s *Supplies) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Supplies) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetMunitions sets the Munitions field and marks it as non-optional;
@@ -16791,10 +17035,12 @@ func (s *Symbology) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *Symbology) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetMilStd2525C sets the MilStd2525C field and marks it as non-optional;
@@ -16896,10 +17142,12 @@ func (t *TMat2) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TMat2) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetMxx sets the Mxx field and marks it as non-optional;
@@ -17040,10 +17288,12 @@ func (t *TMat3) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TMat3) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetMxx sets the Mxx field and marks it as non-optional;
@@ -17171,10 +17421,12 @@ func (t *TargetPriority) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TargetPriority) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetHighValueTarget sets the HighValueTarget field and marks it as non-optional;
@@ -17263,10 +17515,12 @@ func (t *TaskCatalog) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskCatalog) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskDefinitions sets the TaskDefinitions field and marks it as non-optional;
@@ -17349,10 +17603,12 @@ func (t *TaskDefinition) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskDefinition) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskSpecificationURL sets the TaskSpecificationURL field and marks it as non-optional;
@@ -17444,10 +17700,12 @@ func (t *Team) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *Team) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetEntityID sets the EntityID field and marks it as non-optional;
@@ -17537,10 +17795,12 @@ func (t *Threat) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *Threat) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetIsThreat sets the IsThreat field and marks it as non-optional;
@@ -17711,10 +17971,12 @@ func (t *TleParameters) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TleParameters) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetEphemerisType sets the EphemerisType field and marks it as non-optional;
@@ -17920,10 +18182,12 @@ func (t *Tracked) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *Tracked) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTrackQualityWrapper sets the TrackQualityWrapper field and marks it as non-optional;
@@ -18063,10 +18327,12 @@ func (t *TrackedBy) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TrackedBy) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetActivelyTrackingSensors sets the ActivelyTrackingSensors field and marks it as non-optional;
@@ -18226,10 +18492,12 @@ func (t *TransponderCodes) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TransponderCodes) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetMode1 sets the Mode1 field and marks it as non-optional;
@@ -18390,10 +18658,12 @@ func (u *UInt32Range) GetExtraProperties() map[string]interface{} {
 }
 
 func (u *UInt32Range) require(field *big.Int) {
-	if u.explicitFields == nil {
-		u.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if u.explicitFields != nil {
+		next.Set(u.explicitFields)
 	}
-	u.explicitFields.Or(u.explicitFields, field)
+	next.Or(next, field)
+	u.explicitFields = next
 }
 
 // SetLowerBound sets the LowerBound field and marks it as non-optional;
@@ -18490,10 +18760,12 @@ func (u *UnauthorizedErrorBody) GetExtraProperties() map[string]interface{} {
 }
 
 func (u *UnauthorizedErrorBody) require(field *big.Int) {
-	if u.explicitFields == nil {
-		u.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if u.explicitFields != nil {
+		next.Set(u.explicitFields)
 	}
-	u.explicitFields.Or(u.explicitFields, field)
+	next.Or(next, field)
+	u.explicitFields = next
 }
 
 // SetError sets the Error field and marks it as non-optional;
@@ -18599,10 +18871,12 @@ func (v *Vec3) GetExtraProperties() map[string]interface{} {
 }
 
 func (v *Vec3) require(field *big.Int) {
-	if v.explicitFields == nil {
-		v.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if v.explicitFields != nil {
+		next.Set(v.explicitFields)
 	}
-	v.explicitFields.Or(v.explicitFields, field)
+	next.Or(next, field)
+	v.explicitFields = next
 }
 
 // SetX sets the X field and marks it as non-optional;
@@ -18699,10 +18973,12 @@ func (v *VisualDetails) GetExtraProperties() map[string]interface{} {
 }
 
 func (v *VisualDetails) require(field *big.Int) {
-	if v.explicitFields == nil {
-		v.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if v.explicitFields != nil {
+		next.Set(v.explicitFields)
 	}
-	v.explicitFields.Or(v.explicitFields, field)
+	next.Or(next, field)
+	v.explicitFields = next
 }
 
 // SetRangeRings sets the RangeRings field and marks it as non-optional;
