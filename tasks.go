@@ -26,10 +26,12 @@ type TaskCancellation struct {
 }
 
 func (t *TaskCancellation) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -68,16 +70,17 @@ func (t *TaskCancellation) MarshalJSON() ([]byte, error) {
 }
 
 var (
-	taskCreationFieldTaskID              = big.NewInt(1 << 0)
-	taskCreationFieldDisplayName         = big.NewInt(1 << 1)
-	taskCreationFieldDescription         = big.NewInt(1 << 2)
-	taskCreationFieldSpecification       = big.NewInt(1 << 3)
-	taskCreationFieldAuthor              = big.NewInt(1 << 4)
-	taskCreationFieldRelations           = big.NewInt(1 << 5)
-	taskCreationFieldIsExecutedElsewhere = big.NewInt(1 << 6)
-	taskCreationFieldInitialEntities     = big.NewInt(1 << 7)
-	taskCreationFieldRetryStrategy       = big.NewInt(1 << 8)
-	taskCreationFieldDeliveryConstraints = big.NewInt(1 << 9)
+	taskCreationFieldTaskID               = big.NewInt(1 << 0)
+	taskCreationFieldDisplayName          = big.NewInt(1 << 1)
+	taskCreationFieldDescription          = big.NewInt(1 << 2)
+	taskCreationFieldSpecification        = big.NewInt(1 << 3)
+	taskCreationFieldAuthor               = big.NewInt(1 << 4)
+	taskCreationFieldRelations            = big.NewInt(1 << 5)
+	taskCreationFieldIsExecutedElsewhere  = big.NewInt(1 << 6)
+	taskCreationFieldInitialEntities      = big.NewInt(1 << 7)
+	taskCreationFieldRetryStrategy        = big.NewInt(1 << 8)
+	taskCreationFieldDeliveryConstraints  = big.NewInt(1 << 9)
+	taskCreationFieldExecutionConstraints = big.NewInt(1 << 10)
 )
 
 type TaskCreation struct {
@@ -103,18 +106,22 @@ type TaskCreation struct {
 	InitialEntities []*TaskEntity `json:"initialEntities,omitempty" url:"-"`
 	// Any retry strategy for task execution or update.
 	RetryStrategy *RetryStrategy `json:"retryStrategy,omitempty" url:"-"`
-	// Any scheduling constraints for Lattice delivery of the task.
+	// Describes scheduling constraints for Lattice when delivering the task to the agent.
 	DeliveryConstraints *DeliveryConstraints `json:"deliveryConstraints,omitempty" url:"-"`
+	// Describes scheduling constraints for the agent executing the task after it has been delivered.
+	ExecutionConstraints *ExecutionConstraints `json:"executionConstraints,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
 }
 
 func (t *TaskCreation) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -187,6 +194,13 @@ func (t *TaskCreation) SetDeliveryConstraints(deliveryConstraints *DeliveryConst
 	t.require(taskCreationFieldDeliveryConstraints)
 }
 
+// SetExecutionConstraints sets the ExecutionConstraints field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetExecutionConstraints(executionConstraints *ExecutionConstraints) {
+	t.ExecutionConstraints = executionConstraints
+	t.require(taskCreationFieldExecutionConstraints)
+}
+
 func (t *TaskCreation) UnmarshalJSON(data []byte) error {
 	type unmarshaler TaskCreation
 	var body unmarshaler
@@ -221,10 +235,12 @@ type GetTaskRequest struct {
 }
 
 func (g *GetTaskRequest) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -247,10 +263,12 @@ type AgentListener struct {
 }
 
 func (a *AgentListener) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetAgentSelector sets the AgentSelector field and marks it as non-optional;
@@ -304,10 +322,12 @@ type TaskQuery struct {
 }
 
 func (t *TaskQuery) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetPageToken sets the PageToken field and marks it as non-optional;
@@ -375,10 +395,12 @@ type AgentStreamRequest struct {
 }
 
 func (a *AgentStreamRequest) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetAgentSelector sets the AgentSelector field and marks it as non-optional;
@@ -432,10 +454,12 @@ type ManualControlStreamRequest struct {
 }
 
 func (m *ManualControlStreamRequest) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -511,10 +535,12 @@ type TaskStreamRequest struct {
 }
 
 func (t *TaskStreamRequest) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetHeartbeatIntervalMs sets the HeartbeatIntervalMs field and marks it as non-optional;
@@ -651,10 +677,12 @@ func (a *AgentRequest) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AgentRequest) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetExecuteRequest sets the ExecuteRequest field and marks it as non-optional;
@@ -767,10 +795,12 @@ func (a *AgentStreamEvent) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AgentStreamEvent) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetExecuteRequest sets the ExecuteRequest field and marks it as non-optional;
@@ -884,10 +914,12 @@ func (a *AgentTaskRequest) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *AgentTaskRequest) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetExecuteRequest sets the ExecuteRequest field and marks it as non-optional;
@@ -984,10 +1016,12 @@ func (a *Allocation) GetExtraProperties() map[string]interface{} {
 }
 
 func (a *Allocation) require(field *big.Int) {
-	if a.explicitFields == nil {
-		a.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if a.explicitFields != nil {
+		next.Set(a.explicitFields)
 	}
-	a.explicitFields.Or(a.explicitFields, field)
+	next.Or(next, field)
+	a.explicitFields = next
 }
 
 // SetActiveAgents sets the ActiveAgents field and marks it as non-optional;
@@ -1094,10 +1128,12 @@ func (c *CancelRequest) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *CancelRequest) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -1196,10 +1232,12 @@ func (c *CompleteRequest) GetExtraProperties() map[string]interface{} {
 }
 
 func (c *CompleteRequest) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -1313,10 +1351,12 @@ func (d *DeliveryConstraints) GetExtraProperties() map[string]interface{} {
 }
 
 func (d *DeliveryConstraints) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetDeliverAfter sets the DeliverAfter field and marks it as non-optional;
@@ -1435,10 +1475,12 @@ func (d *DeliveryError) GetExtraProperties() map[string]interface{} {
 }
 
 func (d *DeliveryError) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetCode sets the Code field and marks it as non-optional;
@@ -1580,10 +1622,12 @@ func (d *DeliveryState) GetExtraProperties() map[string]interface{} {
 }
 
 func (d *DeliveryState) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetStatus sets the Status field and marks it as non-optional;
@@ -1711,10 +1755,12 @@ func (e *EntityIDsSelector) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *EntityIDsSelector) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetEntityIDs sets the EntityIDs field and marks it as non-optional;
@@ -1799,10 +1845,12 @@ func (e *ExecuteRequest) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *ExecuteRequest) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetTask sets the Task field and marks it as non-optional;
@@ -1854,6 +1902,123 @@ func (e *ExecuteRequest) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+// `ExecutionConstraints` provides scheduling details that informs the agent when to execute the task.
+var (
+	executionConstraintsFieldStartAfter     = big.NewInt(1 << 0)
+	executionConstraintsFieldCompleteBefore = big.NewInt(1 << 1)
+)
+
+type ExecutionConstraints struct {
+	// The timestamp after which the agent can execute the task
+	StartAfter *time.Time `json:"startAfter,omitempty" url:"startAfter,omitempty"`
+	// The timestamp before which the agent can execute the task.
+	CompleteBefore *time.Time `json:"completeBefore,omitempty" url:"completeBefore,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (e *ExecutionConstraints) GetStartAfter() *time.Time {
+	if e == nil {
+		return nil
+	}
+	return e.StartAfter
+}
+
+func (e *ExecutionConstraints) GetCompleteBefore() *time.Time {
+	if e == nil {
+		return nil
+	}
+	return e.CompleteBefore
+}
+
+func (e *ExecutionConstraints) GetExtraProperties() map[string]interface{} {
+	if e == nil {
+		return nil
+	}
+	return e.extraProperties
+}
+
+func (e *ExecutionConstraints) require(field *big.Int) {
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
+	}
+	next.Or(next, field)
+	e.explicitFields = next
+}
+
+// SetStartAfter sets the StartAfter field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *ExecutionConstraints) SetStartAfter(startAfter *time.Time) {
+	e.StartAfter = startAfter
+	e.require(executionConstraintsFieldStartAfter)
+}
+
+// SetCompleteBefore sets the CompleteBefore field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (e *ExecutionConstraints) SetCompleteBefore(completeBefore *time.Time) {
+	e.CompleteBefore = completeBefore
+	e.require(executionConstraintsFieldCompleteBefore)
+}
+
+func (e *ExecutionConstraints) UnmarshalJSON(data []byte) error {
+	type embed ExecutionConstraints
+	var unmarshaler = struct {
+		embed
+		StartAfter     *internal.DateTime `json:"startAfter,omitempty"`
+		CompleteBefore *internal.DateTime `json:"completeBefore,omitempty"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = ExecutionConstraints(unmarshaler.embed)
+	e.StartAfter = unmarshaler.StartAfter.TimePtr()
+	e.CompleteBefore = unmarshaler.CompleteBefore.TimePtr()
+	extraProperties, err := internal.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+	e.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *ExecutionConstraints) MarshalJSON() ([]byte, error) {
+	type embed ExecutionConstraints
+	var marshaler = struct {
+		embed
+		StartAfter     *internal.DateTime `json:"startAfter,omitempty"`
+		CompleteBefore *internal.DateTime `json:"completeBefore,omitempty"`
+	}{
+		embed:          embed(*e),
+		StartAfter:     internal.NewOptionalDateTime(e.StartAfter),
+		CompleteBefore: internal.NewOptionalDateTime(e.CompleteBefore),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, e.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (e *ExecutionConstraints) String() string {
+	if e == nil {
+		return "<nil>"
+	}
+	if len(e.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(e.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
+}
+
 // Defaults to an interval of 5 seconds. If the DeliverBefore field in the task's DeliveryConstraints isn't populated, Lattice does not retry delivery and instead logs a warning.
 var (
 	fixedRetryFieldRetryInterval = big.NewInt(1 << 0)
@@ -1885,10 +2050,12 @@ func (f *FixedRetry) GetExtraProperties() map[string]interface{} {
 }
 
 func (f *FixedRetry) require(field *big.Int) {
-	if f.explicitFields == nil {
-		f.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if f.explicitFields != nil {
+		next.Set(f.explicitFields)
 	}
-	f.explicitFields.Or(f.explicitFields, field)
+	next.Or(next, field)
+	f.explicitFields = next
 }
 
 // SetRetryInterval sets the RetryInterval field and marks it as non-optional;
@@ -1972,10 +2139,12 @@ func (g *GoogleProtobufAny) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GoogleProtobufAny) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetType sets the Type field and marks it as non-optional;
@@ -2120,10 +2289,12 @@ func (m *ManualControlFrame) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *ManualControlFrame) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -2291,10 +2462,12 @@ func (m *ManualControlFrameEvent) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *ManualControlFrameEvent) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -2413,10 +2586,12 @@ func (o *Owner) GetExtraProperties() map[string]interface{} {
 }
 
 func (o *Owner) require(field *big.Int) {
-	if o.explicitFields == nil {
-		o.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if o.explicitFields != nil {
+		next.Set(o.explicitFields)
 	}
-	o.explicitFields.Or(o.explicitFields, field)
+	next.Or(next, field)
+	o.explicitFields = next
 }
 
 // SetEntityID sets the EntityID field and marks it as non-optional;
@@ -2528,10 +2703,12 @@ func (p *Principal) GetExtraProperties() map[string]interface{} {
 }
 
 func (p *Principal) require(field *big.Int) {
-	if p.explicitFields == nil {
-		p.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if p.explicitFields != nil {
+		next.Set(p.explicitFields)
 	}
-	p.explicitFields.Or(p.explicitFields, field)
+	next.Or(next, field)
+	p.explicitFields = next
 }
 
 // SetSystem sets the System field and marks it as non-optional;
@@ -2647,10 +2824,12 @@ func (r *Relations) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *Relations) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetAssignee sets the Assignee field and marks it as non-optional;
@@ -2740,10 +2919,12 @@ func (r *Replication) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *Replication) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetStaleTime sets the StaleTime field and marks it as non-optional;
@@ -2833,10 +3014,12 @@ func (r *RetryStrategy) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RetryStrategy) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetFixedRetryStrategy sets the FixedRetryStrategy field and marks it as non-optional;
@@ -2918,10 +3101,12 @@ func (s *StreamHeartbeat) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *StreamHeartbeat) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetTimestamp sets the Timestamp field and marks it as non-optional;
@@ -3029,10 +3214,12 @@ func (s *System) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *System) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetServiceName sets the ServiceName field and marks it as non-optional;
@@ -3108,23 +3295,24 @@ func (s *System) String() string {
 //	specific agents, and tracked through a well-defined state machine from creation to completion.
 //	They support rich status reporting, including progress updates, error handling, and results.
 var (
-	taskFieldVersion             = big.NewInt(1 << 0)
-	taskFieldDisplayName         = big.NewInt(1 << 1)
-	taskFieldSpecification       = big.NewInt(1 << 2)
-	taskFieldCreatedBy           = big.NewInt(1 << 3)
-	taskFieldLastUpdatedBy       = big.NewInt(1 << 4)
-	taskFieldLastUpdateTime      = big.NewInt(1 << 5)
-	taskFieldStatus              = big.NewInt(1 << 6)
-	taskFieldScheduledTime       = big.NewInt(1 << 7)
-	taskFieldRelations           = big.NewInt(1 << 8)
-	taskFieldDescription         = big.NewInt(1 << 9)
-	taskFieldIsExecutedElsewhere = big.NewInt(1 << 10)
-	taskFieldCreateTime          = big.NewInt(1 << 11)
-	taskFieldReplication         = big.NewInt(1 << 12)
-	taskFieldInitialEntities     = big.NewInt(1 << 13)
-	taskFieldOwner               = big.NewInt(1 << 14)
-	taskFieldRetryStrategy       = big.NewInt(1 << 15)
-	taskFieldDeliveryState       = big.NewInt(1 << 16)
+	taskFieldVersion              = big.NewInt(1 << 0)
+	taskFieldDisplayName          = big.NewInt(1 << 1)
+	taskFieldSpecification        = big.NewInt(1 << 2)
+	taskFieldCreatedBy            = big.NewInt(1 << 3)
+	taskFieldLastUpdatedBy        = big.NewInt(1 << 4)
+	taskFieldLastUpdateTime       = big.NewInt(1 << 5)
+	taskFieldStatus               = big.NewInt(1 << 6)
+	taskFieldScheduledTime        = big.NewInt(1 << 7)
+	taskFieldRelations            = big.NewInt(1 << 8)
+	taskFieldDescription          = big.NewInt(1 << 9)
+	taskFieldIsExecutedElsewhere  = big.NewInt(1 << 10)
+	taskFieldCreateTime           = big.NewInt(1 << 11)
+	taskFieldReplication          = big.NewInt(1 << 12)
+	taskFieldInitialEntities      = big.NewInt(1 << 13)
+	taskFieldOwner                = big.NewInt(1 << 14)
+	taskFieldRetryStrategy        = big.NewInt(1 << 15)
+	taskFieldDeliveryState        = big.NewInt(1 << 16)
+	taskFieldExecutionConstraints = big.NewInt(1 << 17)
 )
 
 type Task struct {
@@ -3170,6 +3358,8 @@ type Task struct {
 	RetryStrategy *RetryStrategy `json:"retryStrategy,omitempty" url:"retryStrategy,omitempty"`
 	// The current delivery state of a task.
 	DeliveryState *DeliveryState `json:"deliveryState,omitempty" url:"deliveryState,omitempty"`
+	// Any execution-related scheduling constraints for the agent after task delivery.
+	ExecutionConstraints *ExecutionConstraints `json:"executionConstraints,omitempty" url:"executionConstraints,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -3297,6 +3487,13 @@ func (t *Task) GetDeliveryState() *DeliveryState {
 	return t.DeliveryState
 }
 
+func (t *Task) GetExecutionConstraints() *ExecutionConstraints {
+	if t == nil {
+		return nil
+	}
+	return t.ExecutionConstraints
+}
+
 func (t *Task) GetExtraProperties() map[string]interface{} {
 	if t == nil {
 		return nil
@@ -3305,10 +3502,12 @@ func (t *Task) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *Task) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetVersion sets the Version field and marks it as non-optional;
@@ -3430,6 +3629,13 @@ func (t *Task) SetDeliveryState(deliveryState *DeliveryState) {
 	t.require(taskFieldDeliveryState)
 }
 
+// SetExecutionConstraints sets the ExecutionConstraints field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *Task) SetExecutionConstraints(executionConstraints *ExecutionConstraints) {
+	t.ExecutionConstraints = executionConstraints
+	t.require(taskFieldExecutionConstraints)
+}
+
 func (t *Task) UnmarshalJSON(data []byte) error {
 	type embed Task
 	var unmarshaler = struct {
@@ -3533,10 +3739,12 @@ func (t *TaskEntity) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskEntity) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetEntity sets the Entity field and marks it as non-optional;
@@ -3650,10 +3858,12 @@ func (t *TaskError) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskError) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetCode sets the Code field and marks it as non-optional;
@@ -3782,10 +3992,12 @@ func (t *TaskEventData) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskEventData) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskEvent sets the TaskEvent field and marks it as non-optional;
@@ -3878,10 +4090,12 @@ func (t *TaskEventDataTaskEvent) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskEventDataTaskEvent) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetEventType sets the EventType field and marks it as non-optional;
@@ -4018,10 +4232,12 @@ func (t *TaskQueryResults) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskQueryResults) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTasks sets the Tasks field and marks it as non-optional;
@@ -4176,10 +4392,12 @@ func (t *TaskStatus) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskStatus) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetStatus sets the Status field and marks it as non-optional;
@@ -4373,10 +4591,12 @@ func (t *TaskStreamEvent) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskStreamEvent) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskEvent sets the TaskEvent field and marks it as non-optional;
@@ -4487,10 +4707,12 @@ func (t *TaskVersion) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskVersion) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;
@@ -4590,10 +4812,12 @@ func (u *User) GetExtraProperties() map[string]interface{} {
 }
 
 func (u *User) require(field *big.Int) {
-	if u.explicitFields == nil {
-		u.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if u.explicitFields != nil {
+		next.Set(u.explicitFields)
 	}
-	u.explicitFields.Or(u.explicitFields, field)
+	next.Or(next, field)
+	u.explicitFields = next
 }
 
 // SetUserID sets the UserID field and marks it as non-optional;
@@ -5056,10 +5280,12 @@ func (t *TaskQueryStatusFilter) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskQueryStatusFilter) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetStatus sets the Status field and marks it as non-optional;
@@ -5214,10 +5440,12 @@ func (t *TaskQueryUpdateTimeRange) GetExtraProperties() map[string]interface{} {
 }
 
 func (t *TaskQueryUpdateTimeRange) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetStartTime sets the StartTime field and marks it as non-optional;
@@ -5317,10 +5545,12 @@ func (t *TaskStreamRequestStatusFilter) GetExtraProperties() map[string]interfac
 }
 
 func (t *TaskStreamRequestStatusFilter) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetStatuses sets the Statuses field and marks it as non-optional;
@@ -5559,10 +5789,12 @@ func (t *TaskStreamRequestTaskTypeTaskTypePrefix) GetExtraProperties() map[strin
 }
 
 func (t *TaskStreamRequestTaskTypeTaskTypePrefix) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskTypePrefix sets the TaskTypePrefix field and marks it as non-optional;
@@ -5644,10 +5876,12 @@ func (t *TaskStreamRequestTaskTypeTaskTypeURLs) GetExtraProperties() map[string]
 }
 
 func (t *TaskStreamRequestTaskTypeTaskTypeURLs) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskTypeURLs sets the TaskTypeURLs field and marks it as non-optional;
@@ -5723,10 +5957,12 @@ type TaskStatusUpdate struct {
 }
 
 func (t *TaskStatusUpdate) require(field *big.Int) {
-	if t.explicitFields == nil {
-		t.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if t.explicitFields != nil {
+		next.Set(t.explicitFields)
 	}
-	t.explicitFields.Or(t.explicitFields, field)
+	next.Or(next, field)
+	t.explicitFields = next
 }
 
 // SetTaskID sets the TaskID field and marks it as non-optional;

@@ -27,10 +27,12 @@ type CreateEgressStreamRequest struct {
 }
 
 func (c *CreateEgressStreamRequest) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetIngressID sets the IngressID field and marks it as non-optional;
@@ -91,10 +93,10 @@ type CreateIngressStreamRequest struct {
 	//	using underscore or dot as a separator, for example, `drone_1`, `vessel_2`, or
 	//	`teamalpha.drone1`.
 	//
-	//	When supplied, an ingress_id must be between 4 and 36 characters long and use only
+	//	When supplied, an ingressId must be between 4 and 36 characters long and use only
 	//	printable ASCII characters with no spaces; the 36-character ceiling leaves room for a
 	//	full GUID. A value outside that length range, or one containing spaces, control
-	//	characters, or non-ASCII characters, is rejected, as is an ingress_id that another
+	//	characters, or non-ASCII characters, is rejected, as is an ingressId that another
 	//	ingress stream is already using.
 	IngressID *string `json:"ingressId,omitempty" url:"-"`
 	// Human-readable title for the stream. A title is required: surrounding whitespace is
@@ -108,14 +110,14 @@ type CreateIngressStreamRequest struct {
 	//
 	//	MPEG-TS ingress is supported only at the edge, in closed networks. When Lattice
 	//	runs in a cloud environment reached over the public internet, MPEG-TS ingress may
-	//	be disabled per deployment. When it is disabled, a request that selects mpeg_ts is
+	//	be disabled per deployment. When it is disabled, a request that selects `mpegTs` is
 	//	rejected with a gRPC error rather than accepted, so callers should be prepared to
 	//	fall back to RTSP or SRT. An MPEG-TS stream created at the edge can still be listed
 	//	and inspected on the IngressStream read model even when cloud ingress is disabled.
 	MpegTs *MpegTsSettings `json:"mpegTs,omitempty" url:"-"`
 	// Pull from a caller-supplied RTSP URL.
 	Rtsp *RtspSettings `json:"rtsp,omitempty" url:"-"`
-	// Receive an SRT push from the producer. The service returns a URL and session_id
+	// Receive an SRT push from the producer. The service returns a URL and sessionId
 	//
 	//	in CreateIngressStreamResponse.
 	Srt *SrtSettings `json:"srt,omitempty" url:"-"`
@@ -125,10 +127,12 @@ type CreateIngressStreamRequest struct {
 }
 
 func (c *CreateIngressStreamRequest) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetIngressID sets the IngressID field and marks it as non-optional;
@@ -200,10 +204,12 @@ type DeleteEgressStreamRequest struct {
 }
 
 func (d *DeleteEgressStreamRequest) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetEgressID sets the EgressID field and marks it as non-optional;
@@ -226,10 +232,12 @@ type DeleteIngressStreamRequest struct {
 }
 
 func (d *DeleteIngressStreamRequest) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 // SetIngressID sets the IngressID field and marks it as non-optional;
@@ -252,10 +260,12 @@ type GetEgressStreamRequest struct {
 }
 
 func (g *GetEgressStreamRequest) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetEgressID sets the EgressID field and marks it as non-optional;
@@ -278,10 +288,12 @@ type GetIngressStreamRequest struct {
 }
 
 func (g *GetIngressStreamRequest) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetIngressID sets the IngressID field and marks it as non-optional;
@@ -301,7 +313,7 @@ type ListEgressStreamsRequest struct {
 	//
 	//	and capped at 100. The response may contain fewer than max page size.
 	PageSize *int `json:"-" url:"pageSize,omitempty"`
-	// To retrieve the next page, pass the `next_page_token` from the previous
+	// To retrieve the next page, pass the `nextPageToken` from the previous
 	//
 	//	response. Leave empty for the first page.
 	//
@@ -314,10 +326,12 @@ type ListEgressStreamsRequest struct {
 }
 
 func (l *ListEgressStreamsRequest) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetPageSize sets the PageSize field and marks it as non-optional;
@@ -344,7 +358,7 @@ type ListIngressStreamsRequest struct {
 	//
 	//	and capped at 100. The response may contain fewer than requested.
 	PageSize *int `json:"-" url:"pageSize,omitempty"`
-	// To retrieve the next page, pass the `next_page_token` from the previous
+	// To retrieve the next page, pass the `nextPageToken` from the previous
 	//
 	//	response. Leave empty for the first page.
 	//
@@ -357,10 +371,12 @@ type ListIngressStreamsRequest struct {
 }
 
 func (l *ListIngressStreamsRequest) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetPageSize sets the PageSize field and marks it as non-optional;
@@ -427,10 +443,12 @@ func (c *CreateEgressStreamResponse) GetExtraProperties() map[string]interface{}
 }
 
 func (c *CreateEgressStreamResponse) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetEgressID sets the EgressID field and marks it as non-optional;
@@ -505,11 +523,11 @@ var (
 type CreateIngressStreamResponse struct {
 	// Identifier of the newly created ingress stream. Echoes the caller-supplied
 	//
-	//	`ingress_id` if one was provided, otherwise a service-generated GUID.
+	//	`ingressId` if one was provided, otherwise a service-generated GUID.
 	IngressID *string `json:"ingressId,omitempty" url:"ingressId,omitempty"`
 	// Connection details for an MPEG-TS push. Only returned when the request selected
 	//
-	//	mpeg_ts and MPEG-TS ingress is enabled for the deployment. MPEG-TS ingress is
+	//	`mpegTs` and MPEG-TS ingress is enabled for the deployment. MPEG-TS ingress is
 	//	supported only at the edge, in closed networks; in a cloud environment reached over
 	//	the public internet it may be disabled per deployment, in which case the create
 	//	request is rejected and this field is never populated.
@@ -552,10 +570,12 @@ func (c *CreateIngressStreamResponse) GetExtraProperties() map[string]interface{
 }
 
 func (c *CreateIngressStreamResponse) require(field *big.Int) {
-	if c.explicitFields == nil {
-		c.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
 	}
-	c.explicitFields.Or(c.explicitFields, field)
+	next.Or(next, field)
+	c.explicitFields = next
 }
 
 // SetIngressID sets the IngressID field and marks it as non-optional;
@@ -638,10 +658,12 @@ func (d *DeleteEgressStreamResponse) GetExtraProperties() map[string]interface{}
 }
 
 func (d *DeleteEgressStreamResponse) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 func (d *DeleteEgressStreamResponse) UnmarshalJSON(data []byte) error {
@@ -703,10 +725,12 @@ func (d *DeleteIngressStreamResponse) GetExtraProperties() map[string]interface{
 }
 
 func (d *DeleteIngressStreamResponse) require(field *big.Int) {
-	if d.explicitFields == nil {
-		d.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if d.explicitFields != nil {
+		next.Set(d.explicitFields)
 	}
-	d.explicitFields.Or(d.explicitFields, field)
+	next.Or(next, field)
+	d.explicitFields = next
 }
 
 func (d *DeleteIngressStreamResponse) UnmarshalJSON(data []byte) error {
@@ -812,10 +836,12 @@ func (e *EgressStream) GetExtraProperties() map[string]interface{} {
 }
 
 func (e *EgressStream) require(field *big.Int) {
-	if e.explicitFields == nil {
-		e.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if e.explicitFields != nil {
+		next.Set(e.explicitFields)
 	}
-	e.explicitFields.Or(e.explicitFields, field)
+	next.Or(next, field)
+	e.explicitFields = next
 }
 
 // SetEgressID sets the EgressID field and marks it as non-optional;
@@ -893,7 +919,7 @@ var (
 )
 
 type GetEgressStreamResponse struct {
-	// The egress stream corresponding to the requested `egress_id`.
+	// The egress stream corresponding to the requested `egressId`.
 	EgressStream *EgressStream `json:"egressStream,omitempty" url:"egressStream,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -918,10 +944,12 @@ func (g *GetEgressStreamResponse) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GetEgressStreamResponse) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetEgressStream sets the EgressStream field and marks it as non-optional;
@@ -978,7 +1006,7 @@ var (
 )
 
 type GetIngressStreamResponse struct {
-	// The ingress stream corresponding to the requested `ingress_id`.
+	// The ingress stream corresponding to the requested `ingressId`.
 	IngressStream *IngressStream `json:"ingressStream,omitempty" url:"ingressStream,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
@@ -1003,10 +1031,12 @@ func (g *GetIngressStreamResponse) GetExtraProperties() map[string]interface{} {
 }
 
 func (g *GetIngressStreamResponse) require(field *big.Int) {
-	if g.explicitFields == nil {
-		g.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if g.explicitFields != nil {
+		next.Set(g.explicitFields)
 	}
-	g.explicitFields.Or(g.explicitFields, field)
+	next.Or(next, field)
+	g.explicitFields = next
 }
 
 // SetIngressStream sets the IngressStream field and marks it as non-optional;
@@ -1170,10 +1200,12 @@ func (i *IngressStream) GetExtraProperties() map[string]interface{} {
 }
 
 func (i *IngressStream) require(field *big.Int) {
-	if i.explicitFields == nil {
-		i.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if i.explicitFields != nil {
+		next.Set(i.explicitFields)
 	}
-	i.explicitFields.Or(i.explicitFields, field)
+	next.Or(next, field)
+	i.explicitFields = next
 }
 
 // SetIngressID sets the IngressID field and marks it as non-optional;
@@ -1331,11 +1363,11 @@ var (
 )
 
 type ListEgressStreamsResponse struct {
-	// The egress streams on this page. Up to `page_size` entries
+	// The egress streams on this page. Up to `pageSize` entries
 	//
 	//	(defaults to 50, capped at 100). Ordered by egress stream create time.
 	EgressStreams []*EgressStream `json:"egressStreams,omitempty" url:"egressStreams,omitempty"`
-	// Pass this back as `page_token` to retrieve the next page.
+	// Pass this back as `pageToken` to retrieve the next page.
 	//
 	//	Empty when there are no more pages.
 	NextPageToken *string `json:"nextPageToken,omitempty" url:"nextPageToken,omitempty"`
@@ -1369,10 +1401,12 @@ func (l *ListEgressStreamsResponse) GetExtraProperties() map[string]interface{} 
 }
 
 func (l *ListEgressStreamsResponse) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetEgressStreams sets the EgressStreams field and marks it as non-optional;
@@ -1437,11 +1471,11 @@ var (
 )
 
 type ListIngressStreamsResponse struct {
-	// The ingress streams on this page. Up to `page_size` entries
+	// The ingress streams on this page. Up to `pageSize` entries
 	//
 	//	(defaults to 50, capped at 100). Ordered by ingress stream create time.
 	IngressStreams []*IngressStream `json:"ingressStreams,omitempty" url:"ingressStreams,omitempty"`
-	// Pass this back as `page_token` to retrieve the next page.
+	// Pass this back as `pageToken` to retrieve the next page.
 	//
 	//	Empty when there are no more pages.
 	NextPageToken *string `json:"nextPageToken,omitempty" url:"nextPageToken,omitempty"`
@@ -1475,10 +1509,12 @@ func (l *ListIngressStreamsResponse) GetExtraProperties() map[string]interface{}
 }
 
 func (l *ListIngressStreamsResponse) require(field *big.Int) {
-	if l.explicitFields == nil {
-		l.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if l.explicitFields != nil {
+		next.Set(l.explicitFields)
 	}
-	l.explicitFields.Or(l.explicitFields, field)
+	next.Or(next, field)
+	l.explicitFields = next
 }
 
 // SetIngressStreams sets the IngressStreams field and marks it as non-optional;
@@ -1541,7 +1577,7 @@ func (l *ListIngressStreamsResponse) String() string {
 //
 //	MPEG-TS ingress is supported only at the edge, in closed networks; in a cloud
 //	environment reached over the public internet it may be disabled per deployment. These
-//	details are populated only when a stream was successfully created with mpeg_ts. An
+//	details are populated only when a stream was successfully created with `mpegTs`. An
 //	MPEG-TS stream created at the edge can still be listed and inspected on the
 //	IngressStream read model even when cloud ingress is disabled.
 var (
@@ -1574,10 +1610,12 @@ func (m *MpegTsIngress) GetExtraProperties() map[string]interface{} {
 }
 
 func (m *MpegTsIngress) require(field *big.Int) {
-	if m.explicitFields == nil {
-		m.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
 	}
-	m.explicitFields.Or(m.explicitFields, field)
+	next.Or(next, field)
+	m.explicitFields = next
 }
 
 // SetURL sets the URL field and marks it as non-optional;
@@ -1636,7 +1674,7 @@ func (m *MpegTsIngress) String() string {
 //	MPEG-TS ingress is supported only at the edge, in closed networks. When Lattice runs
 //	in a cloud environment reached over the public internet, MPEG-TS ingress may be
 //	disabled per deployment. When it is disabled, a CreateIngressStream request that
-//	selects mpeg_ts is rejected with a gRPC error rather than accepted, so callers should
+//	selects `mpegTs` is rejected with a gRPC error rather than accepted, so callers should
 //	be prepared to fall back to RTSP or SRT. An MPEG-TS stream created at the edge can
 //	still be listed and inspected on the IngressStream read model even when cloud ingress
 //	is disabled.
@@ -1673,10 +1711,12 @@ func (r *RtspEgress) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RtspEgress) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetURL sets the URL field and marks it as non-optional;
@@ -1761,10 +1801,12 @@ func (r *RtspIngress) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RtspIngress) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetURL sets the URL field and marks it as non-optional;
@@ -1849,10 +1891,12 @@ func (r *RtspSettings) GetExtraProperties() map[string]interface{} {
 }
 
 func (r *RtspSettings) require(field *big.Int) {
-	if r.explicitFields == nil {
-		r.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if r.explicitFields != nil {
+		next.Set(r.explicitFields)
 	}
-	r.explicitFields.Or(r.explicitFields, field)
+	next.Or(next, field)
+	r.explicitFields = next
 }
 
 // SetURL sets the URL field and marks it as non-optional;
@@ -1945,10 +1989,12 @@ func (s *SrtEgress) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *SrtEgress) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetURL sets the URL field and marks it as non-optional;
@@ -2052,10 +2098,12 @@ func (s *SrtIngress) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *SrtIngress) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetURL sets the URL field and marks it as non-optional;
@@ -2119,13 +2167,13 @@ func (s *SrtIngress) String() string {
 //	and pull operations (egress).
 //
 //	When configuring SRT for ingress, CreateIngressStreamResponse will
-//	return to the user a url to push to which contains a unique 'session_id' to use
+//	return to the user a url to push to which contains a unique `sessionId` to use
 //	on the connection. If supplied, passphrase will be applied on incoming
 //	connections.
 //
 //	When configuring SRT for egress, CreateEgressStreamResponse will
 //	return to the user a url from which to pull a stream. Use the supplied
-//	session_id and passphrase in your StreamId if applicable.
+//	sessionId and passphrase in your StreamId if applicable.
 //	See the SRT documentation on Access Control for more information.
 var (
 	srtSettingsFieldPassphrase = big.NewInt(1 << 0)
@@ -2157,10 +2205,12 @@ func (s *SrtSettings) GetExtraProperties() map[string]interface{} {
 }
 
 func (s *SrtSettings) require(field *big.Int) {
-	if s.explicitFields == nil {
-		s.explicitFields = big.NewInt(0)
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
 	}
-	s.explicitFields.Or(s.explicitFields, field)
+	next.Or(next, field)
+	s.explicitFields = next
 }
 
 // SetPassphrase sets the Passphrase field and marks it as non-optional;
