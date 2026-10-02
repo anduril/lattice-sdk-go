@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.2.0] - 2026-10-02
+### Added
+- **`GetBody()`** — accessor methods added to all exported error types (including the video error types and storage/request error types) returning the typed `GoogleRPCStatus` response body with nil-safe handling.
+- **`TaskStatus.LastUpdateTime`** — new optional field with `GetLastUpdateTime()` / `SetLastUpdateTime()` accessors recording the last status-change time to guard against out-of-order updates.
+- **`ClientErrorWildcard`** and **`ServerErrorWildcard`** — new `ErrorCodes` keys matching any 4XX or 5XX status code without a concrete entry.
+
+### Changed
+- **`TaskStreamRequestTaskType`** — union unmarshaling now prefers discriminator key matching, improving deserialization of ambiguous payloads.
+- **`Date.UnmarshalJSON`** — now accepts RFC3339 date-time inputs in addition to plain dates, keeping the calendar date and discarding the time-of-day.
+- **`DateTime.MarshalJSON`** — now serializes using `time.RFC3339Nano`, preserving fractional seconds in output.
+
+### Fixed
+- **Context cancellation handling** — a response fully received before the context ended is no longer discarded; the context error is returned only when the body cannot be read to completion.
+
 ## [5.1.0] - 2026-09-15
 
 ### Added
