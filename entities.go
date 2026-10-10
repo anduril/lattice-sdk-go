@@ -297,14 +297,14 @@ func (e *EntityStreamRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(explicitMarshaler)
 }
 
-// The AndOperation represents the boolean AND operation, which is to be applied to the list of
-//
-//	children statement(s) or predicate(s).
 var (
 	andOperationFieldPredicateSet = big.NewInt(1 << 0)
 	andOperationFieldStatementSet = big.NewInt(1 << 1)
 )
 
+// The AndOperation represents the boolean AND operation, which is to be applied to the list of
+//
+//	children statement(s) or predicate(s).
 type AndOperation struct {
 	PredicateSet *PredicateSet `json:"predicateSet,omitempty" url:"predicateSet,omitempty"`
 	StatementSet *StatementSet `json:"statementSet,omitempty" url:"statementSet,omitempty"`
@@ -402,11 +402,11 @@ func (a *AndOperation) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The BooleanType represents a static boolean value.
 var (
 	booleanTypeFieldValue = big.NewInt(1 << 0)
 )
 
+// The BooleanType represents a static boolean value.
 type BooleanType struct {
 	Value *bool `json:"value,omitempty" url:"value,omitempty"`
 
@@ -489,11 +489,11 @@ func (b *BooleanType) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
-// The BoundedShapeType represents any static fully-enclosed shape.
 var (
 	boundedShapeTypeFieldPolygonValue = big.NewInt(1 << 0)
 )
 
+// The BoundedShapeType represents any static fully-enclosed shape.
 type BoundedShapeType struct {
 	PolygonValue *GeoPolygon `json:"polygonValue,omitempty" url:"polygonValue,omitempty"`
 
@@ -576,13 +576,13 @@ func (b *BoundedShapeType) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
-// Event representing some type of entity change.
 var (
 	entityEventFieldEventType = big.NewInt(1 << 0)
 	entityEventFieldTime      = big.NewInt(1 << 1)
 	entityEventFieldEntity    = big.NewInt(1 << 2)
 )
 
+// Event representing some type of entity change.
 type EntityEvent struct {
 	EventType *EntityEventEventType `json:"eventType,omitempty" url:"eventType,omitempty"`
 	Time      *time.Time            `json:"time,omitempty" url:"time,omitempty"`
@@ -1053,15 +1053,15 @@ func (e *EntityStreamHeartbeat) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
+var (
+	enumTypeFieldValue = big.NewInt(1 << 0)
+)
+
 // The EnumType represents members of well-known anduril ontologies, such as "disposition." When
 //
 //	such a value is specified, the evaluation library expects the integer representation of the enum
 //	value. For example, a disposition derived from ontology.v1 such as "DISPOSITION_HOSTILE" should be
 //	represented with the integer value 2.
-var (
-	enumTypeFieldValue = big.NewInt(1 << 0)
-)
-
 type EnumType struct {
 	Value *int `json:"value,omitempty" url:"value,omitempty"`
 
@@ -1144,13 +1144,13 @@ func (e *EnumType) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// The HeadingType represents the heading in degrees for an entity's
-//
-//	attitudeEnu quaternion to be compared against. Defaults between a range of 0 to 360
 var (
 	headingTypeFieldValue = big.NewInt(1 << 0)
 )
 
+// The HeadingType represents the heading in degrees for an entity's
+//
+//	attitudeEnu quaternion to be compared against. Defaults between a range of 0 to 360
 type HeadingType struct {
 	Value *int `json:"value,omitempty" url:"value,omitempty"`
 
@@ -1233,6 +1233,12 @@ func (h *HeadingType) String() string {
 	return fmt.Sprintf("%#v", h)
 }
 
+var (
+	listOperationFieldListPath       = big.NewInt(1 << 0)
+	listOperationFieldListComparator = big.NewInt(1 << 1)
+	listOperationFieldStatement      = big.NewInt(1 << 2)
+)
+
 // The ListOperation represents an operation against a proto list. If the list is of primitive proto
 //
 //	type (e.g. int32), paths in all child predicates should be left empty. If the list is of message
@@ -1249,12 +1255,6 @@ func (h *HeadingType) String() string {
 //
 //	Note that in the above, the child predicates of the list operation have paths relative to the
 //	list_path because the list is comprised of message not primitive types.
-var (
-	listOperationFieldListPath       = big.NewInt(1 << 0)
-	listOperationFieldListComparator = big.NewInt(1 << 1)
-	listOperationFieldStatement      = big.NewInt(1 << 2)
-)
-
 type ListOperation struct {
 	// The list_path specifies the repeated field on an entity to which this operation applies.
 	ListPath *string `json:"listPath,omitempty" url:"listPath,omitempty"`
@@ -1399,11 +1399,11 @@ func (l ListOperationListComparator) Ptr() *ListOperationListComparator {
 	return &l
 }
 
-// A List of Values for use with the IN comparator.
 var (
 	listTypeFieldValues = big.NewInt(1 << 0)
 )
 
+// A List of Values for use with the IN comparator.
 type ListType struct {
 	Values []*Value `json:"values,omitempty" url:"values,omitempty"`
 
@@ -1486,14 +1486,14 @@ func (l *ListType) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
-// The NotOperation represents the boolean NOT operation, which can only be applied to a single
-//
-//	child predicate or statement.
 var (
 	notOperationFieldPredicate = big.NewInt(1 << 0)
 	notOperationFieldStatement = big.NewInt(1 << 1)
 )
 
+// The NotOperation represents the boolean NOT operation, which can only be applied to a single
+//
+//	child predicate or statement.
 type NotOperation struct {
 	Predicate *Predicate `json:"predicate,omitempty" url:"predicate,omitempty"`
 	Statement *Statement `json:"statement,omitempty" url:"statement,omitempty"`
@@ -1591,9 +1591,6 @@ func (n *NotOperation) String() string {
 	return fmt.Sprintf("%#v", n)
 }
 
-// The NumericType represents static numeric values. It supports all numeric primitives supported
-//
-//	by the proto3 language specification.
 var (
 	numericTypeFieldDoubleValue = big.NewInt(1 << 0)
 	numericTypeFieldFloatValue  = big.NewInt(1 << 1)
@@ -1603,6 +1600,9 @@ var (
 	numericTypeFieldUint64Value = big.NewInt(1 << 5)
 )
 
+// The NumericType represents static numeric values. It supports all numeric primitives supported
+//
+//	by the proto3 language specification.
 type NumericType struct {
 	DoubleValue *float64 `json:"doubleValue,omitempty" url:"doubleValue,omitempty"`
 	FloatValue  *float64 `json:"floatValue,omitempty" url:"floatValue,omitempty"`
@@ -1760,14 +1760,14 @@ func (n *NumericType) String() string {
 	return fmt.Sprintf("%#v", n)
 }
 
-// The OrOperation represents the boolean OR operation, which is to be applied to the list of
-//
-//	children statement(s) or predicate(s).
 var (
 	orOperationFieldPredicateSet = big.NewInt(1 << 0)
 	orOperationFieldStatementSet = big.NewInt(1 << 1)
 )
 
+// The OrOperation represents the boolean OR operation, which is to be applied to the list of
+//
+//	children statement(s) or predicate(s).
 type OrOperation struct {
 	PredicateSet *PredicateSet `json:"predicateSet,omitempty" url:"predicateSet,omitempty"`
 	StatementSet *StatementSet `json:"statementSet,omitempty" url:"statementSet,omitempty"`
@@ -1865,11 +1865,11 @@ func (o *OrOperation) String() string {
 	return fmt.Sprintf("%#v", o)
 }
 
-// The PositionType represents any fixed LLA point in space.
 var (
 	positionTypeFieldValue = big.NewInt(1 << 0)
 )
 
+// The PositionType represents any fixed LLA point in space.
 type PositionType struct {
 	Value *Position `json:"value,omitempty" url:"value,omitempty"`
 
@@ -1952,6 +1952,12 @@ func (p *PositionType) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
+var (
+	predicateFieldFieldPath  = big.NewInt(1 << 0)
+	predicateFieldValue      = big.NewInt(1 << 1)
+	predicateFieldComparator = big.NewInt(1 << 2)
+)
+
 // The Predicate fully encodes the information required to make an evaluation of an entity field
 //
 //	against a given static value, resulting in a boolean TRUE/FALSE result. The structure of a
@@ -1959,12 +1965,6 @@ func (p *PositionType) String() string {
 //	is determined by the field path.
 //
 //	For example, a predicate would read as: "{entity.location.velocity_enu} {LESS_THAN} {500kph}"
-var (
-	predicateFieldFieldPath  = big.NewInt(1 << 0)
-	predicateFieldValue      = big.NewInt(1 << 1)
-	predicateFieldComparator = big.NewInt(1 << 2)
-)
-
 type Predicate struct {
 	// The field_path determines which field on an entity is being referenced in this predicate. For
 	//
@@ -2147,13 +2147,13 @@ func (p PredicateComparator) Ptr() *PredicateComparator {
 	return &p
 }
 
-// The PredicateSet represents a list of predicates or "leaf nodes" in the expression tree, which
-//
-//	can be directly evaluated to a boolean TRUE/FALSE result.
 var (
 	predicateSetFieldPredicates = big.NewInt(1 << 0)
 )
 
+// The PredicateSet represents a list of predicates or "leaf nodes" in the expression tree, which
+//
+//	can be directly evaluated to a boolean TRUE/FALSE result.
 type PredicateSet struct {
 	Predicates []*Predicate `json:"predicates,omitempty" url:"predicates,omitempty"`
 
@@ -2236,15 +2236,15 @@ func (p *PredicateSet) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// The RangeType represents a numeric range.
-//
-//	Whether endpoints are included are based on the comparator used.
-//	Both endpoints must be of the same numeric type.
 var (
 	rangeTypeFieldStart = big.NewInt(1 << 0)
 	rangeTypeFieldEnd   = big.NewInt(1 << 1)
 )
 
+// The RangeType represents a numeric range.
+//
+//	Whether endpoints are included are based on the comparator used.
+//	Both endpoints must be of the same numeric type.
 type RangeType struct {
 	Start *NumericType `json:"start,omitempty" url:"start,omitempty"`
 	End   *NumericType `json:"end,omitempty" url:"end,omitempty"`
@@ -2342,6 +2342,14 @@ func (r *RangeType) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
+var (
+	statementFieldAnd       = big.NewInt(1 << 0)
+	statementFieldOr        = big.NewInt(1 << 1)
+	statementFieldNot       = big.NewInt(1 << 2)
+	statementFieldList      = big.NewInt(1 << 3)
+	statementFieldPredicate = big.NewInt(1 << 4)
+)
+
 // A Statement is the building block of the entity filter. The outermost statement is conceptually
 //
 //	the root node of an "expression tree" which allows for the construction of complete boolean
@@ -2352,14 +2360,6 @@ func (r *RangeType) String() string {
 //	represented as: Statement1: { AndOperation: { Predicate1, Predicate2 } }. Where Statement1
 //	is the root of the expression tree, with an AND operation that is applied to children
 //	predicates. The predicates themselves encode "entity is hostile" and "entity is air vehicle."
-var (
-	statementFieldAnd       = big.NewInt(1 << 0)
-	statementFieldOr        = big.NewInt(1 << 1)
-	statementFieldNot       = big.NewInt(1 << 2)
-	statementFieldList      = big.NewInt(1 << 3)
-	statementFieldPredicate = big.NewInt(1 << 4)
-)
-
 type Statement struct {
 	And       *AndOperation  `json:"and,omitempty" url:"and,omitempty"`
 	Or        *OrOperation   `json:"or,omitempty" url:"or,omitempty"`
@@ -2502,13 +2502,13 @@ func (s *Statement) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// The StatementSet represents a list of statements or "tree nodes," each of which follow the same
-//
-//	behavior as the Statement proto message.
 var (
 	statementSetFieldStatements = big.NewInt(1 << 0)
 )
 
+// The StatementSet represents a list of statements or "tree nodes," each of which follow the same
+//
+//	behavior as the Statement proto message.
 type StatementSet struct {
 	Statements []*Statement `json:"statements,omitempty" url:"statements,omitempty"`
 
@@ -2591,11 +2591,11 @@ func (s *StatementSet) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// The StringType represents static string values.
 var (
 	stringTypeFieldValue = big.NewInt(1 << 0)
 )
 
+// The StringType represents static string values.
 type StringType struct {
 	Value *string `json:"value,omitempty" url:"value,omitempty"`
 
@@ -2678,11 +2678,11 @@ func (s *StringType) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// The TimestampType represents a static timestamp value.
 var (
 	timestampTypeFieldValue = big.NewInt(1 << 0)
 )
 
+// The TimestampType represents a static timestamp value.
 type TimestampType struct {
 	Value *time.Time `json:"value,omitempty" url:"value,omitempty"`
 
@@ -2773,10 +2773,6 @@ func (t *TimestampType) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// The Value represents the information against which an entity field is evaluated. It is one of
-//
-//	a fixed set of types, each of which correspond to specific comparators. See "ComparatorType"
-//	for the full list of Value <-> Comparator mappings.
 var (
 	valueFieldBooleanType      = big.NewInt(1 << 0)
 	valueFieldNumericType      = big.NewInt(1 << 1)
@@ -2790,6 +2786,10 @@ var (
 	valueFieldRangeType        = big.NewInt(1 << 9)
 )
 
+// The Value represents the information against which an entity field is evaluated. It is one of
+//
+//	a fixed set of types, each of which correspond to specific comparators. See "ComparatorType"
+//	for the full list of Value <-> Comparator mappings.
 type Value struct {
 	BooleanType      *BooleanType      `json:"booleanType,omitempty" url:"booleanType,omitempty"`
 	NumericType      *NumericType      `json:"numericType,omitempty" url:"numericType,omitempty"`

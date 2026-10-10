@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.2.0] - 2026-10-10
+### Added
+- **`TaskStatus.LastUpdateTime`** — new optional field with `GetLastUpdateTime()`/`SetLastUpdateTime()` accessors that guard against out-of-order status updates.
+- **`WithEventDiscriminator`** — now accepts a variadic `envelopeEvents` argument to wrap matching SSE events as `{"<field>":"<event>","data":<data>}` envelopes.
+- **`EnvelopeEvents`** — new streaming support for event-discriminated envelope streams.
+- **`GetBody()`** — nil-safe accessor added to all typed error types across the SDK (e.g. `BadRequestError`, `InternalServerError`, `NotFoundError`, `TooManyRequestsError`).
+- **`ClientErrorWildcard` / `ServerErrorWildcard`** — error decoding now resolves unmapped 4XX/5XX status codes to the appropriate wildcard error constructor.
+
+### Changed
+- **`TaskStreamRequestTaskType`** — union deserialization now disambiguates variants using exact and partial object-key matching for more reliable unmarshaling.
+- **`Date.UnmarshalJSON`** — now accepts RFC3339 and other date-time layouts, keeping the calendar date and discarding the time-of-day.
+- **`DateTime.MarshalJSON`** — now serializes with `time.RFC3339Nano` to preserve sub-second precision.
+- **Request body merging** — request body properties are now merged into JSON bodies with deterministic key ordering, overriding same-named properties.
+
 ## [5.1.0] - 2026-09-15
 
 ### Added
