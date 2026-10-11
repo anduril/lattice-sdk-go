@@ -19,6 +19,7 @@ The Lattice SDK Go library provides convenient access to the Lattice SDK APIs fr
 - [Errors](#errors)
 - [Request Options](#request-options)
 - [Advanced](#advanced)
+  - [Additional Body Properties](#additional-body-properties)
   - [Response Headers](#response-headers)
   - [Retries](#retries)
   - [Timeouts](#timeouts)
@@ -230,6 +231,23 @@ response, err := client.Entities.LongPollEntityEvents(
 ```
 
 ## Advanced
+
+### Additional Body Properties
+
+If you need to send a request body property that isn't part of the generated request type (e.g. an
+undocumented or beta field), use the `option.WithBodyProperties` request option. Keys are sent exactly as
+provided (use the API's wire-format names), and they override any generated field with the same name. If the
+endpoint has no request body, a JSON body is created from the given properties. Body properties are applied to
+JSON and form URL encoded request bodies; they are not applied to multipart file upload or raw byte requests.
+
+```go
+response, err := client.Entities.LongPollEntityEvents(
+    ...,
+    option.WithBodyProperties(map[string]interface{}{
+        "custom_field": "custom-value",
+    }),
+)
+```
 
 ### Response Headers
 
