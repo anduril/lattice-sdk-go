@@ -207,11 +207,11 @@ func (a *ActiveTarget) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// Represents an agent capable of processing tasks.
 var (
 	agentFieldEntityID = big.NewInt(1 << 0)
 )
 
+// Represents an agent capable of processing tasks.
 type Agent struct {
 	// Entity ID of the agent.
 	EntityID *string `json:"entityId,omitempty" url:"entityId,omitempty"`
@@ -295,9 +295,6 @@ func (a *Agent) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// An alert informs operators of critical events related to system performance and mission
-//
-//	execution. An alert is produced as a result of one or more alert conditions.
 var (
 	alertFieldAlertCode        = big.NewInt(1 << 0)
 	alertFieldDescription      = big.NewInt(1 << 1)
@@ -306,6 +303,9 @@ var (
 	alertFieldActiveConditions = big.NewInt(1 << 4)
 )
 
+// An alert informs operators of critical events related to system performance and mission
+//
+//	execution. An alert is produced as a result of one or more alert conditions.
 type Alert struct {
 	// Short, machine-readable code that describes this alert. This code is intended to provide systems off-asset
 	//
@@ -466,12 +466,12 @@ func (a *Alert) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// A condition which may trigger an alert.
 var (
 	alertConditionFieldConditionCode = big.NewInt(1 << 0)
 	alertConditionFieldDescription   = big.NewInt(1 << 1)
 )
 
+// A condition which may trigger an alert.
 type AlertCondition struct {
 	// Short, machine-readable code that describes this condition. This code is intended to provide systems off-asset
 	//
@@ -605,12 +605,12 @@ func (a AlertLevel) Ptr() *AlertLevel {
 	return &a
 }
 
-// Available for any Entities with alternate ids in other systems.
 var (
 	aliasesFieldAlternateIDs = big.NewInt(1 << 0)
 	aliasesFieldName         = big.NewInt(1 << 1)
 )
 
+// Available for any Entities with alternate ids in other systems.
 type Aliases struct {
 	AlternateIDs []*AlternateID `json:"alternateIds,omitempty" url:"alternateIds,omitempty"`
 	// The best available version of the entity's display name.
@@ -709,12 +709,12 @@ func (a *Aliases) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// An alternate id for an Entity.
 var (
 	alternateIDFieldID   = big.NewInt(1 << 0)
 	alternateIDFieldType = big.NewInt(1 << 1)
 )
 
+// An alternate id for an Entity.
 type AlternateID struct {
 	ID   *string          `json:"id,omitempty" url:"id,omitempty"`
 	Type *AlternateIDType `json:"type,omitempty" url:"type,omitempty"`
@@ -1079,12 +1079,12 @@ func (a *Altitude) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// Altitude as AGL (Above ground level). This is also known as absolute altitude or QFE in aviation terms.
 var (
 	altitudeAboveGroundLevelFieldProvenance  = big.NewInt(1 << 0)
 	altitudeAboveGroundLevelFieldValueMeters = big.NewInt(1 << 1)
 )
 
+// Altitude as AGL (Above ground level). This is also known as absolute altitude or QFE in aviation terms.
 type AltitudeAboveGroundLevel struct {
 	// The provenance of the measurement.
 	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
@@ -1184,14 +1184,14 @@ func (a *AltitudeAboveGroundLevel) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The altitude relative to mean sea level represented by the EGM96 geoid. This is often calculated using a terrain
-//
-//	conversion of from a GNSS device.
 var (
 	altitudeAboveMeanSeaLevelEgm96FieldProvenance  = big.NewInt(1 << 0)
 	altitudeAboveMeanSeaLevelEgm96FieldValueMeters = big.NewInt(1 << 1)
 )
 
+// The altitude relative to mean sea level represented by the EGM96 geoid. This is often calculated using a terrain
+//
+//	conversion of from a GNSS device.
 type AltitudeAboveMeanSeaLevelEgm96 struct {
 	// The provenance of the measurement.
 	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
@@ -1291,15 +1291,15 @@ func (a *AltitudeAboveMeanSeaLevelEgm96) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The calibrated pressure altitude reading measured above MSL. This is known as QNH or true altitude in aviation
-//
-//	terms. This is separated from AltitudeAboveMeanSeaLevelEGM96, as the two values are not guaranteed to be the
-//	same due to temperature fluctuations.
 var (
 	altitudeAboveMeanSeaLevelPressureFieldProvenance  = big.NewInt(1 << 0)
 	altitudeAboveMeanSeaLevelPressureFieldValueMeters = big.NewInt(1 << 1)
 )
 
+// The calibrated pressure altitude reading measured above MSL. This is known as QNH or true altitude in aviation
+//
+//	terms. This is separated from AltitudeAboveMeanSeaLevelEGM96, as the two values are not guaranteed to be the
+//	same due to temperature fluctuations.
 type AltitudeAboveMeanSeaLevelPressure struct {
 	// The provenance of the measurement.
 	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
@@ -1399,12 +1399,12 @@ func (a *AltitudeAboveMeanSeaLevelPressure) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The altitude above the sea floor, generally measured with a sonar.
 var (
 	altitudeAboveSeaFloorFieldProvenance  = big.NewInt(1 << 0)
 	altitudeAboveSeaFloorFieldValueMeters = big.NewInt(1 << 1)
 )
 
+// The altitude above the sea floor, generally measured with a sonar.
 type AltitudeAboveSeaFloor struct {
 	// The provenance of the measurement.
 	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
@@ -1504,15 +1504,15 @@ func (a *AltitudeAboveSeaFloor) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The altitude reading measured above the standard datum plane (29.92 inHg or 1013.2 hPA). This is also known as
-//
-//	pressure altitude or QNE in aviation terms. This altitude should be used when flying at high altitudes and
-//	above the transition level (18,000 in the USA and Canada), ensuring the use of a common reference altitude.
 var (
 	altitudeAboveStandardDatumPlanePressureFieldProvenance  = big.NewInt(1 << 0)
 	altitudeAboveStandardDatumPlanePressureFieldValueMeters = big.NewInt(1 << 1)
 )
 
+// The altitude reading measured above the standard datum plane (29.92 inHg or 1013.2 hPA). This is also known as
+//
+//	pressure altitude or QNE in aviation terms. This altitude should be used when flying at high altitudes and
+//	above the transition level (18,000 in the USA and Canada), ensuring the use of a common reference altitude.
 type AltitudeAboveStandardDatumPlanePressure struct {
 	// The provenance of the measurement.
 	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
@@ -1612,12 +1612,12 @@ func (a *AltitudeAboveStandardDatumPlanePressure) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// Altitude above the WGS84 defined ellipsoid. Often measured with a GNSS sensor.
 var (
 	altitudeAboveWgs84EllipsoidFieldProvenance  = big.NewInt(1 << 0)
 	altitudeAboveWgs84EllipsoidFieldValueMeters = big.NewInt(1 << 1)
 )
 
+// Altitude above the WGS84 defined ellipsoid. Often measured with a GNSS sensor.
 type AltitudeAboveWgs84Ellipsoid struct {
 	// The provenance of the measurement.
 	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
@@ -1717,12 +1717,12 @@ func (a *AltitudeAboveWgs84Ellipsoid) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The altitude below sea surface, generally measured with a pressure depth sensor.
 var (
 	altitudeBelowSeaSurfaceFieldProvenance  = big.NewInt(1 << 0)
 	altitudeBelowSeaSurfaceFieldValueMeters = big.NewInt(1 << 1)
 )
 
+// The altitude below sea surface, generally measured with a pressure depth sensor.
 type AltitudeBelowSeaSurface struct {
 	// The provenance of the measurement.
 	Provenance *AltitudeProvenance `json:"provenance,omitempty" url:"provenance,omitempty"`
@@ -1951,12 +1951,12 @@ func (a AltitudeProvenanceSourceType) Ptr() *AltitudeProvenanceSourceType {
 	return &a
 }
 
-// The direction from which the signal is received
 var (
 	angleOfArrivalFieldRelativePose                   = big.NewInt(1 << 0)
 	angleOfArrivalFieldBearingElevationCovarianceRad2 = big.NewInt(1 << 1)
 )
 
+// The direction from which the signal is received
 type AngleOfArrival struct {
 	// Origin (LLA) and attitude (relative to ENU) of a ray pointing towards the detection. The attitude represents a
 	//
@@ -2165,11 +2165,11 @@ func (b *BadRequestErrorBody) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
-// Describes the bandwidth of a signal
 var (
 	bandwidthFieldBandwidthHz = big.NewInt(1 << 0)
 )
 
+// Describes the bandwidth of a signal
 type Bandwidth struct {
 	BandwidthHz *float64 `json:"bandwidthHz,omitempty" url:"bandwidthHz,omitempty"`
 
@@ -2252,12 +2252,12 @@ func (b *Bandwidth) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
-// A component that describes the min and max bandwidths of a sensor
 var (
 	bandwidthRangeFieldMinimumBandwidth = big.NewInt(1 << 0)
 	bandwidthRangeFieldMaximumBandwidth = big.NewInt(1 << 1)
 )
 
+// A component that describes the min and max bandwidths of a sensor
 type BandwidthRange struct {
 	MinimumBandwidth *Bandwidth `json:"minimumBandwidth,omitempty" url:"minimumBandwidth,omitempty"`
 	MaximumBandwidth *Bandwidth `json:"maximumBandwidth,omitempty" url:"maximumBandwidth,omitempty"`
@@ -2355,12 +2355,12 @@ func (b *BandwidthRange) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
-// A component that describes an entity's security classification levels.
 var (
 	classificationFieldDefault = big.NewInt(1 << 0)
 	classificationFieldFields  = big.NewInt(1 << 1)
 )
 
+// A component that describes an entity's security classification levels.
 type Classification struct {
 	// The default classification information which should be assumed to apply to everything in
 	//
@@ -2464,17 +2464,17 @@ func (c *Classification) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
+var (
+	classificationInformationFieldLevel   = big.NewInt(1 << 0)
+	classificationInformationFieldCaveats = big.NewInt(1 << 1)
+)
+
 // Represents all of the necessary information required to generate a summarized
 //
 //	classification marking.
 //
 //	> example: A summarized classification marking of "TOPSECRET//NOFORN//FISA"
 //	           would be defined as: { "level": 5, "caveats": [ "NOFORN, "FISA" ] }
-var (
-	classificationInformationFieldLevel   = big.NewInt(1 << 0)
-	classificationInformationFieldCaveats = big.NewInt(1 << 1)
-)
-
 type ClassificationInformation struct {
 	// Classification level to be applied to the information in question.
 	Level *ClassificationInformationLevel `json:"level,omitempty" url:"level,omitempty"`
@@ -2758,7 +2758,6 @@ func (c *Color) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// Health of an individual component.
 var (
 	componentHealthFieldID         = big.NewInt(1 << 0)
 	componentHealthFieldName       = big.NewInt(1 << 1)
@@ -2767,6 +2766,7 @@ var (
 	componentHealthFieldUpdateTime = big.NewInt(1 << 4)
 )
 
+// Health of an individual component.
 type ComponentHealth struct {
 	// Consistent internal ID for this component.
 	ID *string `json:"id,omitempty" url:"id,omitempty"`
@@ -2959,12 +2959,12 @@ func (c ComponentHealthHealth) Ptr() *ComponentHealthHealth {
 	return &c
 }
 
-// A message describing the component's health status.
 var (
 	componentMessageFieldStatus  = big.NewInt(1 << 0)
 	componentMessageFieldMessage = big.NewInt(1 << 1)
 )
 
+// A message describing the component's health status.
 type ComponentMessage struct {
 	// The status associated with this message.
 	Status *ComponentMessageStatus `json:"status,omitempty" url:"status,omitempty"`
@@ -3099,13 +3099,13 @@ func (c ComponentMessageStatus) Ptr() *ComponentMessageStatus {
 	return &c
 }
 
-// Determines the type of control area being represented by the geo-entity,
-//
-//	in which an asset can, or cannot, operate.
 var (
 	controlAreaDetailsFieldType = big.NewInt(1 << 0)
 )
 
+// Determines the type of control area being represented by the geo-entity,
+//
+//	in which an asset can, or cannot, operate.
 type ControlAreaDetails struct {
 	Type *ControlAreaDetailsType `json:"type,omitempty" url:"type,omitempty"`
 
@@ -3219,9 +3219,6 @@ func (c ControlAreaDetailsType) Ptr() *ControlAreaDetailsType {
 	return &c
 }
 
-// Available for Entities that are a correlated (N to 1) set of entities. This will be present on
-//
-//	each entity in the set.
 var (
 	correlationFieldPrimary       = big.NewInt(1 << 0)
 	correlationFieldSecondary     = big.NewInt(1 << 1)
@@ -3229,6 +3226,9 @@ var (
 	correlationFieldDecorrelation = big.NewInt(1 << 3)
 )
 
+// Available for Entities that are a correlated (N to 1) set of entities. This will be present on
+//
+//	each entity in the set.
 type Correlation struct {
 	// This entity is the primary of a correlation meaning that it serves as the representative
 	//
@@ -4199,14 +4199,14 @@ func (d *Dimensions) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
-// Describes a Echelon group type.  Comprised of entities which are members of the
-//
-//	same unit or echelon. Ex: A group of tanks within a armored company or that same company
-//	as a member of a battalion.
 var (
 	echelonFieldArmyEchelon = big.NewInt(1 << 0)
 )
 
+// Describes a Echelon group type.  Comprised of entities which are members of the
+//
+//	same unit or echelon. Ex: A group of tanks within a armored company or that same company
+//	as a member of a battalion.
 type Echelon struct {
 	ArmyEchelon *EchelonArmyEchelon `json:"armyEchelon,omitempty" url:"armyEchelon,omitempty"`
 
@@ -4338,12 +4338,12 @@ func (e EchelonArmyEchelon) Ptr() *EchelonArmyEchelon {
 	return &e
 }
 
-// A representation of a single emitter notation.
 var (
 	emitterNotationFieldEmitterNotation = big.NewInt(1 << 0)
 	emitterNotationFieldConfidence      = big.NewInt(1 << 1)
 )
 
+// A representation of a single emitter notation.
 type EmitterNotation struct {
 	EmitterNotation *string `json:"emitterNotation,omitempty" url:"emitterNotation,omitempty"`
 	// confidence as a percentage that the emitter notation in this component is accurate
@@ -4442,9 +4442,6 @@ func (e *EmitterNotation) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// The entity object represents a single known object within the Lattice operational environment. It contains
-//
-//	all data associated with the entity, such as its name, ID, and other relevant components.
 var (
 	entityFieldEntityID            = big.NewInt(1 << 0)
 	entityFieldDescription         = big.NewInt(1 << 1)
@@ -4487,6 +4484,9 @@ var (
 	entityFieldSymbology           = big.NewInt(1 << 38)
 )
 
+// The entity object represents a single known object within the Lattice operational environment. It contains
+//
+//	all data associated with the entity, such as its name, ID, and other relevant components.
 type Entity struct {
 	// A Globally Unique Identifier (GUID) for your entity. This is a required
 	//
@@ -5335,7 +5335,6 @@ func (e *EntityManagerPose) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// Symmetric 3d matrix only representing the upper right triangle.
 var (
 	entityManagerTMat3FieldMxx = big.NewInt(1 << 0)
 	entityManagerTMat3FieldMxy = big.NewInt(1 << 1)
@@ -5345,6 +5344,7 @@ var (
 	entityManagerTMat3FieldMzz = big.NewInt(1 << 5)
 )
 
+// Symmetric 3d matrix only representing the upper right triangle.
 type EntityManagerTMat3 struct {
 	Mxx *float64 `json:"mxx,omitempty" url:"mxx,omitempty"`
 	Mxy *float64 `json:"mxy,omitempty" url:"mxy,omitempty"`
@@ -5620,7 +5620,6 @@ func (e *Enu) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// Indicates ellipse characteristics and probability that an entity lies within the defined ellipse.
 var (
 	errorEllipseFieldProbability    = big.NewInt(1 << 0)
 	errorEllipseFieldSemiMajorAxisM = big.NewInt(1 << 1)
@@ -5628,6 +5627,7 @@ var (
 	errorEllipseFieldOrientationD   = big.NewInt(1 << 3)
 )
 
+// Indicates ellipse characteristics and probability that an entity lies within the defined ellipse.
 type ErrorEllipse struct {
 	// Defines the probability in percentage that an entity lies within the given ellipse: 0-1.
 	Probability *float64 `json:"probability,omitempty" url:"probability,omitempty"`
@@ -5759,12 +5759,12 @@ func (e *ErrorEllipse) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// A field specific classification information definition.
 var (
 	fieldClassificationInformationFieldFieldPath                 = big.NewInt(1 << 0)
 	fieldClassificationInformationFieldClassificationInformation = big.NewInt(1 << 1)
 )
 
+// A field specific classification information definition.
 type FieldClassificationInformation struct {
 	// Proto field path which is the string representation of a field.
 	//
@@ -5866,7 +5866,6 @@ func (f *FieldClassificationInformation) String() string {
 	return fmt.Sprintf("%#v", f)
 }
 
-// Sensor Field Of View closely resembling fov.proto SensorFieldOfView.
 var (
 	fieldOfViewFieldFovID              = big.NewInt(1 << 0)
 	fieldOfViewFieldMountID            = big.NewInt(1 << 1)
@@ -5879,6 +5878,7 @@ var (
 	fieldOfViewFieldMode               = big.NewInt(1 << 8)
 )
 
+// Sensor Field Of View closely resembling fov.proto SensorFieldOfView.
 type FieldOfView struct {
 	// The Id for one instance of a FieldOfView, persisted across multiple updates to provide continuity during
 	//
@@ -6205,11 +6205,11 @@ func (f *Fixed) String() string {
 	return fmt.Sprintf("%#v", f)
 }
 
-// A component for describing frequency.
 var (
 	frequencyFieldFrequencyHz = big.NewInt(1 << 0)
 )
 
+// A component for describing frequency.
 type Frequency struct {
 	// Indicates a frequency of a signal (Hz) with its standard deviation.
 	FrequencyHz *Measurement `json:"frequencyHz,omitempty" url:"frequencyHz,omitempty"`
@@ -6293,12 +6293,12 @@ func (f *Frequency) String() string {
 	return fmt.Sprintf("%#v", f)
 }
 
-// A component to represent a frequency range.
 var (
 	frequencyRangeFieldMinimumFrequencyHz = big.NewInt(1 << 0)
 	frequencyRangeFieldMaximumFrequencyHz = big.NewInt(1 << 1)
 )
 
+// A component to represent a frequency range.
 type FrequencyRange struct {
 	// Indicates the lowest measured frequency of a signal (Hz).
 	MinimumFrequencyHz *Frequency `json:"minimumFrequencyHz,omitempty" url:"minimumFrequencyHz,omitempty"`
@@ -6398,7 +6398,6 @@ func (f *FrequencyRange) String() string {
 	return fmt.Sprintf("%#v", f)
 }
 
-// Fuel describes an entity's repository of fuels stores including current amount, operational requirements, and maximum authorized capacity
 var (
 	fuelFieldFuelID                        = big.NewInt(1 << 0)
 	fuelFieldName                          = big.NewInt(1 << 1)
@@ -6410,6 +6409,7 @@ var (
 	fuelFieldDataSource                    = big.NewInt(1 << 7)
 )
 
+// Fuel describes an entity's repository of fuels stores including current amount, operational requirements, and maximum authorized capacity
 type Fuel struct {
 	// Unique fuel identifier
 	FuelID *string `json:"fuelId,omitempty" url:"fuelId,omitempty"`
@@ -6615,7 +6615,6 @@ func (f *Fuel) String() string {
 	return fmt.Sprintf("%#v", f)
 }
 
-// A component that describes a geo-entity.
 var (
 	geoDetailsFieldType          = big.NewInt(1 << 0)
 	geoDetailsFieldControlArea   = big.NewInt(1 << 1)
@@ -6623,6 +6622,7 @@ var (
 	geoDetailsFieldVisualDetails = big.NewInt(1 << 3)
 )
 
+// A component that describes a geo-entity.
 type GeoDetails struct {
 	Type          *GeoDetailsType     `json:"type,omitempty" url:"type,omitempty"`
 	ControlArea   *ControlAreaDetails `json:"controlArea,omitempty" url:"controlArea,omitempty"`
@@ -6790,10 +6790,6 @@ func (g GeoDetailsType) Ptr() *GeoDetailsType {
 	return &g
 }
 
-// An ellipse shaped geo-entity.
-//
-//	For a circle, the major and minor axis would be the same values.
-//	This shape is NOT Geo-JSON compatible.
 var (
 	geoEllipseFieldSemiMajorAxisM = big.NewInt(1 << 0)
 	geoEllipseFieldSemiMinorAxisM = big.NewInt(1 << 1)
@@ -6801,6 +6797,10 @@ var (
 	geoEllipseFieldHeightM        = big.NewInt(1 << 3)
 )
 
+// An ellipse shaped geo-entity.
+//
+//	For a circle, the major and minor axis would be the same values.
+//	This shape is NOT Geo-JSON compatible.
 type GeoEllipse struct {
 	// Defines the distance from the center point of the ellipse to the furthest distance on the perimeter in meters.
 	SemiMajorAxisM *float64 `json:"semiMajorAxisM,omitempty" url:"semiMajorAxisM,omitempty"`
@@ -6932,16 +6932,16 @@ func (g *GeoEllipse) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// An ellipsoid shaped geo-entity.
-//
-//	Principal axis lengths are defined in entity body space
-//	This shape is NOT Geo-JSON compatible.
 var (
 	geoEllipsoidFieldForwardAxisM = big.NewInt(1 << 0)
 	geoEllipsoidFieldSideAxisM    = big.NewInt(1 << 1)
 	geoEllipsoidFieldUpAxisM      = big.NewInt(1 << 2)
 )
 
+// An ellipsoid shaped geo-entity.
+//
+//	Principal axis lengths are defined in entity body space
+//	This shape is NOT Geo-JSON compatible.
 type GeoEllipsoid struct {
 	// Defines the distance from the center point to the surface along the forward axis
 	ForwardAxisM *float64 `json:"forwardAxisM,omitempty" url:"forwardAxisM,omitempty"`
@@ -7057,13 +7057,13 @@ func (g *GeoEllipsoid) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// A line shaped geo-entity.
-//
-//	See https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.4
 var (
 	geoLineFieldPositions = big.NewInt(1 << 0)
 )
 
+// A line shaped geo-entity.
+//
+//	See https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.4
 type GeoLine struct {
 	Positions []*Position `json:"positions,omitempty" url:"positions,omitempty"`
 
@@ -7146,13 +7146,13 @@ func (g *GeoLine) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// A point shaped geo-entity.
-//
-//	See https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
 var (
 	geoPointFieldPosition = big.NewInt(1 << 0)
 )
 
+// A point shaped geo-entity.
+//
+//	See https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
 type GeoPoint struct {
 	Position *Position `json:"position,omitempty" url:"position,omitempty"`
 
@@ -7235,14 +7235,14 @@ func (g *GeoPoint) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// A polygon shaped geo-entity.
-//
-//	See https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.6, only canonical representations accepted
 var (
 	geoPolygonFieldRings       = big.NewInt(1 << 0)
 	geoPolygonFieldIsRectangle = big.NewInt(1 << 1)
 )
 
+// A polygon shaped geo-entity.
+//
+//	See https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.6, only canonical representations accepted
 type GeoPolygon struct {
 	// An array of LinearRings where the first item is the exterior ring and subsequent items are interior rings.
 	Rings []*LinearRing `json:"rings,omitempty" url:"rings,omitempty"`
@@ -7345,12 +7345,12 @@ func (g *GeoPolygon) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// A position in a GeoPolygon with an optional extruded height.
 var (
 	geoPolygonPositionFieldPosition = big.NewInt(1 << 0)
 	geoPolygonPositionFieldHeightM  = big.NewInt(1 << 1)
 )
 
+// A position in a GeoPolygon with an optional extruded height.
 type GeoPolygonPosition struct {
 	// base position. if no altitude set, its on the ground.
 	Position *Position `json:"position,omitempty" url:"position,omitempty"`
@@ -7453,7 +7453,6 @@ func (g *GeoPolygonPosition) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// A component that describes the shape of a geo-entity.
 var (
 	geoShapeFieldPoint     = big.NewInt(1 << 0)
 	geoShapeFieldLine      = big.NewInt(1 << 1)
@@ -7462,6 +7461,7 @@ var (
 	geoShapeFieldEllipsoid = big.NewInt(1 << 4)
 )
 
+// A component that describes the shape of a geo-entity.
 type GeoShape struct {
 	Point     *GeoPoint     `json:"point,omitempty" url:"point,omitempty"`
 	Line      *GeoLine      `json:"line,omitempty" url:"line,omitempty"`
@@ -7604,12 +7604,12 @@ func (g *GeoShape) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// Details specific to displaying a geo-entity
 var (
 	geoVisualDetailsFieldFillColor = big.NewInt(1 << 0)
 	geoVisualDetailsFieldLineColor = big.NewInt(1 << 1)
 )
 
+// Details specific to displaying a geo-entity
 type GeoVisualDetails struct {
 	// Describes the fill color of a geo-entity.
 	FillColor *Color `json:"fillColor,omitempty" url:"fillColor,omitempty"`
@@ -7709,13 +7709,13 @@ func (g *GeoVisualDetails) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
 var (
 	googleRPCStatusFieldCode    = big.NewInt(1 << 0)
 	googleRPCStatusFieldMessage = big.NewInt(1 << 1)
 	googleRPCStatusFieldDetails = big.NewInt(1 << 2)
 )
 
+// The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).
 type GoogleRPCStatus struct {
 	// The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
 	Code *int `json:"code,omitempty" url:"code,omitempty"`
@@ -7902,13 +7902,13 @@ func (g *GroupChild) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// Details related to grouping for this entity
 var (
 	groupDetailsFieldTeam                  = big.NewInt(1 << 0)
 	groupDetailsFieldPlatformSubcomponents = big.NewInt(1 << 1)
 	groupDetailsFieldEchelon               = big.NewInt(1 << 2)
 )
 
+// Details related to grouping for this entity
 type GroupDetails struct {
 	Team                  *Team                  `json:"team,omitempty" url:"team,omitempty"`
 	PlatformSubcomponents *PlatformSubcomponents `json:"platformSubcomponents,omitempty" url:"platformSubcomponents,omitempty"`
@@ -8092,7 +8092,6 @@ func (g *GroupParent) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// General health of the entity as reported by the entity.
 var (
 	healthFieldConnectionStatus = big.NewInt(1 << 0)
 	healthFieldHealthStatus     = big.NewInt(1 << 1)
@@ -8101,6 +8100,7 @@ var (
 	healthFieldActiveAlerts     = big.NewInt(1 << 4)
 )
 
+// General health of the entity as reported by the entity.
 type Health struct {
 	// Status indicating whether the entity is able to communicate with Entity Manager.
 	ConnectionStatus *HealthConnectionStatus `json:"connectionStatus,omitempty" url:"connectionStatus,omitempty"`
@@ -8412,7 +8412,6 @@ func (h *HeartbeatObject) String() string {
 	return fmt.Sprintf("%#v", h)
 }
 
-// Describes whether something is a high value target or not.
 var (
 	highValueTargetFieldIsHighValueTarget  = big.NewInt(1 << 0)
 	highValueTargetFieldTargetPriority     = big.NewInt(1 << 1)
@@ -8420,6 +8419,7 @@ var (
 	highValueTargetFieldIsHighPayoffTarget = big.NewInt(1 << 3)
 )
 
+// Describes whether something is a high value target or not.
 type HighValueTarget struct {
 	// Indicates whether the target matches any description from a high value target list.
 	IsHighValueTarget *bool `json:"isHighValueTarget,omitempty" url:"isHighValueTarget,omitempty"`
@@ -8662,7 +8662,6 @@ func (h *HighValueTargetMatch) String() string {
 	return fmt.Sprintf("%#v", h)
 }
 
-// Indicators to describe entity to consumers.
 var (
 	indicatorsFieldSimulated  = big.NewInt(1 << 0)
 	indicatorsFieldExercise   = big.NewInt(1 << 1)
@@ -8672,6 +8671,7 @@ var (
 	indicatorsFieldStarred    = big.NewInt(1 << 5)
 )
 
+// Indicators to describe entity to consumers.
 type Indicators struct {
 	Simulated *bool `json:"simulated,omitempty" url:"simulated,omitempty"`
 	Exercise  *bool `json:"exercise,omitempty" url:"exercise,omitempty"`
@@ -8833,16 +8833,16 @@ func (i *Indicators) String() string {
 	return fmt.Sprintf("%#v", i)
 }
 
-// Kinematics of the entity, including its location, location uncertainty, motion, attitude, and the time the
-//
-//	kinematics were measured.
-//
-//	Only one of the fields on this message is expected to be set when publishing an entity.
 var (
 	kinematicsFieldKinematicsGeodetic   = big.NewInt(1 << 0)
 	kinematicsFieldKinematicsGeocentric = big.NewInt(1 << 1)
 )
 
+// Kinematics of the entity, including its location, location uncertainty, motion, attitude, and the time the
+//
+//	kinematics were measured.
+//
+//	Only one of the fields on this message is expected to be set when publishing an entity.
 type Kinematics struct {
 	// Kinematics measured in a geodetic (WGS84 latitude/longitude/altitude and ENU) reference frame.
 	KinematicsGeodetic *KinematicsGeodetic `json:"kinematicsGeodetic,omitempty" url:"kinematicsGeodetic,omitempty"`
@@ -9348,13 +9348,13 @@ func (k *KinematicsGeodetic) String() string {
 	return fmt.Sprintf("%#v", k)
 }
 
-// A line of bearing of a signal.
 var (
 	lineOfBearingFieldAngleOfArrival = big.NewInt(1 << 0)
 	lineOfBearingFieldRangeEstimateM = big.NewInt(1 << 1)
 	lineOfBearingFieldMaxRangeM      = big.NewInt(1 << 2)
 )
 
+// A line of bearing of a signal.
 type LineOfBearing struct {
 	// The direction pointing from this entity to the detection
 	AngleOfArrival *AngleOfArrival `json:"angleOfArrival,omitempty" url:"angleOfArrival,omitempty"`
@@ -9470,11 +9470,11 @@ func (l *LineOfBearing) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
-// A closed ring of points. The first and last point must be the same.
 var (
 	linearRingFieldPositions = big.NewInt(1 << 0)
 )
 
+// A closed ring of points. The first and last point must be the same.
 type LinearRing struct {
 	Positions []*GeoPolygonPosition `json:"positions,omitempty" url:"positions,omitempty"`
 
@@ -9752,7 +9752,6 @@ func (l LlaAltitudeReference) Ptr() *LlaAltitudeReference {
 	return &l
 }
 
-// Available for Entities that have a single or primary Location.
 var (
 	locationFieldPosition     = big.NewInt(1 << 0)
 	locationFieldVelocityEnu  = big.NewInt(1 << 1)
@@ -9761,6 +9760,7 @@ var (
 	locationFieldAttitudeEnu  = big.NewInt(1 << 4)
 )
 
+// Available for Entities that have a single or primary Location.
 type Location struct {
 	// see Position definition for details.
 	Position *Position `json:"position,omitempty" url:"position,omitempty"`
@@ -9908,15 +9908,15 @@ func (l *Location) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
-// Location measurement in reference to the center of the earth using the ECEF
-//
-//	coordinate system. This is in the WGS84 coordinate frame.
 var (
 	locationGeocentricEcefFieldXMeters = big.NewInt(1 << 0)
 	locationGeocentricEcefFieldYMeters = big.NewInt(1 << 1)
 	locationGeocentricEcefFieldZMeters = big.NewInt(1 << 2)
 )
 
+// Location measurement in reference to the center of the earth using the ECEF
+//
+//	coordinate system. This is in the WGS84 coordinate frame.
 type LocationGeocentricEcef struct {
 	// The plane of the equator, passing through extending from 90°W longitude (negative)
 	//
@@ -10036,9 +10036,6 @@ func (l *LocationGeocentricEcef) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
-// Geodetic location measurement in reference to the WGS84 ellipsoid. This also optionally
-//
-//	provides other altitude reference frames.
 var (
 	locationGeodeticFieldLatitudeDegrees      = big.NewInt(1 << 0)
 	locationGeodeticFieldLongitudeDegrees     = big.NewInt(1 << 1)
@@ -10046,6 +10043,9 @@ var (
 	locationGeodeticFieldAdditionalAltitudes  = big.NewInt(1 << 3)
 )
 
+// Geodetic location measurement in reference to the WGS84 ellipsoid. This also optionally
+//
+//	provides other altitude reference frames.
 type LocationGeodetic struct {
 	// WGS84 latitude in decimal degrees.
 	LatitudeDegrees *float64 `json:"latitudeDegrees,omitempty" url:"latitudeDegrees,omitempty"`
@@ -10185,13 +10185,13 @@ func (l *LocationGeodetic) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
-// Uncertainty of entity position and velocity, if available.
 var (
 	locationUncertaintyFieldPositionEnuCov       = big.NewInt(1 << 0)
 	locationUncertaintyFieldVelocityEnuCov       = big.NewInt(1 << 1)
 	locationUncertaintyFieldPositionErrorEllipse = big.NewInt(1 << 2)
 )
 
+// Uncertainty of entity position and velocity, if available.
 type LocationUncertainty struct {
 	// Positional covariance represented by the upper triangle of the covariance matrix. It is valid to populate
 	//
@@ -10541,12 +10541,12 @@ func (m *MeanKeplerianElements) String() string {
 	return fmt.Sprintf("%#v", m)
 }
 
-// A component that describes some measured value with error.
 var (
 	measurementFieldValue = big.NewInt(1 << 0)
 	measurementFieldSigma = big.NewInt(1 << 1)
 )
 
+// A component that describes some measured value with error.
 type Measurement struct {
 	// The value of the measurement.
 	Value *float64 `json:"value,omitempty" url:"value,omitempty"`
@@ -10646,11 +10646,11 @@ func (m *Measurement) String() string {
 	return fmt.Sprintf("%#v", m)
 }
 
-// Media associated with an entity.
 var (
 	mediaFieldMedia = big.NewInt(1 << 0)
 )
 
+// Media associated with an entity.
 type Media struct {
 	Media []*MediaItem `json:"media,omitempty" url:"media,omitempty"`
 
@@ -11036,13 +11036,13 @@ func (m *MilStd2525C) String() string {
 	return fmt.Sprintf("%#v", m)
 }
 
-// Provides the disposition, environment, and nationality of an Entity.
 var (
 	milViewFieldDisposition = big.NewInt(1 << 0)
 	milViewFieldEnvironment = big.NewInt(1 << 1)
 	milViewFieldNationality = big.NewInt(1 << 2)
 )
 
+// Provides the disposition, environment, and nationality of an Entity.
 type MilView struct {
 	Disposition *MilViewDisposition `json:"disposition,omitempty" url:"disposition,omitempty"`
 	Environment *MilViewEnvironment `json:"environment,omitempty" url:"environment,omitempty"`
@@ -11584,13 +11584,13 @@ func (m MilViewNationality) Ptr() *MilViewNationality {
 	return &m
 }
 
-// Describes the Mode 5 transponder interrogation status and codes.
 var (
 	mode5FieldMode5InterrogationResponse = big.NewInt(1 << 0)
 	mode5FieldMode5                      = big.NewInt(1 << 1)
 	mode5FieldMode5PlatformID            = big.NewInt(1 << 2)
 )
 
+// Describes the Mode 5 transponder interrogation status and codes.
 type Mode5 struct {
 	// The validity of the response from the Mode 5 interrogation.
 	Mode5InterrogationResponse *Mode5Mode5InterrogationResponse `json:"mode5InterrogationResponse,omitempty" url:"mode5InterrogationResponse,omitempty"`
@@ -11735,12 +11735,12 @@ func (m Mode5Mode5InterrogationResponse) Ptr() *Mode5Mode5InterrogationResponse 
 	return &m
 }
 
-// Describes the Mode S codes.
 var (
 	modeSFieldID      = big.NewInt(1 << 0)
 	modeSFieldAddress = big.NewInt(1 << 1)
 )
 
+// Describes the Mode S codes.
 type ModeS struct {
 	// Mode S identifier which comprises of 8 alphanumeric characters.
 	ID *string `json:"id,omitempty" url:"id,omitempty"`
@@ -11842,13 +11842,13 @@ func (m *ModeS) String() string {
 	return fmt.Sprintf("%#v", m)
 }
 
-// Munition describes an entity's munitions stores
 var (
 	munitionFieldMunitionID    = big.NewInt(1 << 0)
 	munitionFieldName          = big.NewInt(1 << 1)
 	munitionFieldQuantityUnits = big.NewInt(1 << 2)
 )
 
+// Munition describes an entity's munitions stores
 type Munition struct {
 	// Unique munition identifier
 	MunitionID *string `json:"munitionId,omitempty" url:"munitionId,omitempty"`
@@ -12031,13 +12031,13 @@ func (n *NonPrimaryMembership) String() string {
 	return fmt.Sprintf("%#v", n)
 }
 
-// Ontology of the entity.
 var (
 	ontologyFieldPlatformType = big.NewInt(1 << 0)
 	ontologyFieldSpecificType = big.NewInt(1 << 1)
 	ontologyFieldTemplate     = big.NewInt(1 << 2)
 )
 
+// Ontology of the entity.
 type Ontology struct {
 	// A string that describes the entity's high-level type with natural language.
 	PlatformType *string `json:"platformType,omitempty" url:"platformType,omitempty"`
@@ -12275,13 +12275,13 @@ func (o *Orbit) String() string {
 	return fmt.Sprintf("%#v", o)
 }
 
-// Orbit Mean Elements data, analogous to the Orbit Mean Elements Message in CCSDS 502.0-B-3
 var (
 	orbitMeanElementsFieldMetadata              = big.NewInt(1 << 0)
 	orbitMeanElementsFieldMeanKeplerianElements = big.NewInt(1 << 1)
 	orbitMeanElementsFieldTleParameters         = big.NewInt(1 << 2)
 )
 
+// Orbit Mean Elements data, analogous to the Orbit Mean Elements Message in CCSDS 502.0-B-3
 type OrbitMeanElements struct {
 	Metadata              *OrbitMeanElementsMetadata `json:"metadata,omitempty" url:"metadata,omitempty"`
 	MeanKeplerianElements *MeanKeplerianElements     `json:"meanKeplerianElements,omitempty" url:"meanKeplerianElements,omitempty"`
@@ -12622,7 +12622,6 @@ func (o OrbitMeanElementsMetadataRefFrame) Ptr() *OrbitMeanElementsMetadataRefFr
 	return &o
 }
 
-// Details about an override. Last write wins.
 var (
 	overrideFieldRequestID        = big.NewInt(1 << 0)
 	overrideFieldFieldPath        = big.NewInt(1 << 1)
@@ -12633,6 +12632,7 @@ var (
 	overrideFieldRequestTimestamp = big.NewInt(1 << 6)
 )
 
+// Details about an override. Last write wins.
 type Override struct {
 	// override request id for an override request
 	RequestID *string `json:"requestId,omitempty" url:"requestId,omitempty"`
@@ -12888,11 +12888,11 @@ func (o OverrideType) Ptr() *OverrideType {
 	return &o
 }
 
-// Metadata about entity overrides present.
 var (
 	overridesFieldOverride = big.NewInt(1 << 0)
 )
 
+// Metadata about entity overrides present.
 type Overrides struct {
 	Override []*Override `json:"override,omitempty" url:"override,omitempty"`
 
@@ -12975,11 +12975,11 @@ func (o *Overrides) String() string {
 	return fmt.Sprintf("%#v", o)
 }
 
-// Individual payload configuration.
 var (
 	payloadFieldConfig = big.NewInt(1 << 0)
 )
 
+// Individual payload configuration.
 type Payload struct {
 	Config *PayloadConfiguration `json:"config,omitempty" url:"config,omitempty"`
 
@@ -13291,11 +13291,11 @@ func (p PayloadConfigurationPayloadOperationalState) Ptr() *PayloadConfiguration
 	return &p
 }
 
-// List of payloads available for an entity.
 var (
 	payloadsFieldPayloadConfigurations = big.NewInt(1 << 0)
 )
 
+// List of payloads available for an entity.
 type Payloads struct {
 	PayloadConfigurations []*Payload `json:"payloadConfigurations,omitempty" url:"payloadConfigurations,omitempty"`
 
@@ -13573,12 +13573,6 @@ func (p *Pose) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// WGS84 position. Position includes four altitude references.
-//
-//	The data model does not currently support Mean Sea Level (MSL) references,
-//	such as the Earth Gravitational Model 1996 (EGM-96) and the Earth Gravitational Model 2008 (EGM-08).
-//	If the only altitude reference available to your integration is MSL, convert it to
-//	Height Above Ellipsoid (HAE) and populate the altitude_hae_meters field.
 var (
 	positionFieldLatitudeDegrees     = big.NewInt(1 << 0)
 	positionFieldLongitudeDegrees    = big.NewInt(1 << 1)
@@ -13588,6 +13582,12 @@ var (
 	positionFieldPressureDepthMeters = big.NewInt(1 << 5)
 )
 
+// WGS84 position. Position includes four altitude references.
+//
+//	The data model does not currently support Mean Sea Level (MSL) references,
+//	such as the Earth Gravitational Model 1996 (EGM-96) and the Earth Gravitational Model 2008 (EGM-08).
+//	If the only altitude reference available to your integration is MSL, convert it to
+//	Height Above Ellipsoid (HAE) and populate the altitude_hae_meters field.
 type Position struct {
 	// WGS84 geodetic latitude in decimal degrees.
 	LatitudeDegrees *float64 `json:"latitudeDegrees,omitempty" url:"latitudeDegrees,omitempty"`
@@ -13760,7 +13760,6 @@ func (p *Position) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// Represents the power level of a system.
 var (
 	powerLevelFieldCapacity             = big.NewInt(1 << 0)
 	powerLevelFieldRemaining            = big.NewInt(1 << 1)
@@ -13771,6 +13770,7 @@ var (
 	powerLevelFieldConsumptionRateLPerS = big.NewInt(1 << 6)
 )
 
+// Represents the power level of a system.
 type PowerLevel struct {
 	// Total power capacity of the system.
 	Capacity *float64 `json:"capacity,omitempty" url:"capacity,omitempty"`
@@ -13956,7 +13956,6 @@ func (p *PowerLevel) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// Represents the state of a single power source that is connected to this entity.
 var (
 	powerSourceFieldPowerStatus = big.NewInt(1 << 0)
 	powerSourceFieldPowerType   = big.NewInt(1 << 1)
@@ -13965,6 +13964,7 @@ var (
 	powerSourceFieldOffloadable = big.NewInt(1 << 4)
 )
 
+// Represents the state of a single power source that is connected to this entity.
 type PowerSource struct {
 	// Status of the power source.
 	PowerStatus *PowerSourcePowerStatus `json:"powerStatus,omitempty" url:"powerStatus,omitempty"`
@@ -14180,11 +14180,11 @@ func (p PowerSourcePowerType) Ptr() *PowerSourcePowerType {
 	return &p
 }
 
-// Represents the state of power sources connected to this entity.
 var (
 	powerStateFieldSourceIDToState = big.NewInt(1 << 0)
 )
 
+// Represents the state of power sources connected to this entity.
 type PowerState struct {
 	// This is a map where the key is a unique id of the power source and the value is additional information about the
 	//
@@ -14424,9 +14424,6 @@ func (p *PrimaryMembership) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// Represents a frustum in which which all four corner points project onto the ground. All points in this message
-//
-//	are optional, if the projection to the ground fails then they will not be populated.
 var (
 	projectedFrustumFieldUpperLeft   = big.NewInt(1 << 0)
 	projectedFrustumFieldUpperRight  = big.NewInt(1 << 1)
@@ -14434,6 +14431,9 @@ var (
 	projectedFrustumFieldBottomLeft  = big.NewInt(1 << 3)
 )
 
+// Represents a frustum in which which all four corner points project onto the ground. All points in this message
+//
+//	are optional, if the projection to the ground fails then they will not be populated.
 type ProjectedFrustum struct {
 	// Upper left point of the frustum.
 	UpperLeft *Position `json:"upperLeft,omitempty" url:"upperLeft,omitempty"`
@@ -14565,7 +14565,6 @@ func (p *ProjectedFrustum) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// Data provenance.
 var (
 	provenanceFieldIntegrationName   = big.NewInt(1 << 0)
 	provenanceFieldDataType          = big.NewInt(1 << 1)
@@ -14574,6 +14573,7 @@ var (
 	provenanceFieldSourceDescription = big.NewInt(1 << 4)
 )
 
+// Data provenance.
 type Provenance struct {
 	// Name of the integration that produced this entity
 	IntegrationName *string `json:"integrationName,omitempty" url:"integrationName,omitempty"`
@@ -14732,11 +14732,11 @@ func (p *Provenance) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// A component that describe the length in time between two pulses
 var (
 	pulseRepetitionIntervalFieldPulseRepetitionIntervalS = big.NewInt(1 << 0)
 )
 
+// A component that describe the length in time between two pulses
 type PulseRepetitionInterval struct {
 	PulseRepetitionIntervalS *Measurement `json:"pulseRepetitionIntervalS,omitempty" url:"pulseRepetitionIntervalS,omitempty"`
 
@@ -14954,7 +14954,6 @@ func (q *Quaternion) String() string {
 	return fmt.Sprintf("%#v", q)
 }
 
-// Range rings allow visual assessment of map distance at varying zoom levels.
 var (
 	rangeRingsFieldMinDistanceM  = big.NewInt(1 << 0)
 	rangeRingsFieldMaxDistanceM  = big.NewInt(1 << 1)
@@ -14962,6 +14961,7 @@ var (
 	rangeRingsFieldRingLineColor = big.NewInt(1 << 3)
 )
 
+// Range rings allow visual assessment of map distance at varying zoom levels.
 type RangeRings struct {
 	// The minimum range ring distance, specified in meters.
 	MinDistanceM *float64 `json:"minDistanceM,omitempty" url:"minDistanceM,omitempty"`
@@ -15093,13 +15093,13 @@ func (r *RangeRings) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// The relationship component indicates a relationship to another entity.
 var (
 	relationshipFieldRelatedEntityID  = big.NewInt(1 << 0)
 	relationshipFieldRelationshipID   = big.NewInt(1 << 1)
 	relationshipFieldRelationshipType = big.NewInt(1 << 2)
 )
 
+// The relationship component indicates a relationship to another entity.
 type Relationship struct {
 	// The entity ID to which this entity is related.
 	RelatedEntityID *string `json:"relatedEntityId,omitempty" url:"relatedEntityId,omitempty"`
@@ -15215,7 +15215,6 @@ func (r *Relationship) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// Determines the type of relationship between this entity and another.
 var (
 	relationshipTypeFieldTrackedBy    = big.NewInt(1 << 0)
 	relationshipTypeFieldGroupChild   = big.NewInt(1 << 1)
@@ -15224,6 +15223,7 @@ var (
 	relationshipTypeFieldActiveTarget = big.NewInt(1 << 4)
 )
 
+// Determines the type of relationship between this entity and another.
 type RelationshipType struct {
 	TrackedBy    *TrackedBy    `json:"trackedBy,omitempty" url:"trackedBy,omitempty"`
 	GroupChild   *GroupChild   `json:"groupChild,omitempty" url:"groupChild,omitempty"`
@@ -15366,11 +15366,11 @@ func (r *RelationshipType) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// The relationships between this entity and other entities in the common operational picture.
 var (
 	relationshipsFieldRelationships = big.NewInt(1 << 0)
 )
 
+// The relationships between this entity and other entities in the common operational picture.
 type Relationships struct {
 	Relationships []*Relationship `json:"relationships,omitempty" url:"relationships,omitempty"`
 
@@ -15453,12 +15453,12 @@ func (r *Relationships) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// Represents RF configurations supported on this sensor.
 var (
 	rfConfigurationFieldFrequencyRangeHz = big.NewInt(1 << 0)
 	rfConfigurationFieldBandwidthRangeHz = big.NewInt(1 << 1)
 )
 
+// Represents RF configurations supported on this sensor.
 type RfConfiguration struct {
 	// Frequency ranges that are available for this sensor.
 	FrequencyRangeHz []*FrequencyRange `json:"frequencyRangeHz,omitempty" url:"frequencyRangeHz,omitempty"`
@@ -15670,12 +15670,12 @@ func (r *RouteDetails) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// A component that describes the scanning characteristics of a signal
 var (
 	scanCharacteristicsFieldScanType    = big.NewInt(1 << 0)
 	scanCharacteristicsFieldScanPeriodS = big.NewInt(1 << 1)
 )
 
+// A component that describes the scanning characteristics of a signal
 type ScanCharacteristics struct {
 	ScanType    *ScanCharacteristicsScanType `json:"scanType,omitempty" url:"scanType,omitempty"`
 	ScanPeriodS *float64                     `json:"scanPeriodS,omitempty" url:"scanPeriodS,omitempty"`
@@ -15840,13 +15840,13 @@ func (s ScanCharacteristicsScanType) Ptr() *ScanCharacteristicsScanType {
 	return &s
 }
 
-// A Schedule associated with this entity
 var (
 	scheduleFieldWindows      = big.NewInt(1 << 0)
 	scheduleFieldScheduleID   = big.NewInt(1 << 1)
 	scheduleFieldScheduleType = big.NewInt(1 << 2)
 )
 
+// A Schedule associated with this entity
 type Schedule struct {
 	// expression that represents this schedule's "ON" state
 	Windows []*CronWindow `json:"windows,omitempty" url:"windows,omitempty"`
@@ -15988,11 +15988,11 @@ func (s ScheduleScheduleType) Ptr() *ScheduleScheduleType {
 	return &s
 }
 
-// Schedules associated with this entity
 var (
 	schedulesFieldSchedules = big.NewInt(1 << 0)
 )
 
+// Schedules associated with this entity
 type Schedules struct {
 	Schedules []*Schedule `json:"schedules,omitempty" url:"schedules,omitempty"`
 
@@ -16179,7 +16179,6 @@ func (s *SecondaryCorrelation) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// Individual sensor configuration.
 var (
 	sensorFieldSensorID               = big.NewInt(1 << 0)
 	sensorFieldOperationalState       = big.NewInt(1 << 1)
@@ -16190,6 +16189,7 @@ var (
 	sensorFieldFieldsOfView           = big.NewInt(1 << 6)
 )
 
+// Individual sensor configuration.
 type Sensor struct {
 	// This generally is used to indicate a specific type at a more detailed granularity. E.g. COMInt or LWIR
 	SensorID         *string                 `json:"sensorId,omitempty" url:"sensorId,omitempty"`
@@ -16454,11 +16454,11 @@ func (s SensorSensorType) Ptr() *SensorSensorType {
 	return &s
 }
 
-// List of sensors available for an entity.
 var (
 	sensorsFieldSensors = big.NewInt(1 << 0)
 )
 
+// List of sensors available for an entity.
 type Sensors struct {
 	Sensors []*Sensor `json:"sensors,omitempty" url:"sensors,omitempty"`
 
@@ -16541,7 +16541,6 @@ func (s *Sensors) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// A component that describes an entity's signal characteristics.
 var (
 	signalFieldFrequencyCenter           = big.NewInt(1 << 0)
 	signalFieldFrequencyRange            = big.NewInt(1 << 1)
@@ -16556,6 +16555,7 @@ var (
 	signalFieldReceivedSignalStrengthDbm = big.NewInt(1 << 10)
 )
 
+// A component that describes an entity's signal characteristics.
 type Signal struct {
 	FrequencyCenter *Frequency      `json:"frequencyCenter,omitempty" url:"frequencyCenter,omitempty"`
 	FrequencyRange  *FrequencyRange `json:"frequencyRange,omitempty" url:"frequencyRange,omitempty"`
@@ -16795,12 +16795,12 @@ func (s *Signal) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// Contains status of entities.
 var (
 	statusFieldPlatformActivity = big.NewInt(1 << 0)
 	statusFieldRole             = big.NewInt(1 << 1)
 )
 
+// Contains status of entities.
 type Status struct {
 	// A string that describes the activity that the entity is performing.
 	//
@@ -16902,12 +16902,12 @@ func (s *Status) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// Represents the state of supplies associated with an entity (available but not in condition to use immediately)
 var (
 	suppliesFieldMunitions = big.NewInt(1 << 0)
 	suppliesFieldFuel      = big.NewInt(1 << 1)
 )
 
+// Represents the state of supplies associated with an entity (available but not in condition to use immediately)
 type Supplies struct {
 	Munitions []*Munition `json:"munitions,omitempty" url:"munitions,omitempty"`
 	Fuel      []*Fuel     `json:"fuel,omitempty" url:"fuel,omitempty"`
@@ -17005,11 +17005,11 @@ func (s *Supplies) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// Symbology associated with an entity.
 var (
 	symbologyFieldMilStd2525C = big.NewInt(1 << 0)
 )
 
+// Symbology associated with an entity.
 type Symbology struct {
 	MilStd2525C *MilStd2525C `json:"milStd2525C,omitempty" url:"milStd2525C,omitempty"`
 
@@ -17092,15 +17092,15 @@ func (s *Symbology) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// symmetric 2d matrix only representing the upper right triangle, useful for
-//
-//	covariance matrices
 var (
 	tMat2FieldMxx = big.NewInt(1 << 0)
 	tMat2FieldMxy = big.NewInt(1 << 1)
 	tMat2FieldMyy = big.NewInt(1 << 2)
 )
 
+// symmetric 2d matrix only representing the upper right triangle, useful for
+//
+//	covariance matrices
 type TMat2 struct {
 	Mxx *float64 `json:"mxx,omitempty" url:"mxx,omitempty"`
 	Mxy *float64 `json:"mxy,omitempty" url:"mxy,omitempty"`
@@ -17213,7 +17213,6 @@ func (t *TMat2) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// A symmetric 3D matrix only representing the upper right triangle, useful for covariance matrices.
 var (
 	tMat3FieldMxx = big.NewInt(1 << 0)
 	tMat3FieldMxy = big.NewInt(1 << 1)
@@ -17223,6 +17222,7 @@ var (
 	tMat3FieldMzz = big.NewInt(1 << 5)
 )
 
+// A symmetric 3D matrix only representing the upper right triangle, useful for covariance matrices.
 type TMat3 struct {
 	Mxx *float64 `json:"mxx,omitempty" url:"mxx,omitempty"`
 	Mxy *float64 `json:"mxy,omitempty" url:"mxy,omitempty"`
@@ -17380,12 +17380,12 @@ func (t *TMat3) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// The target prioritization associated with an entity.
 var (
 	targetPriorityFieldHighValueTarget = big.NewInt(1 << 0)
 	targetPriorityFieldThreat          = big.NewInt(1 << 1)
 )
 
+// The target prioritization associated with an entity.
 type TargetPriority struct {
 	// Describes the target priority in relation to high value target lists.
 	HighValueTarget *HighValueTarget `json:"highValueTarget,omitempty" url:"highValueTarget,omitempty"`
@@ -17485,11 +17485,11 @@ func (t *TargetPriority) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Catalog of supported tasks.
 var (
 	taskCatalogFieldTaskDefinitions = big.NewInt(1 << 0)
 )
 
+// Catalog of supported tasks.
 type TaskCatalog struct {
 	TaskDefinitions []*TaskDefinition `json:"taskDefinitions,omitempty" url:"taskDefinitions,omitempty"`
 
@@ -17572,11 +17572,11 @@ func (t *TaskCatalog) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Defines a supported task by the task specification URL of its "Any" type.
 var (
 	taskDefinitionFieldTaskSpecificationURL = big.NewInt(1 << 0)
 )
 
+// Defines a supported task by the task specification URL of its "Any" type.
 type TaskDefinition struct {
 	// Url path must be prefixed with `type.googleapis.com/`.
 	TaskSpecificationURL *string `json:"taskSpecificationUrl,omitempty" url:"taskSpecificationUrl,omitempty"`
@@ -17660,12 +17660,12 @@ func (t *TaskDefinition) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Represents a team of agents
 var (
 	teamFieldEntityID = big.NewInt(1 << 0)
 	teamFieldMembers  = big.NewInt(1 << 1)
 )
 
+// Represents a team of agents
 type Team struct {
 	// Entity ID of the team
 	EntityID *string  `json:"entityId,omitempty" url:"entityId,omitempty"`
@@ -17764,11 +17764,11 @@ func (t *Team) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Describes whether an entity is a threat or not.
 var (
 	threatFieldIsThreat = big.NewInt(1 << 0)
 )
 
+// Describes whether an entity is a threat or not.
 type Threat struct {
 	// Indicates that the entity has been determined to be a threat.
 	IsThreat *bool `json:"isThreat,omitempty" url:"isThreat,omitempty"`
@@ -18091,7 +18091,6 @@ func (t *TleParameters) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Available for Entities that are tracked.
 var (
 	trackedFieldTrackQualityWrapper = big.NewInt(1 << 0)
 	trackedFieldSensorHits          = big.NewInt(1 << 1)
@@ -18101,6 +18100,7 @@ var (
 	trackedFieldLineOfBearing       = big.NewInt(1 << 5)
 )
 
+// Available for Entities that are tracked.
 type Tracked struct {
 	// Quality score, 0-15, nil if none
 	TrackQualityWrapper *int `json:"trackQualityWrapper,omitempty" url:"trackQualityWrapper,omitempty"`
@@ -18282,14 +18282,14 @@ func (t *Tracked) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Describes the relationship between the entity being tracked ("tracked entity") and the entity that is
-//
-//	performing the tracking ("tracking entity").
 var (
 	trackedByFieldActivelyTrackingSensors  = big.NewInt(1 << 0)
 	trackedByFieldLastMeasurementTimestamp = big.NewInt(1 << 1)
 )
 
+// Describes the relationship between the entity being tracked ("tracked entity") and the entity that is
+//
+//	performing the tracking ("tracking entity").
 type TrackedBy struct {
 	// Sensor details of the tracking entity's sensors that were active and tracking the tracked entity. This may be
 	//
@@ -18399,7 +18399,6 @@ func (t *TrackedBy) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// A message describing any transponder codes associated with Mode 1, 2, 3, 4, 5, S, C interrogations.
 var (
 	transponderCodesFieldMode1                      = big.NewInt(1 << 0)
 	transponderCodesFieldMode2                      = big.NewInt(1 << 1)
@@ -18410,6 +18409,7 @@ var (
 	transponderCodesFieldModeCAltitudeFt            = big.NewInt(1 << 6)
 )
 
+// A message describing any transponder codes associated with Mode 1, 2, 3, 4, 5, S, C interrogations.
 type TransponderCodes struct {
 	// The mode 1 code assigned to military assets.
 	Mode1 *int `json:"mode1,omitempty" url:"mode1,omitempty"`
@@ -18942,11 +18942,11 @@ func (v *Vec3) String() string {
 	return fmt.Sprintf("%#v", v)
 }
 
-// Visual details associated with the display of an entity in the client.
 var (
 	visualDetailsFieldRangeRings = big.NewInt(1 << 0)
 )
 
+// Visual details associated with the display of an entity in the client.
 type VisualDetails struct {
 	// The range rings to display around an entity.
 	RangeRings *RangeRings `json:"rangeRings,omitempty" url:"rangeRings,omitempty"`
