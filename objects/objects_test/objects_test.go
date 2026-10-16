@@ -5,7 +5,9 @@ package objects_test
 import (
 	bytes "bytes"
 	context "context"
+	base64 "encoding/base64"
 	json "encoding/json"
+	io "io"
 	http "net/http"
 	os "os"
 	testing "testing"
@@ -99,6 +101,38 @@ func TestObjectsListObjectsWithWireMock(
 
 	require.NoError(t, invocationErr, "Client method call should succeed")
 	VerifyRequestCount(t, "TestObjectsListObjectsWithWireMock", "GET", "/api/v1/objects", nil, 1)
+}
+
+func TestObjectsGetObjectWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
+	)
+	request := &Lattice.GetObjectRequest{
+		ObjectPath: "objectPath",
+	}
+	response, invocationErr := client.Objects.WithRawResponse.GetObject(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestObjectsGetObjectWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	require.Equal(t, "application/octet-stream", response.Header.Get("Content-Type"), "Response content type should match the served fixture")
+	actualBytes, readErr := io.ReadAll(response.Body)
+	require.NoError(t, readErr, "Response body should be readable to completion")
+	expectedBytes, decodeErr := base64.StdEncoding.DecodeString("JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSA+PgplbmRvYmoKeHJlZgowIDQKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDAwNjQgMDAwMDAgbiAKMDAwMDAwMDEyMSAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDQgL1Jvb3QgMSAwIFIgPj4Kc3RhcnR4cmVmCjE5MgolJUVPRgo=")
+	require.NoError(t, decodeErr, "Fixture bytes should decode")
+	require.Equal(t, expectedBytes, actualBytes, "Response body should match the served fixture bytes")
+	VerifyRequestCount(t, "TestObjectsGetObjectWithWireMock", "GET", "/api/v1/objects/objectPath", nil, 1)
 }
 
 func TestObjectsDeleteObjectWithWireMock(

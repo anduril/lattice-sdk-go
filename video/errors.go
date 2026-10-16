@@ -4,7 +4,7 @@ package video
 
 import (
 	json "encoding/json"
-	v5 "github.com/anduril/lattice-sdk-go/v5"
+	latticesdkgo "github.com/anduril/lattice-sdk-go/v5"
 	core "github.com/anduril/lattice-sdk-go/v5/core"
 )
 
@@ -14,11 +14,11 @@ import (
 // not being live.
 type BadRequestError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (b *BadRequestError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -35,16 +35,23 @@ func (b *BadRequestError) Unwrap() error {
 	return b.APIError
 }
 
+func (b *BadRequestError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if b == nil {
+		return nil
+	}
+	return b.Body
+}
+
 // The supplied identifier is already in use. For ingress creation this means the
 // requested `ingressId` is taken by another stream; for egress creation an egress
 // stream already exists for the requested source.
 type ConflictError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (c *ConflictError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -61,14 +68,21 @@ func (c *ConflictError) Unwrap() error {
 	return c.APIError
 }
 
+func (c *ConflictError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if c == nil {
+		return nil
+	}
+	return c.Body
+}
+
 // The caller is authenticated but lacks permission for the requested resource.
 type ForbiddenError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (f *ForbiddenError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -85,16 +99,23 @@ func (f *ForbiddenError) Unwrap() error {
 	return f.APIError
 }
 
+func (f *ForbiddenError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if f == nil {
+		return nil
+	}
+	return f.Body
+}
+
 // An unexpected error occurred while processing the request. The ingress or egress
 // backend may have failed, or an underlying storage operation may have failed. Retry
 // with backoff.
 type InternalServerError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (i *InternalServerError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -111,14 +132,21 @@ func (i *InternalServerError) Unwrap() error {
 	return i.APIError
 }
 
+func (i *InternalServerError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if i == nil {
+		return nil
+	}
+	return i.Body
+}
+
 // The specified ingress or egress stream was not found.
 type NotFoundError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (n *NotFoundError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -135,16 +163,23 @@ func (n *NotFoundError) Unwrap() error {
 	return n.APIError
 }
 
+func (n *NotFoundError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if n == nil {
+		return nil
+	}
+	return n.Body
+}
+
 // The service is temporarily unable to handle the request, such as during startup or
 // when a backend dependency is shutting down. The response carries a RetryInfo hint
 // (typically around 2 seconds); clients should retry per that hint.
 type ServiceUnavailableError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (s *ServiceUnavailableError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -161,16 +196,23 @@ func (s *ServiceUnavailableError) Unwrap() error {
 	return s.APIError
 }
 
+func (s *ServiceUnavailableError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if s == nil {
+		return nil
+	}
+	return s.Body
+}
+
 // A service-wide resource pool is exhausted. For egress this means a port could not be
 // allocated or the egress instance is at capacity. There is no per-caller quota or rate
 // limit, so this reflects deployment-wide capacity rather than caller behavior.
 type TooManyRequestsError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (t *TooManyRequestsError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -187,15 +229,22 @@ func (t *TooManyRequestsError) Unwrap() error {
 	return t.APIError
 }
 
+func (t *TooManyRequestsError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if t == nil {
+		return nil
+	}
+	return t.Body
+}
+
 // The request was rejected because the bearer token was missing, malformed, or could
 // not be resolved to a user identity.
 type UnauthorizedError struct {
 	*core.APIError
-	Body *v5.GoogleRPCStatus
+	Body *latticesdkgo.GoogleRPCStatus
 }
 
 func (u *UnauthorizedError) UnmarshalJSON(data []byte) error {
-	var body *v5.GoogleRPCStatus
+	var body *latticesdkgo.GoogleRPCStatus
 	if err := json.Unmarshal(data, &body); err != nil {
 		return err
 	}
@@ -210,4 +259,11 @@ func (u *UnauthorizedError) MarshalJSON() ([]byte, error) {
 
 func (u *UnauthorizedError) Unwrap() error {
 	return u.APIError
+}
+
+func (u *UnauthorizedError) GetBody() *latticesdkgo.GoogleRPCStatus {
+	if u == nil {
+		return nil
+	}
+	return u.Body
 }

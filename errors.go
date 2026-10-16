@@ -33,6 +33,13 @@ func (b *BadRequestError) Unwrap() error {
 	return b.APIError
 }
 
+func (b *BadRequestError) GetBody() any {
+	if b == nil {
+		return nil
+	}
+	return b.Body
+}
+
 // Content too large
 type ContentTooLargeError struct {
 	*core.APIError
@@ -55,6 +62,13 @@ func (c *ContentTooLargeError) MarshalJSON() ([]byte, error) {
 
 func (c *ContentTooLargeError) Unwrap() error {
 	return c.APIError
+}
+
+func (c *ContentTooLargeError) GetBody() *object.Error {
+	if c == nil {
+		return nil
+	}
+	return c.Body
 }
 
 // Insuccifient Storage
@@ -81,6 +95,13 @@ func (i *InsufficientStorageError) Unwrap() error {
 	return i.APIError
 }
 
+func (i *InsufficientStorageError) GetBody() *object.Error {
+	if i == nil {
+		return nil
+	}
+	return i.Body
+}
+
 // Internal server error
 type InternalServerError struct {
 	*core.APIError
@@ -105,6 +126,13 @@ func (i *InternalServerError) Unwrap() error {
 	return i.APIError
 }
 
+func (i *InternalServerError) GetBody() any {
+	if i == nil {
+		return nil
+	}
+	return i.Body
+}
+
 // The specified resource was not found
 type NotFoundError struct {
 	*core.APIError
@@ -127,6 +155,13 @@ func (n *NotFoundError) MarshalJSON() ([]byte, error) {
 
 func (n *NotFoundError) Unwrap() error {
 	return n.APIError
+}
+
+func (n *NotFoundError) GetBody() any {
+	if n == nil {
+		return nil
+	}
+	return n.Body
 }
 
 // The server has terminated the session. The server will send this error when the client has fallen too far
@@ -155,6 +190,13 @@ func (r *RequestTimeoutError) Unwrap() error {
 	return r.APIError
 }
 
+func (r *RequestTimeoutError) GetBody() *entity.Error {
+	if r == nil {
+		return nil
+	}
+	return r.Body
+}
+
 // Server is out of resources or reaching rate limiting or quota and cannot accept the request at this time.
 type TooManyRequestsError struct {
 	*core.APIError
@@ -179,6 +221,13 @@ func (t *TooManyRequestsError) Unwrap() error {
 	return t.APIError
 }
 
+func (t *TooManyRequestsError) GetBody() *entity.Error {
+	if t == nil {
+		return nil
+	}
+	return t.Body
+}
+
 // Unauthorized to access resource
 type UnauthorizedError struct {
 	*core.APIError
@@ -201,4 +250,11 @@ func (u *UnauthorizedError) MarshalJSON() ([]byte, error) {
 
 func (u *UnauthorizedError) Unwrap() error {
 	return u.APIError
+}
+
+func (u *UnauthorizedError) GetBody() any {
+	if u == nil {
+		return nil
+	}
+	return u.Body
 }
