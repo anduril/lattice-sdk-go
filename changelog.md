@@ -1,5 +1,19 @@
 # Changelog
 
+## [v5.2.0] - 2026-10-16
+### Added
+- **`GetBody()`** — nil-safe accessor added to all error types returning the `GoogleRPCStatus` response body.
+- **`TaskStatus.LastUpdateTime`** — new optional field with `GetLastUpdateTime()` and `SetLastUpdateTime()` accessors tracking when a task status last changed.
+- **`WithEventDiscriminator`** — now accepts optional variadic `envelopeEvents` to wrap matching SSE events in envelope-style union variants.
+- **`EnvelopeEvents`** — new streaming parameter that forwards envelope event names to the event discriminator.
+
+### Changed
+- **Error decoding** — now supports 4XX and 5XX wildcard matching so unmapped status codes resolve to typed client or server errors.
+- **`ExtractExtraProperties`** — extra properties matching a declared field name case-insensitively are now dropped to avoid overriding declared fields.
+- **`TaskStreamRequestTaskType`** — union deserialization now uses key-based matching for more accurate variant selection.
+- **`DateTime.MarshalJSON` / `Date.UnmarshalJSON`** — now serialize using RFC3339Nano and accept RFC3339 plus additional date-time layouts respectively.
+- **Request body merging** — JSON bodies now merge properties with deterministic key ordering, and context cancellation only errors on unfinished response bodies.
+
 ## [5.1.0] - 2026-09-15
 
 ### Added

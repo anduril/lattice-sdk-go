@@ -775,9 +775,6 @@ func (d *DeleteIngressStreamResponse) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
-// An egress stream publishes a single stream to a downstream consumer over a chosen
-//
-//	transport.
 var (
 	egressStreamFieldEgressID  = big.NewInt(1 << 0)
 	egressStreamFieldIngressID = big.NewInt(1 << 1)
@@ -785,6 +782,9 @@ var (
 	egressStreamFieldSrt       = big.NewInt(1 << 3)
 )
 
+// An egress stream publishes a single stream to a downstream consumer over a chosen
+//
+//	transport.
 type EgressStream struct {
 	// Service-generated identifier for the egress stream.
 	EgressID *string `json:"egressId,omitempty" url:"egressId,omitempty"`
@@ -1088,9 +1088,6 @@ func (g *GetIngressStreamResponse) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
-// An ingress stream represents a single source feeding frames into Lattice.
-//
-//	Ingress streams are replicated across Lattice and visible anywhere in the deployment.
 var (
 	ingressStreamFieldIngressID = big.NewInt(1 << 0)
 	ingressStreamFieldTitle     = big.NewInt(1 << 1)
@@ -1103,6 +1100,9 @@ var (
 	ingressStreamFieldEgressIDs = big.NewInt(1 << 8)
 )
 
+// An ingress stream represents a single source feeding frames into Lattice.
+//
+//	Ingress streams are replicated across Lattice and visible anywhere in the deployment.
 type IngressStream struct {
 	// Unique identifier for the ingress stream.
 	IngressID *string `json:"ingressId,omitempty" url:"ingressId,omitempty"`
@@ -1573,6 +1573,10 @@ func (l *ListIngressStreamsResponse) String() string {
 	return fmt.Sprintf("%#v", l)
 }
 
+var (
+	mpegTsIngressFieldURL = big.NewInt(1 << 0)
+)
+
 // MPEG-TS ingress connection details.
 //
 //	MPEG-TS ingress is supported only at the edge, in closed networks; in a cloud
@@ -1580,10 +1584,6 @@ func (l *ListIngressStreamsResponse) String() string {
 //	details are populated only when a stream was successfully created with `mpegTs`. An
 //	MPEG-TS stream created at the edge can still be listed and inspected on the
 //	IngressStream read model even when cloud ingress is disabled.
-var (
-	mpegTsIngressFieldURL = big.NewInt(1 << 0)
-)
-
 type MpegTsIngress struct {
 	// The URL that the producer should push the MPEG-TS stream to.
 	URL *string `json:"url,omitempty" url:"url,omitempty"`
@@ -1680,11 +1680,11 @@ func (m *MpegTsIngress) String() string {
 //	is disabled.
 type MpegTsSettings = map[string]any
 
-// RTSP egress connection details.
 var (
 	rtspEgressFieldURL = big.NewInt(1 << 0)
 )
 
+// RTSP egress connection details.
 type RtspEgress struct {
 	// The RTSP URL the downstream consumer should pull from.
 	URL *string `json:"url,omitempty" url:"url,omitempty"`
@@ -1768,11 +1768,11 @@ func (r *RtspEgress) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// RTSP ingress connection details.
 var (
 	rtspIngressFieldURL = big.NewInt(1 << 0)
 )
 
+// RTSP ingress connection details.
 type RtspIngress struct {
 	// The upstream RTSP URL. Lattice will pull from the supplied URL.
 	//
@@ -1858,11 +1858,11 @@ func (r *RtspIngress) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// Settings for RTSP.
 var (
 	rtspSettingsFieldURL = big.NewInt(1 << 0)
 )
 
+// Settings for RTSP.
 type RtspSettings struct {
 	// The upstream RTSP URL the service should pull frames from. Must use
 	//
@@ -1948,12 +1948,12 @@ func (r *RtspSettings) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// SRT egress connection details.
 var (
 	srtEgressFieldURL       = big.NewInt(1 << 0)
 	srtEgressFieldSessionID = big.NewInt(1 << 1)
 )
 
+// SRT egress connection details.
 type SrtEgress struct {
 	// The URL on which Lattice listens. The downstream consumer pulls from this URL.
 	URL *string `json:"url,omitempty" url:"url,omitempty"`
@@ -2053,14 +2053,14 @@ func (s *SrtEgress) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// SRT ingress connection details. Returned to the producer so it knows where to
-//
-//	push the stream.
 var (
 	srtIngressFieldURL       = big.NewInt(1 << 0)
 	srtIngressFieldSessionID = big.NewInt(1 << 1)
 )
 
+// SRT ingress connection details. Returned to the producer so it knows where to
+//
+//	push the stream.
 type SrtIngress struct {
 	// The URL the producer should push the SRT stream to.
 	URL *string `json:"url,omitempty" url:"url,omitempty"`
@@ -2162,6 +2162,10 @@ func (s *SrtIngress) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
+var (
+	srtSettingsFieldPassphrase = big.NewInt(1 << 0)
+)
+
 // The Lattice video service supports SRT protocol for push operations (ingress)
 //
 //	and pull operations (egress).
@@ -2175,10 +2179,6 @@ func (s *SrtIngress) String() string {
 //	return to the user a url from which to pull a stream. Use the supplied
 //	sessionId and passphrase in your StreamId if applicable.
 //	See the SRT documentation on Access Control for more information.
-var (
-	srtSettingsFieldPassphrase = big.NewInt(1 << 0)
-)
-
 type SrtSettings struct {
 	// Optional passphrase for the stream, set by the user, that applies AES encryption.
 	Passphrase *string `json:"passphrase,omitempty" url:"passphrase,omitempty"`

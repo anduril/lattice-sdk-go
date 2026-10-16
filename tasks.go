@@ -620,6 +620,12 @@ func (t *TaskStreamRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(explicitMarshaler)
 }
 
+var (
+	agentRequestFieldExecuteRequest  = big.NewInt(1 << 0)
+	agentRequestFieldCancelRequest   = big.NewInt(1 << 1)
+	agentRequestFieldCompleteRequest = big.NewInt(1 << 2)
+)
+
 // Response streamed to an agent containing task actions to perform.
 //
 // This message is streamed from Tasks API to agents and contains one of three
@@ -630,12 +636,6 @@ func (t *TaskStreamRequest) MarshalJSON() ([]byte, error) {
 // Multiple responses may be sent for different tasks, and the agent should maintain
 // the connection to receive ongoing task requests. The connection may also be used
 // for heartbeat messages to ensure the agent is still responsive.
-var (
-	agentRequestFieldExecuteRequest  = big.NewInt(1 << 0)
-	agentRequestFieldCancelRequest   = big.NewInt(1 << 1)
-	agentRequestFieldCompleteRequest = big.NewInt(1 << 2)
-)
-
 type AgentRequest struct {
 	ExecuteRequest  *ExecuteRequest  `json:"executeRequest,omitempty" url:"executeRequest,omitempty"`
 	CancelRequest   *CancelRequest   `json:"cancelRequest,omitempty" url:"cancelRequest,omitempty"`
@@ -866,13 +866,13 @@ func (a *AgentStreamEvent) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The wrapper for a task's action requests: execute, cancel, or complete.
 var (
 	agentTaskRequestFieldExecuteRequest  = big.NewInt(1 << 0)
 	agentTaskRequestFieldCancelRequest   = big.NewInt(1 << 1)
 	agentTaskRequestFieldCompleteRequest = big.NewInt(1 << 2)
 )
 
+// The wrapper for a task's action requests: execute, cancel, or complete.
 type AgentTaskRequest struct {
 	ExecuteRequest  *ExecuteRequest  `json:"executeRequest,omitempty" url:"executeRequest,omitempty"`
 	CancelRequest   *CancelRequest   `json:"cancelRequest,omitempty" url:"cancelRequest,omitempty"`
@@ -985,11 +985,11 @@ func (a *AgentTaskRequest) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// Allocation contains a list of agents allocated to a task.
 var (
 	allocationFieldActiveAgents = big.NewInt(1 << 0)
 )
 
+// Allocation contains a list of agents allocated to a task.
 type Allocation struct {
 	// Agents actively being utilized in a task.
 	ActiveAgents []*Agent `json:"activeAgents,omitempty" url:"activeAgents,omitempty"`
@@ -1073,15 +1073,15 @@ func (a *Allocation) String() string {
 	return fmt.Sprintf("%#v", a)
 }
 
-// The request to cancel a task.
-//
-//	Contains the task, and the assignee of the request to cancel the task.
 var (
 	cancelRequestFieldTaskID   = big.NewInt(1 << 0)
 	cancelRequestFieldAssignee = big.NewInt(1 << 1)
 	cancelRequestFieldAuthor   = big.NewInt(1 << 2)
 )
 
+// The request to cancel a task.
+//
+//	Contains the task, and the assignee of the request to cancel the task.
 type CancelRequest struct {
 	// The unique task ID of the task to cancel.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
@@ -1199,13 +1199,13 @@ func (c *CancelRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// The request to complete a task.
-//
-//	Contains the unique ID of the task to complete.
 var (
 	completeRequestFieldTaskID = big.NewInt(1 << 0)
 )
 
+// The request to complete a task.
+//
+//	Contains the unique ID of the task to complete.
 type CompleteRequest struct {
 	// ID of the task to complete.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
@@ -1289,13 +1289,13 @@ func (c *CompleteRequest) String() string {
 	return fmt.Sprintf("%#v", c)
 }
 
-// DeliveryConstraints defines when Lattice should deliver the task to the agent.
 var (
 	deliveryConstraintsFieldDeliverAfter           = big.NewInt(1 << 0)
 	deliveryConstraintsFieldDeliverBefore          = big.NewInt(1 << 1)
 	deliveryConstraintsFieldRequireAcknowledgement = big.NewInt(1 << 2)
 )
 
+// DeliveryConstraints defines when Lattice should deliver the task to the agent.
 type DeliveryConstraints struct {
 	// Optional earliest time the task can attempt to be delivered.
 	DeliverAfter *time.Time `json:"deliverAfter,omitempty" url:"deliverAfter,omitempty"`
@@ -1434,12 +1434,12 @@ func (d *DeliveryConstraints) String() string {
 	return fmt.Sprintf("%#v", d)
 }
 
-// DeliveryError contains an error code and message associated with task delivery.
 var (
 	deliveryErrorFieldCode    = big.NewInt(1 << 0)
 	deliveryErrorFieldMessage = big.NewInt(1 << 1)
 )
 
+// DeliveryError contains an error code and message associated with task delivery.
 type DeliveryError struct {
 	// Error code for Delivery error.
 	Code *DeliveryErrorCode `json:"code,omitempty" url:"code,omitempty"`
@@ -1571,13 +1571,13 @@ func (d DeliveryErrorCode) Ptr() *DeliveryErrorCode {
 	return &d
 }
 
-// Defines the current state of a task's delivery.
 var (
 	deliveryStateFieldStatus              = big.NewInt(1 << 0)
 	deliveryStateFieldError               = big.NewInt(1 << 1)
 	deliveryStateFieldDeliveryConstraints = big.NewInt(1 << 2)
 )
 
+// Defines the current state of a task's delivery.
 type DeliveryState struct {
 	// The current status of the delivery.
 	Status *DeliveryStateStatus `json:"status,omitempty" url:"status,omitempty"`
@@ -1812,13 +1812,13 @@ func (e *EntityIDsSelector) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// The request to execute a task.
-//
-//	Contains the unique ID of the task to execute.
 var (
 	executeRequestFieldTask = big.NewInt(1 << 0)
 )
 
+// The request to execute a task.
+//
+//	Contains the unique ID of the task to execute.
 type ExecuteRequest struct {
 	// The task to execute.
 	Task *Task `json:"task,omitempty" url:"task,omitempty"`
@@ -1902,12 +1902,12 @@ func (e *ExecuteRequest) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// `ExecutionConstraints` provides scheduling details that informs the agent when to execute the task.
 var (
 	executionConstraintsFieldStartAfter     = big.NewInt(1 << 0)
 	executionConstraintsFieldCompleteBefore = big.NewInt(1 << 1)
 )
 
+// `ExecutionConstraints` provides scheduling details that informs the agent when to execute the task.
 type ExecutionConstraints struct {
 	// The timestamp after which the agent can execute the task
 	StartAfter *time.Time `json:"startAfter,omitempty" url:"startAfter,omitempty"`
@@ -2019,11 +2019,11 @@ func (e *ExecutionConstraints) String() string {
 	return fmt.Sprintf("%#v", e)
 }
 
-// Defaults to an interval of 5 seconds. If the DeliverBefore field in the task's DeliveryConstraints isn't populated, Lattice does not retry delivery and instead logs a warning.
 var (
 	fixedRetryFieldRetryInterval = big.NewInt(1 << 0)
 )
 
+// Defaults to an interval of 5 seconds. If the DeliverBefore field in the task's DeliveryConstraints isn't populated, Lattice does not retry delivery and instead logs a warning.
 type FixedRetry struct {
 	// Specifies the interval between retries. A default interval of 5 seconds is used if this field is not set.
 	RetryInterval *string `json:"retryInterval,omitempty" url:"retryInterval,omitempty"`
@@ -2107,11 +2107,11 @@ func (f *FixedRetry) String() string {
 	return fmt.Sprintf("%#v", f)
 }
 
-// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
 var (
 	googleProtobufAnyFieldType = big.NewInt(1 << 0)
 )
 
+// Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
 type GoogleProtobufAny struct {
 	// The type of the serialized message.
 	Type *string `json:"@type,omitempty" url:"@type,omitempty"`
@@ -2200,6 +2200,14 @@ func (g *GoogleProtobufAny) String() string {
 	return fmt.Sprintf("%#v", g)
 }
 
+var (
+	manualControlFrameFieldTaskID        = big.NewInt(1 << 0)
+	manualControlFrameFieldEpochMicros   = big.NewInt(1 << 1)
+	manualControlFrameFieldSequence      = big.NewInt(1 << 2)
+	manualControlFrameFieldCreationTime  = big.NewInt(1 << 3)
+	manualControlFrameFieldSpecification = big.NewInt(1 << 4)
+)
+
 // A single frame of manual control input forwarded by Lattice to an agent.
 //
 //	When an operator sends manual control input, for example, joystick movements using
@@ -2209,14 +2217,6 @@ func (g *GoogleProtobufAny) String() string {
 //
 //	Each frame carries sequencing metadata to support concurrent control sessions,
 //	detect stale frames, and ensure proper ordering.
-var (
-	manualControlFrameFieldTaskID        = big.NewInt(1 << 0)
-	manualControlFrameFieldEpochMicros   = big.NewInt(1 << 1)
-	manualControlFrameFieldSequence      = big.NewInt(1 << 2)
-	manualControlFrameFieldCreationTime  = big.NewInt(1 << 3)
-	manualControlFrameFieldSpecification = big.NewInt(1 << 4)
-)
-
 type ManualControlFrame struct {
 	// The ID of the manual control task this frame belongs to.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
@@ -2555,11 +2555,11 @@ func (m *ManualControlFrameEvent) String() string {
 	return fmt.Sprintf("%#v", m)
 }
 
-// Owner designates the entity responsible for writes of task data.
 var (
 	ownerFieldEntityID = big.NewInt(1 << 0)
 )
 
+// Owner designates the entity responsible for writes of task data.
 type Owner struct {
 	// Entity ID of the owner.
 	EntityID *string `json:"entityId,omitempty" url:"entityId,omitempty"`
@@ -2643,7 +2643,6 @@ func (o *Owner) String() string {
 	return fmt.Sprintf("%#v", o)
 }
 
-// A Principal is an entity that has authority over this task.
 var (
 	principalFieldSystem     = big.NewInt(1 << 0)
 	principalFieldUser       = big.NewInt(1 << 1)
@@ -2651,6 +2650,7 @@ var (
 	principalFieldOnBehalfOf = big.NewInt(1 << 3)
 )
 
+// A Principal is an entity that has authority over this task.
 type Principal struct {
 	System *System `json:"system,omitempty" url:"system,omitempty"`
 	User   *User   `json:"user,omitempty" url:"user,omitempty"`
@@ -2781,14 +2781,14 @@ func (p *Principal) String() string {
 	return fmt.Sprintf("%#v", p)
 }
 
-// Describes the relationships associated with this task: the system assigned to
-//
-//	execute the task, and the parent task, if one exists.
 var (
 	relationsFieldAssignee     = big.NewInt(1 << 0)
 	relationsFieldParentTaskID = big.NewInt(1 << 1)
 )
 
+// Describes the relationships associated with this task: the system assigned to
+//
+//	execute the task, and the parent task, if one exists.
 type Relations struct {
 	// The system, user, or team assigned to the task.
 	Assignee *Principal `json:"assignee,omitempty" url:"assignee,omitempty"`
@@ -2888,11 +2888,11 @@ func (r *Relations) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// Any metadata associated with the replication of a task.
 var (
 	replicationFieldStaleTime = big.NewInt(1 << 0)
 )
 
+// Any metadata associated with the replication of a task.
 type Replication struct {
 	// The time by which this task should be assumed to be stale.
 	StaleTime *time.Time `json:"staleTime,omitempty" url:"staleTime,omitempty"`
@@ -2984,11 +2984,11 @@ func (r *Replication) String() string {
 	return fmt.Sprintf("%#v", r)
 }
 
-// Sets an optional try strategy for tasks. Use this option to control how Lattice attempts to retry delivery of tasks to assets with intermittent access or network connectivity to your environment.
 var (
 	retryStrategyFieldFixedRetryStrategy = big.NewInt(1 << 0)
 )
 
+// Sets an optional try strategy for tasks. Use this option to control how Lattice attempts to retry delivery of tasks to assets with intermittent access or network connectivity to your environment.
 type RetryStrategy struct {
 	FixedRetryStrategy *FixedRetry `json:"fixedRetryStrategy,omitempty" url:"fixedRetryStrategy,omitempty"`
 
@@ -3158,13 +3158,13 @@ func (s *StreamHeartbeat) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// System Principal representing some autonomous system.
 var (
 	systemFieldServiceName          = big.NewInt(1 << 0)
 	systemFieldEntityID             = big.NewInt(1 << 1)
 	systemFieldManagesOwnScheduling = big.NewInt(1 << 2)
 )
 
+// System Principal representing some autonomous system.
 type System struct {
 	// Name of the service associated with this System.
 	ServiceName *string `json:"serviceName,omitempty" url:"serviceName,omitempty"`
@@ -3285,15 +3285,6 @@ func (s *System) String() string {
 	return fmt.Sprintf("%#v", s)
 }
 
-// A task represents a structured unit of work that can be assigned to an agent for execution.
-//
-//	Tasks are the fundamental building blocks of work assignment in the Lattice.
-//	Each task has a unique identifier, a specification defining what needs to be done,
-//	status information tracking its progress, and various metadata facilitating its lifecycle management.
-//
-//	Tasks can be related to each other, through parent-child relationships, assigned to
-//	specific agents, and tracked through a well-defined state machine from creation to completion.
-//	They support rich status reporting, including progress updates, error handling, and results.
 var (
 	taskFieldVersion              = big.NewInt(1 << 0)
 	taskFieldDisplayName          = big.NewInt(1 << 1)
@@ -3315,6 +3306,15 @@ var (
 	taskFieldExecutionConstraints = big.NewInt(1 << 17)
 )
 
+// A task represents a structured unit of work that can be assigned to an agent for execution.
+//
+//	Tasks are the fundamental building blocks of work assignment in the Lattice.
+//	Each task has a unique identifier, a specification defining what needs to be done,
+//	status information tracking its progress, and various metadata facilitating its lifecycle management.
+//
+//	Tasks can be related to each other, through parent-child relationships, assigned to
+//	specific agents, and tracked through a well-defined state machine from creation to completion.
+//	They support rich status reporting, including progress updates, error handling, and results.
 type Task struct {
 	// Version of this task.
 	Version *TaskVersion `json:"version,omitempty" url:"version,omitempty"`
@@ -3694,16 +3694,16 @@ func (t *Task) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// An entity wrapper used in task definitions, with additional metadata.
-//
-//	TaskEntity wraps an entity reference with additional contextual information for task execution.
-//	This structure allows entities to be passed to tasks with supplementary metadata that aids
-//	in proper task execution, while also serving as an extension point for future capabilities.
 var (
 	taskEntityFieldEntity   = big.NewInt(1 << 0)
 	taskEntityFieldSnapshot = big.NewInt(1 << 1)
 )
 
+// An entity wrapper used in task definitions, with additional metadata.
+//
+//	TaskEntity wraps an entity reference with additional contextual information for task execution.
+//	This structure allows entities to be passed to tasks with supplementary metadata that aids
+//	in proper task execution, while also serving as an extension point for future capabilities.
 type TaskEntity struct {
 	// The wrapped entity.
 	Entity *Entity `json:"entity,omitempty" url:"entity,omitempty"`
@@ -3803,17 +3803,17 @@ func (t *TaskEntity) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Error information associated with a task.
-//
-//	TaskError contains structured error details, including an error code, a human-readable
-//	message, and optional extended error information. This structure is used when a task
-//	encounters problems during its lifecycle.
 var (
 	taskErrorFieldCode         = big.NewInt(1 << 0)
 	taskErrorFieldMessage      = big.NewInt(1 << 1)
 	taskErrorFieldErrorDetails = big.NewInt(1 << 2)
 )
 
+// Error information associated with a task.
+//
+//	TaskError contains structured error details, including an error code, a human-readable
+//	message, and optional extended error information. This structure is used when a task
+//	encounters problems during its lifecycle.
 type TaskError struct {
 	// Error code for task error.
 	Code *TaskErrorCode `json:"code,omitempty" url:"code,omitempty"`
@@ -3961,11 +3961,11 @@ func (t TaskErrorCode) Ptr() *TaskErrorCode {
 	return &t
 }
 
-// Contains information about a task event.
 var (
 	taskEventDataFieldTaskEvent = big.NewInt(1 << 0)
 )
 
+// Contains information about a task event.
 type TaskEventData struct {
 	// The task event that occurred.
 	TaskEvent *TaskEventDataTaskEvent `json:"taskEvent,omitempty" url:"taskEvent,omitempty"`
@@ -4049,12 +4049,12 @@ func (t *TaskEventData) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// The task event that occurred.
 var (
 	taskEventDataTaskEventFieldEventType = big.NewInt(1 << 0)
 	taskEventDataTaskEventFieldTask      = big.NewInt(1 << 1)
 )
 
+// The task event that occurred.
 type TaskEventDataTaskEvent struct {
 	// The type of event that occurred for this task.
 	EventType *TaskEventDataTaskEventEventType `json:"eventType,omitempty" url:"eventType,omitempty"`
@@ -4183,6 +4183,11 @@ func (t TaskEventDataTaskEventEventType) Ptr() *TaskEventDataTaskEventEventType 
 	return &t
 }
 
+var (
+	taskQueryResultsFieldTasks         = big.NewInt(1 << 0)
+	taskQueryResultsFieldNextPageToken = big.NewInt(1 << 1)
+)
+
 // Response containing tasks that match the query criteria.
 //
 // This message returns a list of Task objects that satisfy the filter conditions
@@ -4190,11 +4195,6 @@ func (t TaskEventDataTaskEventEventType) Ptr() *TaskEventDataTaskEventEventType 
 // in a single response, a page_token is provided to retrieve the next batch in
 // a subsequent request. An empty tasks list with no page_token indicates that
 // there are no more matching tasks.
-var (
-	taskQueryResultsFieldTasks         = big.NewInt(1 << 0)
-	taskQueryResultsFieldNextPageToken = big.NewInt(1 << 1)
-)
-
 type TaskQueryResults struct {
 	Tasks []*Task `json:"tasks,omitempty" url:"tasks,omitempty"`
 	// Incomplete results can be detected by a non-empty nextPageToken field in the query results. In order to retrieve
@@ -4296,22 +4296,23 @@ func (t *TaskQueryResults) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
+var (
+	taskStatusFieldStatus         = big.NewInt(1 << 0)
+	taskStatusFieldTaskError      = big.NewInt(1 << 1)
+	taskStatusFieldProgress       = big.NewInt(1 << 2)
+	taskStatusFieldResult         = big.NewInt(1 << 3)
+	taskStatusFieldStartTime      = big.NewInt(1 << 4)
+	taskStatusFieldEstimate       = big.NewInt(1 << 5)
+	taskStatusFieldAllocation     = big.NewInt(1 << 6)
+	taskStatusFieldLastUpdateTime = big.NewInt(1 << 7)
+)
+
 // Comprehensive status information for a task at a given point in time.
 //
 //	TaskStatus contains all status-related information for a task, including its current state,
 //	any error conditions, progress details, results, timing information, and resource allocations.
 //	This object evolves throughout a task's lifecycle, providing increasing detail as the task
 //	progresses from creation through execution to completion.
-var (
-	taskStatusFieldStatus     = big.NewInt(1 << 0)
-	taskStatusFieldTaskError  = big.NewInt(1 << 1)
-	taskStatusFieldProgress   = big.NewInt(1 << 2)
-	taskStatusFieldResult     = big.NewInt(1 << 3)
-	taskStatusFieldStartTime  = big.NewInt(1 << 4)
-	taskStatusFieldEstimate   = big.NewInt(1 << 5)
-	taskStatusFieldAllocation = big.NewInt(1 << 6)
-)
-
 type TaskStatus struct {
 	// Status of the task.
 	Status *TaskStatusStatus `json:"status,omitempty" url:"status,omitempty"`
@@ -4327,6 +4328,10 @@ type TaskStatus struct {
 	Estimate *GoogleProtobufAny `json:"estimate,omitempty" url:"estimate,omitempty"`
 	// Any allocated agents of the task.
 	Allocation *Allocation `json:"allocation,omitempty" url:"allocation,omitempty"`
+	// Last time the task status changed.
+	//
+	//	Used to guard against out of order updates.
+	LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty" url:"lastUpdateTime,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -4382,6 +4387,13 @@ func (t *TaskStatus) GetAllocation() *Allocation {
 		return nil
 	}
 	return t.Allocation
+}
+
+func (t *TaskStatus) GetLastUpdateTime() *time.Time {
+	if t == nil {
+		return nil
+	}
+	return t.LastUpdateTime
 }
 
 func (t *TaskStatus) GetExtraProperties() map[string]interface{} {
@@ -4449,11 +4461,19 @@ func (t *TaskStatus) SetAllocation(allocation *Allocation) {
 	t.require(taskStatusFieldAllocation)
 }
 
+// SetLastUpdateTime sets the LastUpdateTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetLastUpdateTime(lastUpdateTime *time.Time) {
+	t.LastUpdateTime = lastUpdateTime
+	t.require(taskStatusFieldLastUpdateTime)
+}
+
 func (t *TaskStatus) UnmarshalJSON(data []byte) error {
 	type embed TaskStatus
 	var unmarshaler = struct {
 		embed
-		StartTime *internal.DateTime `json:"startTime,omitempty"`
+		StartTime      *internal.DateTime `json:"startTime,omitempty"`
+		LastUpdateTime *internal.DateTime `json:"lastUpdateTime,omitempty"`
 	}{
 		embed: embed(*t),
 	}
@@ -4462,6 +4482,7 @@ func (t *TaskStatus) UnmarshalJSON(data []byte) error {
 	}
 	*t = TaskStatus(unmarshaler.embed)
 	t.StartTime = unmarshaler.StartTime.TimePtr()
+	t.LastUpdateTime = unmarshaler.LastUpdateTime.TimePtr()
 	extraProperties, err := internal.ExtractExtraProperties(data, *t)
 	if err != nil {
 		return err
@@ -4475,10 +4496,12 @@ func (t *TaskStatus) MarshalJSON() ([]byte, error) {
 	type embed TaskStatus
 	var marshaler = struct {
 		embed
-		StartTime *internal.DateTime `json:"startTime,omitempty"`
+		StartTime      *internal.DateTime `json:"startTime,omitempty"`
+		LastUpdateTime *internal.DateTime `json:"lastUpdateTime,omitempty"`
 	}{
-		embed:     embed(*t),
-		StartTime: internal.NewOptionalDateTime(t.StartTime),
+		embed:          embed(*t),
+		StartTime:      internal.NewOptionalDateTime(t.StartTime),
+		LastUpdateTime: internal.NewOptionalDateTime(t.LastUpdateTime),
 	}
 	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
 	return json.Marshal(explicitMarshaler)
@@ -4648,17 +4671,17 @@ func (t *TaskStreamEvent) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// Versioning information for a task.
-//
-//	TaskVersion provides a unique identifier for each task, along with separate version counters
-//	for tracking changes to the task's definition and its status. This versioning system enables
-//	optimistic concurrency control, ensuring that updates from multiple sources don't conflict.
 var (
 	taskVersionFieldTaskID            = big.NewInt(1 << 0)
 	taskVersionFieldDefinitionVersion = big.NewInt(1 << 1)
 	taskVersionFieldStatusVersion     = big.NewInt(1 << 2)
 )
 
+// Versioning information for a task.
+//
+//	TaskVersion provides a unique identifier for each task, along with separate version counters
+//	for tracking changes to the task's definition and its status. This versioning system enables
+//	optimistic concurrency control, ensuring that updates from multiple sources don't conflict.
 type TaskVersion struct {
 	// The unique identifier for this task, used to distinguish it from all other tasks in the system.
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
@@ -4781,11 +4804,11 @@ func (t *TaskVersion) String() string {
 // The datetime string in ISO 8601 format.
 type Timestamp = string
 
-// A User Principal representing a human.
 var (
 	userFieldUserID = big.NewInt(1 << 0)
 )
 
+// A User Principal representing a human.
 type User struct {
 	// The User ID associated with this User.
 	UserID *string `json:"userId,omitempty" url:"userId,omitempty"`
@@ -5399,12 +5422,12 @@ func (t TaskQueryStatusFilterStatus) Ptr() *TaskQueryStatusFilterStatus {
 	return &t
 }
 
-// If provided, only provides tasks updated within the time range.
 var (
 	taskQueryUpdateTimeRangeFieldStartTime = big.NewInt(1 << 0)
 	taskQueryUpdateTimeRangeFieldEndTime   = big.NewInt(1 << 1)
 )
 
+// If provided, only provides tasks updated within the time range.
 type TaskQueryUpdateTimeRange struct {
 	// If provided, returns tasks only updated after this time.
 	StartTime *string `json:"startTime,omitempty" url:"startTime,omitempty"`
@@ -5504,12 +5527,12 @@ func (t *TaskQueryUpdateTimeRange) String() string {
 	return fmt.Sprintf("%#v", t)
 }
 
-// A filter for task statuses (inclusive or exclusive).
 var (
 	taskStreamRequestStatusFilterFieldStatuses   = big.NewInt(1 << 0)
 	taskStreamRequestStatusFilterFieldFilterType = big.NewInt(1 << 1)
 )
 
+// A filter for task statuses (inclusive or exclusive).
 type TaskStreamRequestStatusFilter struct {
 	// The statuses to filter by.
 	Statuses []TaskStreamRequestStatusFilterStatusesItem `json:"statuses,omitempty" url:"statuses,omitempty"`
@@ -5719,6 +5742,38 @@ func (t *TaskStreamRequestTaskType) GetTaskStreamRequestTaskTypeTaskTypePrefix()
 }
 
 func (t *TaskStreamRequestTaskType) UnmarshalJSON(data []byte) error {
+	if internal.MatchesObjectKeys(data, []string{"taskTypeUrls"}, []string{"taskTypeUrls"}) {
+		valueTaskStreamRequestTaskTypeTaskTypeURLs := new(TaskStreamRequestTaskTypeTaskTypeURLs)
+		if err := json.Unmarshal(data, &valueTaskStreamRequestTaskTypeTaskTypeURLs); err == nil {
+			t.typ = "TaskStreamRequestTaskTypeTaskTypeURLs"
+			t.TaskStreamRequestTaskTypeTaskTypeURLs = valueTaskStreamRequestTaskTypeTaskTypeURLs
+			return nil
+		}
+	}
+	if internal.MatchesObjectKeys(data, []string{"taskTypePrefix"}, []string{"taskTypePrefix"}) {
+		valueTaskStreamRequestTaskTypeTaskTypePrefix := new(TaskStreamRequestTaskTypeTaskTypePrefix)
+		if err := json.Unmarshal(data, &valueTaskStreamRequestTaskTypeTaskTypePrefix); err == nil {
+			t.typ = "TaskStreamRequestTaskTypeTaskTypePrefix"
+			t.TaskStreamRequestTaskTypeTaskTypePrefix = valueTaskStreamRequestTaskTypeTaskTypePrefix
+			return nil
+		}
+	}
+	if internal.HasObjectKeys(data, []string{"taskTypeUrls"}) {
+		valueTaskStreamRequestTaskTypeTaskTypeURLs := new(TaskStreamRequestTaskTypeTaskTypeURLs)
+		if err := json.Unmarshal(data, &valueTaskStreamRequestTaskTypeTaskTypeURLs); err == nil {
+			t.typ = "TaskStreamRequestTaskTypeTaskTypeURLs"
+			t.TaskStreamRequestTaskTypeTaskTypeURLs = valueTaskStreamRequestTaskTypeTaskTypeURLs
+			return nil
+		}
+	}
+	if internal.HasObjectKeys(data, []string{"taskTypePrefix"}) {
+		valueTaskStreamRequestTaskTypeTaskTypePrefix := new(TaskStreamRequestTaskTypeTaskTypePrefix)
+		if err := json.Unmarshal(data, &valueTaskStreamRequestTaskTypeTaskTypePrefix); err == nil {
+			t.typ = "TaskStreamRequestTaskTypeTaskTypePrefix"
+			t.TaskStreamRequestTaskTypeTaskTypePrefix = valueTaskStreamRequestTaskTypeTaskTypePrefix
+			return nil
+		}
+	}
 	valueTaskStreamRequestTaskTypeTaskTypeURLs := new(TaskStreamRequestTaskTypeTaskTypeURLs)
 	if err := json.Unmarshal(data, &valueTaskStreamRequestTaskTypeTaskTypeURLs); err == nil {
 		t.typ = "TaskStreamRequestTaskTypeTaskTypeURLs"
