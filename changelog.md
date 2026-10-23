@@ -1,5 +1,9 @@
 # Changelog
 
+## [v5.3.0] - 2026-10-23
+### Added
+- **`TaskStatus.EndTime`** — new optional field, with `GetEndTime()` and `SetEndTime()` accessors, recording when a task finished execution.
+
 ## [v5.2.0] - 2026-10-16
 ### Added
 - **`GetBody()`** — nil-safe accessor added to all error types returning the `GoogleRPCStatus` response body.
