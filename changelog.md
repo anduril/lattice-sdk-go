@@ -1,5 +1,10 @@
 # Changelog
 
+## [v5.3.0] - 2026-10-24
+### Added
+- **`TaskStatus.EndTime`** — new optional field, with `GetEndTime()` and `SetEndTime()` accessors, that records when a task finished execution.
+- **`Ptr`** — new generic helper, `Ptr[T any](v T) *T`, that returns a pointer to any value.
+
 ## [v5.2.0] - 2026-10-16
 ### Added
 - **`GetBody()`** — nil-safe accessor added to all error types returning the `GoogleRPCStatus` response body.
