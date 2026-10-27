@@ -4305,6 +4305,7 @@ var (
 	taskStatusFieldEstimate       = big.NewInt(1 << 5)
 	taskStatusFieldAllocation     = big.NewInt(1 << 6)
 	taskStatusFieldLastUpdateTime = big.NewInt(1 << 7)
+	taskStatusFieldEndTime        = big.NewInt(1 << 8)
 )
 
 // Comprehensive status information for a task at a given point in time.
@@ -4332,6 +4333,8 @@ type TaskStatus struct {
 	//
 	//	Used to guard against out of order updates.
 	LastUpdateTime *time.Time `json:"lastUpdateTime,omitempty" url:"lastUpdateTime,omitempty"`
+	// Time the Task finished execution.
+	EndTime *time.Time `json:"endTime,omitempty" url:"endTime,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -4394,6 +4397,13 @@ func (t *TaskStatus) GetLastUpdateTime() *time.Time {
 		return nil
 	}
 	return t.LastUpdateTime
+}
+
+func (t *TaskStatus) GetEndTime() *time.Time {
+	if t == nil {
+		return nil
+	}
+	return t.EndTime
 }
 
 func (t *TaskStatus) GetExtraProperties() map[string]interface{} {
@@ -4468,12 +4478,20 @@ func (t *TaskStatus) SetLastUpdateTime(lastUpdateTime *time.Time) {
 	t.require(taskStatusFieldLastUpdateTime)
 }
 
+// SetEndTime sets the EndTime field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskStatus) SetEndTime(endTime *time.Time) {
+	t.EndTime = endTime
+	t.require(taskStatusFieldEndTime)
+}
+
 func (t *TaskStatus) UnmarshalJSON(data []byte) error {
 	type embed TaskStatus
 	var unmarshaler = struct {
 		embed
 		StartTime      *internal.DateTime `json:"startTime,omitempty"`
 		LastUpdateTime *internal.DateTime `json:"lastUpdateTime,omitempty"`
+		EndTime        *internal.DateTime `json:"endTime,omitempty"`
 	}{
 		embed: embed(*t),
 	}
@@ -4483,6 +4501,7 @@ func (t *TaskStatus) UnmarshalJSON(data []byte) error {
 	*t = TaskStatus(unmarshaler.embed)
 	t.StartTime = unmarshaler.StartTime.TimePtr()
 	t.LastUpdateTime = unmarshaler.LastUpdateTime.TimePtr()
+	t.EndTime = unmarshaler.EndTime.TimePtr()
 	extraProperties, err := internal.ExtractExtraProperties(data, *t)
 	if err != nil {
 		return err
@@ -4498,10 +4517,12 @@ func (t *TaskStatus) MarshalJSON() ([]byte, error) {
 		embed
 		StartTime      *internal.DateTime `json:"startTime,omitempty"`
 		LastUpdateTime *internal.DateTime `json:"lastUpdateTime,omitempty"`
+		EndTime        *internal.DateTime `json:"endTime,omitempty"`
 	}{
 		embed:          embed(*t),
 		StartTime:      internal.NewOptionalDateTime(t.StartTime),
 		LastUpdateTime: internal.NewOptionalDateTime(t.LastUpdateTime),
+		EndTime:        internal.NewOptionalDateTime(t.EndTime),
 	}
 	explicitMarshaler := internal.HandleExplicitFields(marshaler, t.explicitFields)
 	return json.Marshal(explicitMarshaler)
