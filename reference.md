@@ -1319,6 +1319,111 @@ client.Tasks.StreamManualControlFrames(
 </dl>
 </details>
 
+<details><summary><code>client.Tasks.SendManualControlFrame(TaskID, request) -> Lattice.ManualControlFrameResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Sends a single manual control frame, for example, joystick input, for a manual control task.
+
+Call this endpoint repeatedly to control the asset executing the task. Lattice forwards each
+frame to the executing agent, which receives it using the stream manual control frames endpoint.
+The task must be in `STATUS_EXECUTING`.
+
+The client manages the control session. When it begins controlling, it generates a
+`sessionEpochMicros` and includes it in every request, along with a `sequence` that increases
+with each frame. A higher epoch replaces the current session, which allows another operator to
+take over control. A lower epoch is rejected as stale.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &Lattice.ManualControlFrameRequest{
+    TaskID: "taskId",
+    SessionEpochMicros: "sessionEpochMicros",
+}
+client.Tasks.SendManualControlFrame(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**taskID:** `string` — The ID of the manual control task to send the frame for.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sessionEpochMicros:** `string` 
+
+Unix timestamp in microseconds identifying the control session. The client generates this
+value when it begins a control session, and includes the same value in every request for
+that session. Higher values replace previous sessions. Lower values are rejected as stale.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**sequence:** `*string` 
+
+The sequence number of this frame within the current session. The client must increase it
+with each frame so that agents can detect out-of-order delivery. Reset it to 1 when starting a
+new session.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**specification:** `*Lattice.GoogleProtobufAny` 
+
+The control instructions for this frame. The format is specific to the task, and is passed
+through to the agent without being inspected by Lattice.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Objects
 <details><summary><code>client.Objects.ListObjects() -> *Lattice.ListResponse</code></summary>
 <dl>

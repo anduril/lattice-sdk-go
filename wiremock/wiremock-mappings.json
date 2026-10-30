@@ -507,6 +507,42 @@
       }
     },
     {
+      "id": "fd20c4b0-9875-4249-a727-f9c07dc83fd3",
+      "name": "Send manual control frame - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/tasks/{taskId}/manual-control/frames",
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        },
+        "pathParameters": {
+          "taskId": {
+            "equalTo": "taskId"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"key\": \"value\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "fd20c4b0-9875-4249-a727-f9c07dc83fd3",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "b3418340-26a1-439d-8b7e-6dc23cba3dba",
       "name": "List objects - default",
       "request": {
@@ -944,6 +980,6 @@
     }
   ],
   "meta": {
-    "total": 28
+    "total": 29
   }
 }

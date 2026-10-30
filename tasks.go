@@ -380,6 +380,90 @@ func (t *TaskQuery) MarshalJSON() ([]byte, error) {
 }
 
 var (
+	manualControlFrameRequestFieldTaskID             = big.NewInt(1 << 0)
+	manualControlFrameRequestFieldSessionEpochMicros = big.NewInt(1 << 1)
+	manualControlFrameRequestFieldSequence           = big.NewInt(1 << 2)
+	manualControlFrameRequestFieldSpecification      = big.NewInt(1 << 3)
+)
+
+type ManualControlFrameRequest struct {
+	// The ID of the manual control task to send the frame for.
+	TaskID string `json:"-" url:"-"`
+	// Unix timestamp in microseconds identifying the control session. The client generates this
+	// value when it begins a control session, and includes the same value in every request for
+	// that session. Higher values replace previous sessions. Lower values are rejected as stale.
+	SessionEpochMicros string `json:"sessionEpochMicros" url:"-"`
+	// The sequence number of this frame within the current session. The client must increase it
+	// with each frame so that agents can detect out-of-order delivery. Reset it to 1 when starting a
+	// new session.
+	Sequence *string `json:"sequence,omitempty" url:"-"`
+	// The control instructions for this frame. The format is specific to the task, and is passed
+	// through to the agent without being inspected by Lattice.
+	Specification *GoogleProtobufAny `json:"specification,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (m *ManualControlFrameRequest) require(field *big.Int) {
+	next := new(big.Int)
+	if m.explicitFields != nil {
+		next.Set(m.explicitFields)
+	}
+	next.Or(next, field)
+	m.explicitFields = next
+}
+
+// SetTaskID sets the TaskID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameRequest) SetTaskID(taskID string) {
+	m.TaskID = taskID
+	m.require(manualControlFrameRequestFieldTaskID)
+}
+
+// SetSessionEpochMicros sets the SessionEpochMicros field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameRequest) SetSessionEpochMicros(sessionEpochMicros string) {
+	m.SessionEpochMicros = sessionEpochMicros
+	m.require(manualControlFrameRequestFieldSessionEpochMicros)
+}
+
+// SetSequence sets the Sequence field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameRequest) SetSequence(sequence *string) {
+	m.Sequence = sequence
+	m.require(manualControlFrameRequestFieldSequence)
+}
+
+// SetSpecification sets the Specification field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (m *ManualControlFrameRequest) SetSpecification(specification *GoogleProtobufAny) {
+	m.Specification = specification
+	m.require(manualControlFrameRequestFieldSpecification)
+}
+
+func (m *ManualControlFrameRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler ManualControlFrameRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*m = ManualControlFrameRequest(body)
+	return nil
+}
+
+func (m *ManualControlFrameRequest) MarshalJSON() ([]byte, error) {
+	type embed ManualControlFrameRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*m),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, m.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	agentStreamRequestFieldAgentSelector       = big.NewInt(1 << 0)
 	agentStreamRequestFieldHeartbeatIntervalMs = big.NewInt(1 << 1)
 )
@@ -2211,7 +2295,7 @@ var (
 // A single frame of manual control input forwarded by Lattice to an agent.
 //
 //	When an operator sends manual control input, for example, joystick movements using
-//	`SendManualControlFrames`, Lattice packages each input into a `ManualControlFrame`
+//	`SendManualControlFrame`, Lattice packages each input into a `ManualControlFrame`
 //	and forwards it to the executing agent via the `ListenForManualControlFrames`
 //	streaming RPC.
 //
@@ -2222,11 +2306,11 @@ type ManualControlFrame struct {
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
 	// Unix timestamp in microseconds identifying the control session.
 	//
-	//	Increments each time a client opens a new stream for this task.
-	//	Agents should ignore frames with a lower epoch to handle stale streams
+	//	Increases each time a client starts a new control session for this task.
+	//	Agents should ignore frames with a lower epoch to handle stale sessions
 	//	or operator handoffs.
 	EpochMicros *string `json:"epochMicros,omitempty" url:"epochMicros,omitempty"`
-	// The sequence number for a stream, incremented for each frame.
+	// The sequence number of this frame within a control session, incremented for each frame.
 	//
 	//	Agents can use this to detect out-of-order delivery within the same epoch.
 	Sequence *string `json:"sequence,omitempty" url:"sequence,omitempty"`
@@ -2395,11 +2479,11 @@ type ManualControlFrameEvent struct {
 	TaskID *string `json:"taskId,omitempty" url:"taskId,omitempty"`
 	// Unix timestamp in microseconds identifying the control session.
 	//
-	//	Increments each time a client opens a new stream for this task.
-	//	Agents should ignore frames with a lower epoch to handle stale streams
+	//	Increases each time a client starts a new control session for this task.
+	//	Agents should ignore frames with a lower epoch to handle stale sessions
 	//	or operator handoffs.
 	EpochMicros *string `json:"epochMicros,omitempty" url:"epochMicros,omitempty"`
-	// The sequence number for a stream, incremented for each frame.
+	// The sequence number of this frame within a control session, incremented for each frame.
 	//
 	//	Agents can use this to detect out-of-order delivery within the same epoch.
 	Sequence *string `json:"sequence,omitempty" url:"sequence,omitempty"`
@@ -2554,6 +2638,9 @@ func (m *ManualControlFrameEvent) String() string {
 	}
 	return fmt.Sprintf("%#v", m)
 }
+
+// The response returned after Lattice accepts a manual control frame.
+type ManualControlFrameResponse = map[string]any
 
 var (
 	ownerFieldEntityID = big.NewInt(1 << 0)
