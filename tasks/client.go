@@ -472,3 +472,40 @@ func (c *Client) StreamManualControlFrames(
 		},
 	)
 }
+
+// Sends a single manual control frame, for example, joystick input, for a manual control task.
+//
+// Call this endpoint repeatedly to control the asset executing the task. Lattice forwards each
+// frame to the executing agent, which receives it using the stream manual control frames endpoint.
+// The task must be in `STATUS_EXECUTING`.
+//
+// The client manages the control session. When it begins controlling, it generates a
+// `sessionEpochMicros` and includes it in every request, along with a `sequence` that increases
+// with each frame. A higher epoch replaces the current session, which allows another operator to
+// take over control. A lower epoch is rejected as stale.
+//
+// Example:
+//
+//	request := &Lattice.ManualControlFrameRequest{
+//	    TaskID: "taskId",
+//	    SessionEpochMicros: "sessionEpochMicros",
+//	}
+//	client.Tasks.SendManualControlFrame(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) SendManualControlFrame(
+	ctx context.Context,
+	request *Lattice.ManualControlFrameRequest,
+	opts ...option.RequestOption,
+) (Lattice.ManualControlFrameResponse, error) {
+	response, err := c.WithRawResponse.SendManualControlFrame(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}

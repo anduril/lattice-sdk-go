@@ -7,6 +7,7 @@ import (
 	core "github.com/anduril/lattice-sdk-go/v5/core"
 	entity "github.com/anduril/lattice-sdk-go/v5/entity"
 	object "github.com/anduril/lattice-sdk-go/v5/object"
+	task "github.com/anduril/lattice-sdk-go/v5/task"
 )
 
 // Bad request
@@ -38,6 +39,37 @@ func (b *BadRequestError) GetBody() any {
 		return nil
 	}
 	return b.Body
+}
+
+// The request conflicts with the current state of the resource
+type ConflictError struct {
+	*core.APIError
+	Body *task.Error
+}
+
+func (c *ConflictError) UnmarshalJSON(data []byte) error {
+	var body *task.Error
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	c.StatusCode = 409
+	c.Body = body
+	return nil
+}
+
+func (c *ConflictError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.Body)
+}
+
+func (c *ConflictError) Unwrap() error {
+	return c.APIError
+}
+
+func (c *ConflictError) GetBody() *task.Error {
+	if c == nil {
+		return nil
+	}
+	return c.Body
 }
 
 // Content too large

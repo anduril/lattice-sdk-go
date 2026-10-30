@@ -1,5 +1,11 @@
 # Changelog
 
+## [v5.4.0] - 2026-10-30
+### Added
+- **`Tasks.SendManualControlFrame`** — new endpoint that sends a single manual control frame, such as joystick input, to a task that is executing, using client-managed session epochs and sequence numbers.
+- **`ManualControlFrameRequest`** and **`ManualControlFrameResponse`** — new request and response types for the endpoint. The request includes `TaskID`, `SessionEpochMicros`, `Sequence`, and `Specification` fields with setters.
+- **`ConflictError`** — new typed error for HTTP 409 responses, carrying a `task.Error` body accessible through `GetBody()`.
+
 ## [v5.3.0] - 2026-10-27
 ### Added
 - **`TaskStatus.EndTime`** — new optional field, with `GetEndTime()` and `SetEndTime()` accessors, recording when a task finished execution.
