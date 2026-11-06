@@ -907,6 +907,37 @@
       }
     },
     {
+      "id": "61ff0b81-4fa5-4f22-a6b4-875dfc127872",
+      "name": "Query ingress streams - default",
+      "request": {
+        "urlPathTemplate": "/api/v1/video/ingress_streams/query",
+        "method": "POST",
+        "headers": {
+          "Authorization": {
+            "matches": "Bearer .+"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "body": "{\n  \"ingressStreams\": [\n    {\n      \"ingressId\": \"ingressId\",\n      \"title\": \"title\",\n      \"status\": \"STREAM_STATUS_UNSPECIFIED\",\n      \"createdAt\": \"2024-01-15T09:30:00Z\",\n      \"updatedAt\": \"2024-01-15T09:30:00Z\",\n      \"egressIds\": [\n        \"egressIds\"\n      ]\n    }\n  ],\n  \"nextPageToken\": \"nextPageToken\"\n}",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "uuid": "61ff0b81-4fa5-4f22-a6b4-875dfc127872",
+      "persistent": true,
+      "priority": 3,
+      "metadata": {
+        "mocklab": {
+          "created": {
+            "at": "2020-01-01T00:00:00.000Z",
+            "via": "SYSTEM"
+          }
+        }
+      }
+    },
+    {
       "id": "067eaa81-40ba-4820-86b6-ba62d5de3269",
       "name": "Get ingress stream - default",
       "request": {
@@ -980,6 +1011,6 @@
     }
   ],
   "meta": {
-    "total": 29
+    "total": 30
   }
 }

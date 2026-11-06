@@ -46,7 +46,7 @@ func NewClient(options *core.RequestOptions) *Client {
 // Example:
 //
 //	request := &Lattice.Entity{}
-//	client.Entities.PublishEntity(
+//	_, err := client.Entities.PublishEntity(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -71,7 +71,7 @@ func (c *Client) PublishEntity(
 //	request := &Lattice.GetEntityRequest{
 //	    EntityID: "entityId",
 //	}
-//	client.Entities.GetEntity(
+//	_, err := client.Entities.GetEntity(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -105,7 +105,7 @@ func (c *Client) GetEntity(
 //	    EntityID: "entityId",
 //	    FieldPath: "mil_view.disposition",
 //	}
-//	client.Entities.OverrideEntity(
+//	_, err := client.Entities.OverrideEntity(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -133,7 +133,7 @@ func (c *Client) OverrideEntity(
 //	    EntityID: "entityId",
 //	    FieldPath: "mil_view.disposition",
 //	}
-//	client.Entities.RemoveEntityOverride(
+//	_, err := client.Entities.RemoveEntityOverride(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -168,7 +168,7 @@ func (c *Client) RemoveEntityOverride(
 //	request := &Lattice.EntityEventRequest{
 //	    SessionToken: "sessionToken",
 //	}
-//	client.Entities.LongPollEntityEvents(
+//	_, err := client.Entities.LongPollEntityEvents(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -211,7 +211,7 @@ func (c *Client) LongPollEntityEvents(
 // Example:
 //
 //	request := &Lattice.EntityStreamRequest{}
-//	client.Entities.StreamEntities(
+//	_, err := client.Entities.StreamEntities(
 //	    context.TODO(),
 //	    request,
 //	)
