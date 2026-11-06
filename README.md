@@ -66,7 +66,7 @@ import (
     option "github.com/anduril/lattice-sdk-go/v5/option"
 )
 
-func do() {
+func do() error {
     client := client.NewClient(
         option.WithClientCredentials(
             "<clientId>",
@@ -76,10 +76,14 @@ func do() {
     request := &Lattice.EntityEventRequest{
         SessionToken: "sessionToken",
     }
-    client.Entities.LongPollEntityEvents(
+    _, err := client.Entities.LongPollEntityEvents(
         context.TODO(),
         request,
     )
+    if err != nil {
+        return err
+    }
+    return nil
 }
 ```
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [v5.5.0] - 2026-11-06
+### Added
+- **`Video.QueryIngressStreams`** — new endpoint that returns ingress streams matching a filter, newest first, with `PageSize`/`PageToken` paging through `QueryIngressStreamsRequest` and `QueryIngressStreamsResponse`.
+- **`IngressStreamFilter`**, **`CreatorFilter`**, and **`StringFilter`** — new filter types for matching streams by creator ownership, ingress ID, title (exact, prefix, or contains), and status via the new `IngressStreamFilterStatusesItem` enum.
+- **`Sensor.CameraConfiguration`** — new optional field, with `GetCameraConfiguration()` and `SetCameraConfiguration()` accessors, exposing a camera sensor's zoom state through the new `CameraConfiguration` type and its `ZoomPercentage` field.
+
 ## [v5.4.0] - 2026-10-30
 ### Added
 - **`Tasks.SendManualControlFrame`** — new endpoint that sends a single manual control frame, such as joystick input, to a task that is executing, using client-managed session epochs and sequence numbers.

@@ -42,7 +42,7 @@ func NewClient(options *core.RequestOptions) *Client {
 // Example:
 //
 //	request := &Lattice.ListEgressStreamsRequest{}
-//	client.Video.ListEgressStreams(
+//	_, err := client.Video.ListEgressStreams(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -69,7 +69,7 @@ func (c *Client) ListEgressStreams(
 // Example:
 //
 //	request := &Lattice.CreateEgressStreamRequest{}
-//	client.Video.CreateEgressStream(
+//	_, err := client.Video.CreateEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -96,7 +96,7 @@ func (c *Client) CreateEgressStream(
 //	request := &Lattice.GetEgressStreamRequest{
 //	    EgressID: "egressId",
 //	}
-//	client.Video.GetEgressStream(
+//	_, err := client.Video.GetEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -125,7 +125,7 @@ func (c *Client) GetEgressStream(
 //	request := &Lattice.DeleteEgressStreamRequest{
 //	    EgressID: "egressId",
 //	}
-//	client.Video.DeleteEgressStream(
+//	_, err := client.Video.DeleteEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -153,7 +153,7 @@ func (c *Client) DeleteEgressStream(
 // Example:
 //
 //	request := &Lattice.ListIngressStreamsRequest{}
-//	client.Video.ListIngressStreams(
+//	_, err := client.Video.ListIngressStreams(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -180,7 +180,7 @@ func (c *Client) ListIngressStreams(
 // Example:
 //
 //	request := &Lattice.CreateIngressStreamRequest{}
-//	client.Video.CreateIngressStream(
+//	_, err := client.Video.CreateIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -200,6 +200,35 @@ func (c *Client) CreateIngressStream(
 	return response.Body, nil
 }
 
+// Returns the ingress streams that match the filter, newest first. Streams
+//
+//	created through this API come first, then streams discovered on the mesh, and
+//	each group starts with its newest stream. For a discovered stream, "created"
+//	means when Video Manager first saw it.
+//
+// Example:
+//
+//	request := &Lattice.QueryIngressStreamsRequest{}
+//	_, err := client.Video.QueryIngressStreams(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) QueryIngressStreams(
+	ctx context.Context,
+	request *Lattice.QueryIngressStreamsRequest,
+	opts ...option.RequestOption,
+) (*Lattice.QueryIngressStreamsResponse, error) {
+	response, err := c.WithRawResponse.QueryIngressStreams(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
 // Retrieves a top level ingress stream object and its associated metadata. This includes
 //
 //	ingress streams and internal Anduril streams.
@@ -209,7 +238,7 @@ func (c *Client) CreateIngressStream(
 //	request := &Lattice.GetIngressStreamRequest{
 //	    IngressID: "ingressId",
 //	}
-//	client.Video.GetIngressStream(
+//	_, err := client.Video.GetIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -238,7 +267,7 @@ func (c *Client) GetIngressStream(
 //	request := &Lattice.DeleteIngressStreamRequest{
 //	    IngressID: "ingressId",
 //	}
-//	client.Video.DeleteIngressStream(
+//	_, err := client.Video.DeleteIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)

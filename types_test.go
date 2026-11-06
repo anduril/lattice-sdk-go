@@ -3267,6 +3267,87 @@ func TestSettersMarkExplicitBandwidthRange(t *testing.T) {
 
 }
 
+func TestSettersCameraConfiguration(t *testing.T) {
+	t.Run("SetZoomPercentage", func(t *testing.T) {
+		obj := &CameraConfiguration{}
+		var fernTestValueZoomPercentage *float64
+		obj.SetZoomPercentage(fernTestValueZoomPercentage)
+		assert.Equal(t, fernTestValueZoomPercentage, obj.ZoomPercentage)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
+}
+
+func TestGettersCameraConfiguration(t *testing.T) {
+	t.Run("GetZoomPercentage", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CameraConfiguration{}
+		var expected *float64
+		obj.ZoomPercentage = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetZoomPercentage(), "getter should return the property value")
+	})
+
+	t.Run("GetZoomPercentage_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CameraConfiguration{}
+		obj.ZoomPercentage = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetZoomPercentage(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetZoomPercentage_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *CameraConfiguration
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetZoomPercentage() // Should return zero value
+	})
+
+}
+
+func TestSettersMarkExplicitCameraConfiguration(t *testing.T) {
+	t.Run("SetZoomPercentage_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CameraConfiguration{}
+		var fernTestValueZoomPercentage *float64
+
+		// Act
+		obj.SetZoomPercentage(fernTestValueZoomPercentage)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+}
+
 func TestSettersClassification(t *testing.T) {
 	t.Run("SetDefault", func(t *testing.T) {
 		obj := &Classification{}
@@ -27030,6 +27111,14 @@ func TestSettersSensor(t *testing.T) {
 		assert.NotNil(t, obj.explicitFields)
 	})
 
+	t.Run("SetCameraConfiguration", func(t *testing.T) {
+		obj := &Sensor{}
+		var fernTestValueCameraConfiguration *CameraConfiguration
+		obj.SetCameraConfiguration(fernTestValueCameraConfiguration)
+		assert.Equal(t, fernTestValueCameraConfiguration, obj.CameraConfiguration)
+		assert.NotNil(t, obj.explicitFields)
+	})
+
 }
 
 func TestGettersSensor(t *testing.T) {
@@ -27264,6 +27353,39 @@ func TestGettersSensor(t *testing.T) {
 		_ = obj.GetFieldsOfView() // Should return zero value
 	})
 
+	t.Run("GetCameraConfiguration", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &Sensor{}
+		var expected *CameraConfiguration
+		obj.CameraConfiguration = expected
+
+		// Act & Assert
+		assert.Equal(t, expected, obj.GetCameraConfiguration(), "getter should return the property value")
+	})
+
+	t.Run("GetCameraConfiguration_NilValue", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &Sensor{}
+		obj.CameraConfiguration = nil
+
+		// Act & Assert
+		assert.Nil(t, obj.GetCameraConfiguration(), "getter should return nil when property is nil")
+	})
+
+	t.Run("GetCameraConfiguration_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *Sensor
+		// Should not panic - getters should handle nil receiver gracefully
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Getter panicked on nil receiver: %v", r)
+			}
+		}()
+		_ = obj.GetCameraConfiguration() // Should return zero value
+	})
+
 }
 
 func TestSettersMarkExplicitSensor(t *testing.T) {
@@ -27461,6 +27583,37 @@ func TestSettersMarkExplicitSensor(t *testing.T) {
 
 		// Act
 		obj.SetFieldsOfView(fernTestValueFieldsOfView)
+
+		// Assert - object with explicitly set field can be marshaled/unmarshaled
+		bytes, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed for test setup")
+
+		// This test ensures JSON marshaling and unmarshaling succeed when the field has a zero/nil value
+		// Detect if marshaled JSON is an object or primitive to use correct unmarshal target
+		if len(bytes) > 0 && bytes[0] == '{' {
+			// JSON object - unmarshal into map
+			var unmarshaled map[string]interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		} else {
+			// JSON primitive (string, number, boolean, null) - unmarshal into interface{}
+			var unmarshaled interface{}
+			err = json.Unmarshal(bytes, &unmarshaled)
+			require.NoError(t, err, "unmarshaling should succeed for test verification")
+		}
+
+		// Note: This does not explicitly assert the presence of a specific JSON field
+		// It verifies that setting a field via setter allows successful JSON round-trip
+	})
+
+	t.Run("SetCameraConfiguration_MarksExplicit", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &Sensor{}
+		var fernTestValueCameraConfiguration *CameraConfiguration
+
+		// Act
+		obj.SetCameraConfiguration(fernTestValueCameraConfiguration)
 
 		// Assert - object with explicitly set field can be marshaled/unmarshaled
 		bytes, err := json.Marshal(obj)
@@ -33068,6 +33221,39 @@ func TestJSONMarshalingBandwidthRange(t *testing.T) {
 	})
 }
 
+func TestJSONMarshalingCameraConfiguration(t *testing.T) {
+	t.Run("MarshalUnmarshal", func(t *testing.T) {
+		t.Parallel()
+		// Arrange
+		obj := &CameraConfiguration{}
+
+		// Act - Marshal to JSON
+		data, err := json.Marshal(obj)
+		require.NoError(t, err, "marshaling should succeed")
+		assert.NotNil(t, data, "marshaled data should not be nil")
+		assert.NotEmpty(t, data, "marshaled data should not be empty")
+
+		// Unmarshal back and verify round-trip
+		var unmarshaled CameraConfiguration
+		err = json.Unmarshal(data, &unmarshaled)
+		assert.NoError(t, err, "round-trip unmarshal should succeed")
+	})
+
+	t.Run("UnmarshalInvalidJSON", func(t *testing.T) {
+		t.Parallel()
+		var obj CameraConfiguration
+		err := json.Unmarshal([]byte(`{invalid json}`), &obj)
+		assert.Error(t, err, "unmarshaling invalid JSON should return an error")
+	})
+
+	t.Run("UnmarshalEmptyObject", func(t *testing.T) {
+		t.Parallel()
+		var obj CameraConfiguration
+		err := json.Unmarshal([]byte(`{}`), &obj)
+		assert.NoError(t, err, "unmarshaling empty object should succeed")
+	})
+}
+
 func TestJSONMarshalingClassification(t *testing.T) {
 	t.Run("MarshalUnmarshal", func(t *testing.T) {
 		t.Parallel()
@@ -37277,6 +37463,22 @@ func TestStringBandwidthRange(t *testing.T) {
 	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *BandwidthRange
+		result := obj.String()
+		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
+	})
+}
+
+func TestStringCameraConfiguration(t *testing.T) {
+	t.Run("StringMethod", func(t *testing.T) {
+		t.Parallel()
+		obj := &CameraConfiguration{}
+		result := obj.String()
+		assert.NotEmpty(t, result, "String() should return a non-empty representation")
+	})
+
+	t.Run("StringMethod_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *CameraConfiguration
 		result := obj.String()
 		assert.Equal(t, "<nil>", result, "String() should return <nil> for nil receiver")
 	})
@@ -42411,6 +42613,29 @@ func TestExtraPropertiesBandwidthRange(t *testing.T) {
 	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
 		t.Parallel()
 		var obj *BandwidthRange
+		extraProps := obj.GetExtraProperties()
+		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
+	})
+}
+
+func TestExtraPropertiesCameraConfiguration(t *testing.T) {
+	t.Run("GetExtraProperties", func(t *testing.T) {
+		t.Parallel()
+		obj := &CameraConfiguration{}
+		// Should not panic when calling GetExtraProperties()
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("GetExtraProperties() panicked: %v", r)
+			}
+		}()
+		extraProps := obj.GetExtraProperties()
+		// Result can be nil or an empty/non-empty map
+		_ = extraProps
+	})
+
+	t.Run("GetExtraProperties_NilReceiver", func(t *testing.T) {
+		t.Parallel()
+		var obj *CameraConfiguration
 		extraProps := obj.GetExtraProperties()
 		assert.Nil(t, extraProps, "nil receiver should return nil without panicking")
 	})
