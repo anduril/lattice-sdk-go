@@ -2356,6 +2356,94 @@ func (b *BandwidthRange) String() string {
 }
 
 var (
+	cameraConfigurationFieldZoomPercentage = big.NewInt(1 << 0)
+)
+
+// Camera zoom state for a camera sensor. Unset means the entity does not report zoom.
+type CameraConfiguration struct {
+	// Percentage of the camera's zoom range, 0-100. 0 is fully zoomed out, 100 fully zoomed in.
+	ZoomPercentage *float64 `json:"zoomPercentage,omitempty" url:"zoomPercentage,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CameraConfiguration) GetZoomPercentage() *float64 {
+	if c == nil {
+		return nil
+	}
+	return c.ZoomPercentage
+}
+
+func (c *CameraConfiguration) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CameraConfiguration) require(field *big.Int) {
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
+	}
+	next.Or(next, field)
+	c.explicitFields = next
+}
+
+// SetZoomPercentage sets the ZoomPercentage field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CameraConfiguration) SetZoomPercentage(zoomPercentage *float64) {
+	c.ZoomPercentage = zoomPercentage
+	c.require(cameraConfigurationFieldZoomPercentage)
+}
+
+func (c *CameraConfiguration) UnmarshalJSON(data []byte) error {
+	type unmarshaler CameraConfiguration
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CameraConfiguration(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CameraConfiguration) MarshalJSON() ([]byte, error) {
+	type embed CameraConfiguration
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CameraConfiguration) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
 	classificationFieldDefault = big.NewInt(1 << 0)
 	classificationFieldFields  = big.NewInt(1 << 1)
 )
@@ -16187,6 +16275,7 @@ var (
 	sensorFieldRfConfiguraton         = big.NewInt(1 << 4)
 	sensorFieldLastDetectionTimestamp = big.NewInt(1 << 5)
 	sensorFieldFieldsOfView           = big.NewInt(1 << 6)
+	sensorFieldCameraConfiguration    = big.NewInt(1 << 7)
 )
 
 // Individual sensor configuration.
@@ -16204,6 +16293,8 @@ type Sensor struct {
 	LastDetectionTimestamp *time.Time `json:"lastDetectionTimestamp,omitempty" url:"lastDetectionTimestamp,omitempty"`
 	// Multiple fields of view for a single sensor component
 	FieldsOfView []*FieldOfView `json:"fieldsOfView,omitempty" url:"fieldsOfView,omitempty"`
+	// Camera zoom state, for camera sensors.
+	CameraConfiguration *CameraConfiguration `json:"cameraConfiguration,omitempty" url:"cameraConfiguration,omitempty"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -16259,6 +16350,13 @@ func (s *Sensor) GetFieldsOfView() []*FieldOfView {
 		return nil
 	}
 	return s.FieldsOfView
+}
+
+func (s *Sensor) GetCameraConfiguration() *CameraConfiguration {
+	if s == nil {
+		return nil
+	}
+	return s.CameraConfiguration
 }
 
 func (s *Sensor) GetExtraProperties() map[string]interface{} {
@@ -16324,6 +16422,13 @@ func (s *Sensor) SetLastDetectionTimestamp(lastDetectionTimestamp *time.Time) {
 func (s *Sensor) SetFieldsOfView(fieldsOfView []*FieldOfView) {
 	s.FieldsOfView = fieldsOfView
 	s.require(sensorFieldFieldsOfView)
+}
+
+// SetCameraConfiguration sets the CameraConfiguration field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *Sensor) SetCameraConfiguration(cameraConfiguration *CameraConfiguration) {
+	s.CameraConfiguration = cameraConfiguration
+	s.require(sensorFieldCameraConfiguration)
 }
 
 func (s *Sensor) UnmarshalJSON(data []byte) error {

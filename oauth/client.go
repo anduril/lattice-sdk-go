@@ -39,7 +39,7 @@ func NewClient(options *core.RequestOptions) *Client {
 // Example:
 //
 //	request := &Lattice.GetTokenRequest{}
-//	client.Oauth.GetToken(
+//	_, err := client.Oauth.GetToken(
 //	    context.TODO(),
 //	    request,
 //	)
