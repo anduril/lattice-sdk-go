@@ -47,7 +47,7 @@ func NewClient(options *core.RequestOptions) *Client {
 // Example:
 //
 //	request := &Lattice.TaskCreation{}
-//	client.Tasks.CreateTask(
+//	_, err := client.Tasks.CreateTask(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -81,7 +81,7 @@ func (c *Client) CreateTask(
 //	request := &Lattice.GetTaskRequest{
 //	    TaskID: "taskId",
 //	}
-//	client.Tasks.GetTask(
+//	_, err := client.Tasks.GetTask(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -118,7 +118,7 @@ func (c *Client) GetTask(
 //	request := &Lattice.TaskStatusUpdate{
 //	    TaskID: "taskId",
 //	}
-//	client.Tasks.UpdateTaskStatus(
+//	_, err := client.Tasks.UpdateTaskStatus(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -154,7 +154,7 @@ func (c *Client) UpdateTaskStatus(
 //	request := &Lattice.TaskCancellation{
 //	    TaskID: "taskId",
 //	}
-//	client.Tasks.CancelTask(
+//	_, err := client.Tasks.CancelTask(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -190,7 +190,7 @@ func (c *Client) CancelTask(
 // Example:
 //
 //	request := &Lattice.TaskQuery{}
-//	client.Tasks.QueryTasks(
+//	_, err := client.Tasks.QueryTasks(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -218,7 +218,7 @@ func (c *Client) QueryTasks(
 // Example:
 //
 //	request := &Lattice.TaskStreamRequest{}
-//	client.Tasks.StreamTasks(
+//	_, err := client.Tasks.StreamTasks(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -298,7 +298,7 @@ func (c *Client) StreamTasks(
 // Example:
 //
 //	request := &Lattice.AgentListener{}
-//	client.Tasks.ListenAsAgent(
+//	_, err := client.Tasks.ListenAsAgent(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -339,7 +339,7 @@ func (c *Client) ListenAsAgent(
 // Example:
 //
 //	request := &Lattice.AgentStreamRequest{}
-//	client.Tasks.StreamAsAgent(
+//	_, err := client.Tasks.StreamAsAgent(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -414,7 +414,7 @@ func (c *Client) StreamAsAgent(
 //	request := &Lattice.ManualControlStreamRequest{
 //	    TaskID: "taskId",
 //	}
-//	client.Tasks.StreamManualControlFrames(
+//	_, err := client.Tasks.StreamManualControlFrames(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -490,7 +490,7 @@ func (c *Client) StreamManualControlFrames(
 //	    TaskID: "taskId",
 //	    SessionEpochMicros: "sessionEpochMicros",
 //	}
-//	client.Tasks.SendManualControlFrame(
+//	_, err := client.Tasks.SendManualControlFrame(
 //	    context.TODO(),
 //	    request,
 //	)

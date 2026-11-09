@@ -1,5 +1,14 @@
 # Changelog
 
+## [v5.5.0] - 2026-11-09
+### Added
+- **`CameraConfiguration`** — new type that reports a camera sensor's zoom state through an optional `ZoomPercentage` (0-100), with `GetZoomPercentage()` and `SetZoomPercentage()` accessors.
+- **`Sensor.CameraConfiguration`** — new optional field, with `GetCameraConfiguration()` and `SetCameraConfiguration()` accessors, that exposes camera zoom state for camera sensors.
+
+### Changed
+- **Client method examples** — godoc examples across all clients now show how to capture return values and errors.
+- **`CreateIngressStreamRequest.IngressID`** — documentation now states that only letters, digits, and the characters `.`, `_`, `-`, and `/` are allowed.
+
 ## [v5.4.0] - 2026-10-30
 ### Added
 - **`Tasks.SendManualControlFrame`** — new endpoint that sends a single manual control frame, such as joystick input, to a task that is executing, using client-managed session epochs and sequence numbers.

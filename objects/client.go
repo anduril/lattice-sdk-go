@@ -41,7 +41,7 @@ func NewClient(options *core.RequestOptions) *Client {
 // Example:
 //
 //	request := &Lattice.ListObjectsRequest{}
-//	client.Objects.ListObjects(
+//	_, err := client.Objects.ListObjects(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -129,7 +129,7 @@ func (c *Client) ListObjects(
 //	request := &Lattice.GetObjectRequest{
 //	    ObjectPath: "objectPath",
 //	}
-//	client.Objects.GetObject(
+//	_, err := client.Objects.GetObject(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -153,7 +153,18 @@ func (c *Client) GetObject(
 //
 // Example:
 //
-//	client.Objects.UploadObject(
+//	request := bytes.NewReader(
+//	    []byte(""),
+//	)
+//	_, err := client.Objects.UploadObject(
+//	    context.TODO(),
+//	    "objectPath",
+//	    request,
+//	)
+//	if err != nil {
+//	    return err
+//	}
+//	_, err := client.Objects.UploadObject(
 //	    context.TODO(),
 //	    "objectPath",
 //	    request,
@@ -184,7 +195,7 @@ func (c *Client) UploadObject(
 //	request := &Lattice.DeleteObjectRequest{
 //	    ObjectPath: "objectPath",
 //	}
-//	client.Objects.DeleteObject(
+//	err := client.Objects.DeleteObject(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -211,7 +222,7 @@ func (c *Client) DeleteObject(
 //	request := &Lattice.GetObjectMetadataRequest{
 //	    ObjectPath: "objectPath",
 //	}
-//	client.Objects.GetObjectMetadata(
+//	err := client.Objects.GetObjectMetadata(
 //	    context.TODO(),
 //	    request,
 //	)

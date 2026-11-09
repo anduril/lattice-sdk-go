@@ -34,7 +34,7 @@ provenance.sourceUpdateTime is greater than the provenance.sourceUpdateTime of t
 
 ```go
 request := &Lattice.Entity{}
-client.Entities.PublishEntity(
+_, err := client.Entities.PublishEntity(
     context.TODO(),
     request,
 )
@@ -80,7 +80,7 @@ client.Entities.PublishEntity(
 request := &Lattice.GetEntityRequest{
     EntityID: "entityId",
 }
-client.Entities.GetEntity(
+_, err := client.Entities.GetEntity(
     context.TODO(),
     request,
 )
@@ -147,7 +147,7 @@ request := &Lattice.EntityOverride{
     EntityID: "entityId",
     FieldPath: "mil_view.disposition",
 }
-client.Entities.OverrideEntity(
+_, err := client.Entities.OverrideEntity(
     context.TODO(),
     request,
 )
@@ -235,7 +235,7 @@ request := &Lattice.RemoveEntityOverrideRequest{
     EntityID: "entityId",
     FieldPath: "mil_view.disposition",
 }
-client.Entities.RemoveEntityOverride(
+_, err := client.Entities.RemoveEntityOverride(
     context.TODO(),
     request,
 )
@@ -311,7 +311,7 @@ In this case you must start a new session by sending a request with an empty ses
 request := &Lattice.EntityEventRequest{
     SessionToken: "sessionToken",
 }
-client.Entities.LongPollEntityEvents(
+_, err := client.Entities.LongPollEntityEvents(
     context.TODO(),
     request,
 )
@@ -395,7 +395,7 @@ this provides real-time updates with minimal latency and reduced server load.
 
 ```go
 request := &Lattice.EntityStreamRequest{}
-client.Entities.StreamEntities(
+_, err := client.Entities.StreamEntities(
     context.TODO(),
     request,
 )
@@ -490,7 +490,7 @@ through other Tasks API endpoints.
 
 ```go
 request := &Lattice.TaskCreation{}
-client.Tasks.CreateTask(
+_, err := client.Tasks.CreateTask(
     context.TODO(),
     request,
 )
@@ -650,7 +650,7 @@ perspective.
 request := &Lattice.GetTaskRequest{
     TaskID: "taskId",
 }
-client.Tasks.GetTask(
+_, err := client.Tasks.GetTask(
     context.TODO(),
     request,
 )
@@ -720,7 +720,7 @@ reaches these states, no further updates are allowed.
 request := &Lattice.TaskStatusUpdate{
     TaskID: "taskId",
 }
-client.Tasks.UpdateTaskStatus(
+_, err := client.Tasks.UpdateTaskStatus(
     context.TODO(),
     request,
 )
@@ -818,7 +818,7 @@ This method initiates task cancellation based on the task's current state:
 request := &Lattice.TaskCancellation{
     TaskID: "taskId",
 }
-client.Tasks.CancelTask(
+_, err := client.Tasks.CancelTask(
     context.TODO(),
     request,
 )
@@ -895,7 +895,7 @@ By default, this returns the latest task version for each matching task.
 
 ```go
 request := &Lattice.TaskQuery{}
-client.Tasks.QueryTasks(
+_, err := client.Tasks.QueryTasks(
     context.TODO(),
     request,
 )
@@ -984,7 +984,7 @@ updates for task creation and status changes. Additionally, heartbeat messages a
 
 ```go
 request := &Lattice.TaskStreamRequest{}
-client.Tasks.StreamTasks(
+_, err := client.Tasks.StreamTasks(
     context.TODO(),
     request,
 )
@@ -1127,7 +1127,7 @@ period you will be expected to reinitiate a new request.
 
 ```go
 request := &Lattice.AgentListener{}
-client.Tasks.ListenAsAgent(
+_, err := client.Tasks.ListenAsAgent(
     context.TODO(),
     request,
 )
@@ -1201,7 +1201,7 @@ to provide progress information back to Tasks API.
 
 ```go
 request := &Lattice.AgentStreamRequest{}
-client.Tasks.StreamAsAgent(
+_, err := client.Tasks.StreamAsAgent(
     context.TODO(),
     request,
 )
@@ -1281,7 +1281,7 @@ The stream terminates automatically when the task reaches a terminal state
 request := &Lattice.ManualControlStreamRequest{
     TaskID: "taskId",
 }
-client.Tasks.StreamManualControlFrames(
+_, err := client.Tasks.StreamManualControlFrames(
     context.TODO(),
     request,
 )
@@ -1359,7 +1359,7 @@ request := &Lattice.ManualControlFrameRequest{
     TaskID: "taskId",
     SessionEpochMicros: "sessionEpochMicros",
 }
-client.Tasks.SendManualControlFrame(
+_, err := client.Tasks.SendManualControlFrame(
     context.TODO(),
     request,
 )
@@ -1453,7 +1453,7 @@ Lists objects in your environment. You can define a prefix to list a subset of y
 
 ```go
 request := &Lattice.ListObjectsRequest{}
-client.Objects.ListObjects(
+_, err := client.Objects.ListObjects(
     context.TODO(),
     request,
 )
@@ -1549,7 +1549,7 @@ Fetches an object from your environment using the objectPath path parameter.
 request := &Lattice.GetObjectRequest{
     ObjectPath: "objectPath",
 }
-client.Objects.GetObject(
+_, err := client.Objects.GetObject(
     context.TODO(),
     request,
 )
@@ -1622,7 +1622,18 @@ Uploads an object. The object must be 1 GiB or smaller.
 <dd>
 
 ```go
-client.Objects.UploadObject(
+request := bytes.NewReader(
+    []byte(""),
+)
+_, err := client.Objects.UploadObject(
+    context.TODO(),
+    "objectPath",
+    request,
+)
+if err != nil {
+    return err
+}
+_, err := client.Objects.UploadObject(
     context.TODO(),
     "objectPath",
     request,
@@ -1683,7 +1694,7 @@ Deletes an object from your environment given the objectPath path parameter.
 request := &Lattice.DeleteObjectRequest{
     ObjectPath: "objectPath",
 }
-client.Objects.DeleteObject(
+err := client.Objects.DeleteObject(
     context.TODO(),
     request,
 )
@@ -1743,7 +1754,7 @@ Returns metadata for a specified object path. Use this to fetch metadata such as
 request := &Lattice.GetObjectMetadataRequest{
     ObjectPath: "objectPath",
 }
-client.Objects.GetObjectMetadata(
+err := client.Objects.GetObjectMetadata(
     context.TODO(),
     request,
 )
@@ -1802,7 +1813,7 @@ Gets a new short-lived token using the specified client credentials
 
 ```go
 request := &Lattice.GetTokenRequest{}
-client.Oauth.GetToken(
+_, err := client.Oauth.GetToken(
     context.TODO(),
     request,
 )
@@ -1879,7 +1890,7 @@ Returns a list of active egress stream objects.
 
 ```go
 request := &Lattice.ListEgressStreamsRequest{}
-client.Video.ListEgressStreams(
+_, err := client.Video.ListEgressStreams(
     context.TODO(),
     request,
 )
@@ -1955,7 +1966,7 @@ Creates an egress stream that publishes a live stream to a downstream consumer.
 
 ```go
 request := &Lattice.CreateEgressStreamRequest{}
-client.Video.CreateEgressStream(
+_, err := client.Video.CreateEgressStream(
     context.TODO(),
     request,
 )
@@ -2031,7 +2042,7 @@ Retrieves an egress stream object and its associated metadata.
 request := &Lattice.GetEgressStreamRequest{
     EgressID: "egressId",
 }
-client.Video.GetEgressStream(
+_, err := client.Video.GetEgressStream(
     context.TODO(),
     request,
 )
@@ -2092,7 +2103,7 @@ Deletes the egress stream for a live stream. Returns `NOT_FOUND` if no matching 
 request := &Lattice.DeleteEgressStreamRequest{
     EgressID: "egressId",
 }
-client.Video.DeleteEgressStream(
+_, err := client.Video.DeleteEgressStream(
     context.TODO(),
     request,
 )
@@ -2152,7 +2163,7 @@ Returns a list of top level ingress stream objects, including ingress streams an
 
 ```go
 request := &Lattice.ListIngressStreamsRequest{}
-client.Video.ListIngressStreams(
+_, err := client.Video.ListIngressStreams(
     context.TODO(),
     request,
 )
@@ -2228,7 +2239,7 @@ Creates a video ingress stream, returning metadata that you can use to stream li
 
 ```go
 request := &Lattice.CreateIngressStreamRequest{}
-client.Video.CreateIngressStream(
+_, err := client.Video.CreateIngressStream(
     context.TODO(),
     request,
 )
@@ -2255,10 +2266,10 @@ Caller-supplied identifier for the new stream. If omitted, the service generates
  `teamalpha.drone1`.
 
  When supplied, an ingressId must be between 4 and 36 characters long and use only
- printable ASCII characters with no spaces; the 36-character ceiling leaves room for a
- full GUID. A value outside that length range, or one containing spaces, control
- characters, or non-ASCII characters, is rejected, as is an ingressId that another
- ingress stream is already using.
+ letters, digits, and the characters `.`, `_`, `-`, and `/`. The 36-character ceiling
+ leaves room for a full GUID. A value outside that length range, or one containing
+ any other character, is rejected, as is an ingressId that another ingress stream is
+ already using.
     
 </dd>
 </dl>
@@ -2350,7 +2361,7 @@ Retrieves a top level ingress stream object and its associated metadata. This in
 request := &Lattice.GetIngressStreamRequest{
     IngressID: "ingressId",
 }
-client.Video.GetIngressStream(
+_, err := client.Video.GetIngressStream(
     context.TODO(),
     request,
 )
@@ -2411,7 +2422,7 @@ Deletes a video ingress stream and transitions the stream to `STREAM_STATUS_ARCH
 request := &Lattice.DeleteIngressStreamRequest{
     IngressID: "ingressId",
 }
-client.Video.DeleteIngressStream(
+_, err := client.Video.DeleteIngressStream(
     context.TODO(),
     request,
 )

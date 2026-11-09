@@ -42,7 +42,7 @@ func NewClient(options *core.RequestOptions) *Client {
 // Example:
 //
 //	request := &Lattice.ListEgressStreamsRequest{}
-//	client.Video.ListEgressStreams(
+//	_, err := client.Video.ListEgressStreams(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -69,7 +69,7 @@ func (c *Client) ListEgressStreams(
 // Example:
 //
 //	request := &Lattice.CreateEgressStreamRequest{}
-//	client.Video.CreateEgressStream(
+//	_, err := client.Video.CreateEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -96,7 +96,7 @@ func (c *Client) CreateEgressStream(
 //	request := &Lattice.GetEgressStreamRequest{
 //	    EgressID: "egressId",
 //	}
-//	client.Video.GetEgressStream(
+//	_, err := client.Video.GetEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -125,7 +125,7 @@ func (c *Client) GetEgressStream(
 //	request := &Lattice.DeleteEgressStreamRequest{
 //	    EgressID: "egressId",
 //	}
-//	client.Video.DeleteEgressStream(
+//	_, err := client.Video.DeleteEgressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -153,7 +153,7 @@ func (c *Client) DeleteEgressStream(
 // Example:
 //
 //	request := &Lattice.ListIngressStreamsRequest{}
-//	client.Video.ListIngressStreams(
+//	_, err := client.Video.ListIngressStreams(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -180,7 +180,7 @@ func (c *Client) ListIngressStreams(
 // Example:
 //
 //	request := &Lattice.CreateIngressStreamRequest{}
-//	client.Video.CreateIngressStream(
+//	_, err := client.Video.CreateIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -209,7 +209,7 @@ func (c *Client) CreateIngressStream(
 //	request := &Lattice.GetIngressStreamRequest{
 //	    IngressID: "ingressId",
 //	}
-//	client.Video.GetIngressStream(
+//	_, err := client.Video.GetIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
@@ -238,7 +238,7 @@ func (c *Client) GetIngressStream(
 //	request := &Lattice.DeleteIngressStreamRequest{
 //	    IngressID: "ingressId",
 //	}
-//	client.Video.DeleteIngressStream(
+//	_, err := client.Video.DeleteIngressStream(
 //	    context.TODO(),
 //	    request,
 //	)
