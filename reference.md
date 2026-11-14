@@ -605,6 +605,19 @@ task. For example, an entity Objective, an entity Keep In Zone, etc.
     
 </dd>
 </dl>
+
+<dl>
+<dd>
+
+**suppressDelivery:** `*bool` 
+
+If set, then the service will not deliver this request. Useful for reporting a task
+that the assignee already holds. Requires an assignee, and cannot be combined with
+isExecutedElsewhere. The task is stored with STATUS_SENT. A later cancel is delivered
+as expected.
+    
+</dd>
+</dl>
 </dd>
 </dl>
 
@@ -2319,6 +2332,91 @@ Receive an MPEG-TS push from the producer. The service allocates a UDP port and
 
 Receive an SRT push from the producer. The service returns a URL and sessionId
  in CreateIngressStreamResponse.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Video.QueryIngressStreams(request) -> *Lattice.QueryIngressStreamsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns the ingress streams that match the filter, newest first. Streams
+ created through this API come first, then streams discovered on the mesh, and
+ each group starts with its newest stream. For a discovered stream, "created"
+ means when Video Manager first saw it.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```go
+request := &Lattice.QueryIngressStreamsRequest{}
+_, err := client.Video.QueryIngressStreams(
+    context.TODO(),
+    request,
+)
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**pageSize:** `*int` 
+
+How many streams to return per page. Defaults to 50, and values above 100
+ count as 100. A page can contain fewer streams than you asked for.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pageToken:** `*string` 
+
+To get the next page, pass the `nextPageToken` from the previous response.
+ Leave it empty for the first page. Send the same filter on every page: the
+ server rejects a token if the filter changed, or if the token came from
+ ListIngressStreams.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**filter:** `*Lattice.IngressStreamFilter` — Which streams to return. Leave it out to return every stream you can see.
     
 </dd>
 </dl>

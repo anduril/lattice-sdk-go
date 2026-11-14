@@ -81,6 +81,7 @@ var (
 	taskCreationFieldRetryStrategy        = big.NewInt(1 << 8)
 	taskCreationFieldDeliveryConstraints  = big.NewInt(1 << 9)
 	taskCreationFieldExecutionConstraints = big.NewInt(1 << 10)
+	taskCreationFieldSuppressDelivery     = big.NewInt(1 << 11)
 )
 
 type TaskCreation struct {
@@ -110,6 +111,11 @@ type TaskCreation struct {
 	DeliveryConstraints *DeliveryConstraints `json:"deliveryConstraints,omitempty" url:"-"`
 	// Describes scheduling constraints for the agent executing the task after it has been delivered.
 	ExecutionConstraints *ExecutionConstraints `json:"executionConstraints,omitempty" url:"-"`
+	// If set, then the service will not deliver this request. Useful for reporting a task
+	// that the assignee already holds. Requires an assignee, and cannot be combined with
+	// isExecutedElsewhere. The task is stored with STATUS_SENT. A later cancel is delivered
+	// as expected.
+	SuppressDelivery *bool `json:"suppressDelivery,omitempty" url:"-"`
 
 	// Private bitmask of fields set to an explicit value and therefore not to be omitted
 	explicitFields *big.Int `json:"-" url:"-"`
@@ -199,6 +205,13 @@ func (t *TaskCreation) SetDeliveryConstraints(deliveryConstraints *DeliveryConst
 func (t *TaskCreation) SetExecutionConstraints(executionConstraints *ExecutionConstraints) {
 	t.ExecutionConstraints = executionConstraints
 	t.require(taskCreationFieldExecutionConstraints)
+}
+
+// SetSuppressDelivery sets the SuppressDelivery field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (t *TaskCreation) SetSuppressDelivery(suppressDelivery *bool) {
+	t.SuppressDelivery = suppressDelivery
+	t.require(taskCreationFieldSuppressDelivery)
 }
 
 func (t *TaskCreation) UnmarshalJSON(data []byte) error {

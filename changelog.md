@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.6.0] - 2026-11-14
+### Added
+- **`Video.QueryIngressStreams`** — new endpoint that returns ingress streams matching a filter, newest first, with `PageSize` and `PageToken` pagination via `QueryIngressStreamsRequest` and `QueryIngressStreamsResponse`.
+- **`IngressStreamFilter`**, **`CreatorFilter`**, and **`StringFilter`** — new filter types for matching streams by creator ownership, ingress ID, title (exact, prefix, or contains), and status, with getters and setters.
+- **`IngressStreamFilterStatusesItem`** — new enum of stream statuses (`STREAM_STATUS_LIVE`, `STREAM_STATUS_INACTIVE`, and others) used to filter by status.
+- **`TaskCreation.SuppressDelivery`** — new optional field, with `SetSuppressDelivery()` setter, that stores a task as `STATUS_SENT` without delivering it, for reporting tasks the assignee already holds.
+
+### Changed
+- **`IngressStream.CreatedAt`** — documentation now explains that for streams discovered on the mesh, this is when Video Manager first saw the stream and can reset on restart.
+
 ## [v5.5.0] - 2026-11-09
 ### Added
 - **`CameraConfiguration`** — new type that reports a camera sensor's zoom state through an optional `ZoomPercentage` (0-100), with `GetZoomPercentage()` and `SetZoomPercentage()` accessors.

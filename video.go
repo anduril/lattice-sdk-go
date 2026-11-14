@@ -394,6 +394,81 @@ func (l *ListIngressStreamsRequest) SetPageToken(pageToken *string) {
 }
 
 var (
+	queryIngressStreamsRequestFieldPageSize  = big.NewInt(1 << 0)
+	queryIngressStreamsRequestFieldPageToken = big.NewInt(1 << 1)
+	queryIngressStreamsRequestFieldFilter    = big.NewInt(1 << 2)
+)
+
+type QueryIngressStreamsRequest struct {
+	// How many streams to return per page. Defaults to 50, and values above 100
+	//
+	//	count as 100. A page can contain fewer streams than you asked for.
+	PageSize *int `json:"pageSize,omitempty" url:"-"`
+	// To get the next page, pass the `nextPageToken` from the previous response.
+	//
+	//	Leave it empty for the first page. Send the same filter on every page: the
+	//	server rejects a token if the filter changed, or if the token came from
+	//	ListIngressStreams.
+	PageToken *string `json:"pageToken,omitempty" url:"-"`
+	// Which streams to return. Leave it out to return every stream you can see.
+	Filter *IngressStreamFilter `json:"filter,omitempty" url:"-"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+}
+
+func (q *QueryIngressStreamsRequest) require(field *big.Int) {
+	next := new(big.Int)
+	if q.explicitFields != nil {
+		next.Set(q.explicitFields)
+	}
+	next.Or(next, field)
+	q.explicitFields = next
+}
+
+// SetPageSize sets the PageSize field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (q *QueryIngressStreamsRequest) SetPageSize(pageSize *int) {
+	q.PageSize = pageSize
+	q.require(queryIngressStreamsRequestFieldPageSize)
+}
+
+// SetPageToken sets the PageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (q *QueryIngressStreamsRequest) SetPageToken(pageToken *string) {
+	q.PageToken = pageToken
+	q.require(queryIngressStreamsRequestFieldPageToken)
+}
+
+// SetFilter sets the Filter field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (q *QueryIngressStreamsRequest) SetFilter(filter *IngressStreamFilter) {
+	q.Filter = filter
+	q.require(queryIngressStreamsRequestFieldFilter)
+}
+
+func (q *QueryIngressStreamsRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler QueryIngressStreamsRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*q = QueryIngressStreamsRequest(body)
+	return nil
+}
+
+func (q *QueryIngressStreamsRequest) MarshalJSON() ([]byte, error) {
+	type embed QueryIngressStreamsRequest
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*q),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, q.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+var (
 	createEgressStreamResponseFieldEgressID = big.NewInt(1 << 0)
 	createEgressStreamResponseFieldRtsp     = big.NewInt(1 << 1)
 	createEgressStreamResponseFieldSrt      = big.NewInt(1 << 2)
@@ -627,6 +702,99 @@ func (c *CreateIngressStreamResponse) MarshalJSON() ([]byte, error) {
 }
 
 func (c *CreateIngressStreamResponse) String() string {
+	if c == nil {
+		return "<nil>"
+	}
+	if len(c.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(c.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
+}
+
+var (
+	creatorFilterFieldOwned = big.NewInt(1 << 0)
+)
+
+// Matches streams by who created them. Set exactly one option. The server rejects
+//
+//	the request with INVALID_ARGUMENT (HTTP 400) if you set none.
+type CreatorFilter struct {
+	// Set to true to return only streams you created, or false to return only
+	//
+	//	streams you didn't create. Requires valid credentials. When you set it,
+	//	each stream's `egressIds` lists only your own egress sessions.
+	Owned *bool `json:"owned,omitempty" url:"owned,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (c *CreatorFilter) GetOwned() *bool {
+	if c == nil {
+		return nil
+	}
+	return c.Owned
+}
+
+func (c *CreatorFilter) GetExtraProperties() map[string]interface{} {
+	if c == nil {
+		return nil
+	}
+	return c.extraProperties
+}
+
+func (c *CreatorFilter) require(field *big.Int) {
+	next := new(big.Int)
+	if c.explicitFields != nil {
+		next.Set(c.explicitFields)
+	}
+	next.Or(next, field)
+	c.explicitFields = next
+}
+
+// SetOwned sets the Owned field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (c *CreatorFilter) SetOwned(owned *bool) {
+	c.Owned = owned
+	c.require(creatorFilterFieldOwned)
+}
+
+func (c *CreatorFilter) UnmarshalJSON(data []byte) error {
+	type unmarshaler CreatorFilter
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = CreatorFilter(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+	c.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *CreatorFilter) MarshalJSON() ([]byte, error) {
+	type embed CreatorFilter
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*c),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, c.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (c *CreatorFilter) String() string {
 	if c == nil {
 		return "<nil>"
 	}
@@ -1113,7 +1281,10 @@ type IngressStream struct {
 	MpegTs *MpegTsIngress       `json:"mpegTs,omitempty" url:"mpegTs,omitempty"`
 	Rtsp   *RtspIngress         `json:"rtsp,omitempty" url:"rtsp,omitempty"`
 	Srt    *SrtIngress          `json:"srt,omitempty" url:"srt,omitempty"`
-	// Wall-clock time the stream was created.
+	// When the stream was created. For a stream discovered on the mesh rather than
+	//
+	//	created through this API, this is when Video Manager first saw it, which can
+	//	reset if Video Manager restarts.
 	CreatedAt *time.Time `json:"createdAt,omitempty" url:"createdAt,omitempty"`
 	// Wall-clock time the stream's status (STREAM_STATUS) was changed. The status can change based on the activity or
 	//
@@ -1323,6 +1494,186 @@ func (i *IngressStream) String() string {
 		return value
 	}
 	return fmt.Sprintf("%#v", i)
+}
+
+var (
+	ingressStreamFilterFieldCreator   = big.NewInt(1 << 0)
+	ingressStreamFilterFieldIngressID = big.NewInt(1 << 1)
+	ingressStreamFilterFieldTitle     = big.NewInt(1 << 2)
+	ingressStreamFilterFieldStatuses  = big.NewInt(1 << 3)
+)
+
+// Chooses which streams QueryIngressStreams returns.
+//
+//	A stream must match every field you set. For a field that takes a list, the
+//	stream only needs to match one value in it. Fields you leave out don't limit
+//	the results. The server rejects unrecognized values, so a typo never quietly
+//	returns more streams than you asked for. The filter only works within the
+//	streams you already have permission to see.
+type IngressStreamFilter struct {
+	// Returns only streams that match by who created them. Leave it out to include
+	//
+	//	every creator.
+	Creator *CreatorFilter `json:"creator,omitempty" url:"creator,omitempty"`
+	// Returns only streams whose ingress ID matches. Compares against the part of
+	//
+	//	`ingress_id` before any `#`. For a stream you created, that's the ID you chose.
+	IngressID *StringFilter `json:"ingressId,omitempty" url:"ingressId,omitempty"`
+	// Returns only streams whose title matches.
+	Title *StringFilter `json:"title,omitempty" url:"title,omitempty"`
+	// Returns only streams in one of these statuses.
+	Statuses []IngressStreamFilterStatusesItem `json:"statuses,omitempty" url:"statuses,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (i *IngressStreamFilter) GetCreator() *CreatorFilter {
+	if i == nil {
+		return nil
+	}
+	return i.Creator
+}
+
+func (i *IngressStreamFilter) GetIngressID() *StringFilter {
+	if i == nil {
+		return nil
+	}
+	return i.IngressID
+}
+
+func (i *IngressStreamFilter) GetTitle() *StringFilter {
+	if i == nil {
+		return nil
+	}
+	return i.Title
+}
+
+func (i *IngressStreamFilter) GetStatuses() []IngressStreamFilterStatusesItem {
+	if i == nil {
+		return nil
+	}
+	return i.Statuses
+}
+
+func (i *IngressStreamFilter) GetExtraProperties() map[string]interface{} {
+	if i == nil {
+		return nil
+	}
+	return i.extraProperties
+}
+
+func (i *IngressStreamFilter) require(field *big.Int) {
+	next := new(big.Int)
+	if i.explicitFields != nil {
+		next.Set(i.explicitFields)
+	}
+	next.Or(next, field)
+	i.explicitFields = next
+}
+
+// SetCreator sets the Creator field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *IngressStreamFilter) SetCreator(creator *CreatorFilter) {
+	i.Creator = creator
+	i.require(ingressStreamFilterFieldCreator)
+}
+
+// SetIngressID sets the IngressID field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *IngressStreamFilter) SetIngressID(ingressID *StringFilter) {
+	i.IngressID = ingressID
+	i.require(ingressStreamFilterFieldIngressID)
+}
+
+// SetTitle sets the Title field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *IngressStreamFilter) SetTitle(title *StringFilter) {
+	i.Title = title
+	i.require(ingressStreamFilterFieldTitle)
+}
+
+// SetStatuses sets the Statuses field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (i *IngressStreamFilter) SetStatuses(statuses []IngressStreamFilterStatusesItem) {
+	i.Statuses = statuses
+	i.require(ingressStreamFilterFieldStatuses)
+}
+
+func (i *IngressStreamFilter) UnmarshalJSON(data []byte) error {
+	type unmarshaler IngressStreamFilter
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IngressStreamFilter(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+	i.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IngressStreamFilter) MarshalJSON() ([]byte, error) {
+	type embed IngressStreamFilter
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*i),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, i.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (i *IngressStreamFilter) String() string {
+	if i == nil {
+		return "<nil>"
+	}
+	if len(i.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(i.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
+}
+
+type IngressStreamFilterStatusesItem string
+
+const (
+	IngressStreamFilterStatusesItemStreamStatusUnspecified IngressStreamFilterStatusesItem = "STREAM_STATUS_UNSPECIFIED"
+	IngressStreamFilterStatusesItemStreamStatusLive        IngressStreamFilterStatusesItem = "STREAM_STATUS_LIVE"
+	IngressStreamFilterStatusesItemStreamStatusInactive    IngressStreamFilterStatusesItem = "STREAM_STATUS_INACTIVE"
+	IngressStreamFilterStatusesItemStreamStatusUnavailable IngressStreamFilterStatusesItem = "STREAM_STATUS_UNAVAILABLE"
+	IngressStreamFilterStatusesItemStreamStatusArchived    IngressStreamFilterStatusesItem = "STREAM_STATUS_ARCHIVED"
+)
+
+func NewIngressStreamFilterStatusesItemFromString(s string) (IngressStreamFilterStatusesItem, error) {
+	switch s {
+	case "STREAM_STATUS_UNSPECIFIED":
+		return IngressStreamFilterStatusesItemStreamStatusUnspecified, nil
+	case "STREAM_STATUS_LIVE":
+		return IngressStreamFilterStatusesItemStreamStatusLive, nil
+	case "STREAM_STATUS_INACTIVE":
+		return IngressStreamFilterStatusesItemStreamStatusInactive, nil
+	case "STREAM_STATUS_UNAVAILABLE":
+		return IngressStreamFilterStatusesItemStreamStatusUnavailable, nil
+	case "STREAM_STATUS_ARCHIVED":
+		return IngressStreamFilterStatusesItemStreamStatusArchived, nil
+	}
+	var t IngressStreamFilterStatusesItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IngressStreamFilterStatusesItem) Ptr() *IngressStreamFilterStatusesItem {
+	return &i
 }
 
 // Current lifecycle status of the stream. See StreamStatus for the full state machine.
@@ -1679,6 +2030,116 @@ func (m *MpegTsIngress) String() string {
 //	still be listed and inspected on the IngressStream read model even when cloud ingress
 //	is disabled.
 type MpegTsSettings = map[string]any
+
+var (
+	queryIngressStreamsResponseFieldIngressStreams = big.NewInt(1 << 0)
+	queryIngressStreamsResponseFieldNextPageToken  = big.NewInt(1 << 1)
+)
+
+// Response for QueryIngressStreams.
+type QueryIngressStreamsResponse struct {
+	// Up to `pageSize` streams, newest first. Streams created through this API come
+	//
+	//	first, then streams discovered on the mesh, and each group starts with its
+	//	newest stream.
+	IngressStreams []*IngressStream `json:"ingressStreams,omitempty" url:"ingressStreams,omitempty"`
+	// Pass this back as `pageToken` to get the next page. Empty when there are no
+	//
+	//	more pages.
+	NextPageToken *string `json:"nextPageToken,omitempty" url:"nextPageToken,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (q *QueryIngressStreamsResponse) GetIngressStreams() []*IngressStream {
+	if q == nil {
+		return nil
+	}
+	return q.IngressStreams
+}
+
+func (q *QueryIngressStreamsResponse) GetNextPageToken() *string {
+	if q == nil {
+		return nil
+	}
+	return q.NextPageToken
+}
+
+func (q *QueryIngressStreamsResponse) GetExtraProperties() map[string]interface{} {
+	if q == nil {
+		return nil
+	}
+	return q.extraProperties
+}
+
+func (q *QueryIngressStreamsResponse) require(field *big.Int) {
+	next := new(big.Int)
+	if q.explicitFields != nil {
+		next.Set(q.explicitFields)
+	}
+	next.Or(next, field)
+	q.explicitFields = next
+}
+
+// SetIngressStreams sets the IngressStreams field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (q *QueryIngressStreamsResponse) SetIngressStreams(ingressStreams []*IngressStream) {
+	q.IngressStreams = ingressStreams
+	q.require(queryIngressStreamsResponseFieldIngressStreams)
+}
+
+// SetNextPageToken sets the NextPageToken field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (q *QueryIngressStreamsResponse) SetNextPageToken(nextPageToken *string) {
+	q.NextPageToken = nextPageToken
+	q.require(queryIngressStreamsResponseFieldNextPageToken)
+}
+
+func (q *QueryIngressStreamsResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler QueryIngressStreamsResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*q = QueryIngressStreamsResponse(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *q)
+	if err != nil {
+		return err
+	}
+	q.extraProperties = extraProperties
+	q.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (q *QueryIngressStreamsResponse) MarshalJSON() ([]byte, error) {
+	type embed QueryIngressStreamsResponse
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*q),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, q.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (q *QueryIngressStreamsResponse) String() string {
+	if q == nil {
+		return "<nil>"
+	}
+	if len(q.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(q.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(q); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", q)
+}
 
 var (
 	rtspEgressFieldURL = big.NewInt(1 << 0)
@@ -2248,6 +2709,138 @@ func (s *SrtSettings) MarshalJSON() ([]byte, error) {
 }
 
 func (s *SrtSettings) String() string {
+	if s == nil {
+		return "<nil>"
+	}
+	if len(s.rawJSON) > 0 {
+		if value, err := internal.StringifyJSON(s.rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := internal.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
+}
+
+var (
+	stringFilterFieldExact    = big.NewInt(1 << 0)
+	stringFilterFieldPrefix   = big.NewInt(1 << 1)
+	stringFilterFieldContains = big.NewInt(1 << 2)
+)
+
+// Matches text, treating upper and lower case as different. Set exactly one of
+//
+//	`exact`, `prefix`, or `contains`, and give it a non-empty value. The server
+//	rejects the request with INVALID_ARGUMENT (HTTP 400) if you set none, more than
+//	one, or an empty value.
+type StringFilter struct {
+	// Matches text that is exactly this value. Can't be combined with `prefix` or
+	//
+	//	`contains`.
+	Exact *string `json:"exact,omitempty" url:"exact,omitempty"`
+	// Matches text that starts with this value. Can't be combined with `exact` or
+	//
+	//	`contains`.
+	Prefix *string `json:"prefix,omitempty" url:"prefix,omitempty"`
+	// Matches text that includes this value anywhere. Can't be combined with
+	//
+	//	`exact` or `prefix`.
+	Contains *string `json:"contains,omitempty" url:"contains,omitempty"`
+
+	// Private bitmask of fields set to an explicit value and therefore not to be omitted
+	explicitFields *big.Int `json:"-" url:"-"`
+
+	extraProperties map[string]interface{}
+	rawJSON         json.RawMessage
+}
+
+func (s *StringFilter) GetExact() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Exact
+}
+
+func (s *StringFilter) GetPrefix() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Prefix
+}
+
+func (s *StringFilter) GetContains() *string {
+	if s == nil {
+		return nil
+	}
+	return s.Contains
+}
+
+func (s *StringFilter) GetExtraProperties() map[string]interface{} {
+	if s == nil {
+		return nil
+	}
+	return s.extraProperties
+}
+
+func (s *StringFilter) require(field *big.Int) {
+	next := new(big.Int)
+	if s.explicitFields != nil {
+		next.Set(s.explicitFields)
+	}
+	next.Or(next, field)
+	s.explicitFields = next
+}
+
+// SetExact sets the Exact field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *StringFilter) SetExact(exact *string) {
+	s.Exact = exact
+	s.require(stringFilterFieldExact)
+}
+
+// SetPrefix sets the Prefix field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *StringFilter) SetPrefix(prefix *string) {
+	s.Prefix = prefix
+	s.require(stringFilterFieldPrefix)
+}
+
+// SetContains sets the Contains field and marks it as non-optional;
+// this prevents an empty or null value for this field from being omitted during serialization.
+func (s *StringFilter) SetContains(contains *string) {
+	s.Contains = contains
+	s.require(stringFilterFieldContains)
+}
+
+func (s *StringFilter) UnmarshalJSON(data []byte) error {
+	type unmarshaler StringFilter
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = StringFilter(value)
+	extraProperties, err := internal.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+	s.rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *StringFilter) MarshalJSON() ([]byte, error) {
+	type embed StringFilter
+	var marshaler = struct {
+		embed
+	}{
+		embed: embed(*s),
+	}
+	explicitMarshaler := internal.HandleExplicitFields(marshaler, s.explicitFields)
+	return json.Marshal(explicitMarshaler)
+}
+
+func (s *StringFilter) String() string {
 	if s == nil {
 		return "<nil>"
 	}
