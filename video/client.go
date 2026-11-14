@@ -200,6 +200,35 @@ func (c *Client) CreateIngressStream(
 	return response.Body, nil
 }
 
+// Returns the ingress streams that match the filter, newest first. Streams
+//
+//	created through this API come first, then streams discovered on the mesh, and
+//	each group starts with its newest stream. For a discovered stream, "created"
+//	means when Video Manager first saw it.
+//
+// Example:
+//
+//	request := &Lattice.QueryIngressStreamsRequest{}
+//	_, err := client.Video.QueryIngressStreams(
+//	    context.TODO(),
+//	    request,
+//	)
+func (c *Client) QueryIngressStreams(
+	ctx context.Context,
+	request *Lattice.QueryIngressStreamsRequest,
+	opts ...option.RequestOption,
+) (*Lattice.QueryIngressStreamsResponse, error) {
+	response, err := c.WithRawResponse.QueryIngressStreams(
+		ctx,
+		request,
+		opts...,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return response.Body, nil
+}
+
 // Retrieves a top level ingress stream object and its associated metadata. This includes
 //
 //	ingress streams and internal Anduril streams.
