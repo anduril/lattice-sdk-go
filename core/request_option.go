@@ -68,12 +68,21 @@ func (r *RequestOptions) ToHeader() http.Header {
 	return header
 }
 
+// ToHeaderWithoutToken is like ToHeader, but omits the Bearer token
+// (including one fetched via OAuth). It is used by the OAuth token endpoint.
+func (r *RequestOptions) ToHeaderWithoutToken() http.Header {
+	options := *r
+	options.Token = ""
+	options.tokenGetter = nil
+	return options.ToHeader()
+}
+
 func (r *RequestOptions) cloneHeader() http.Header {
 	headers := r.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/anduril/lattice-sdk-go/v5")
-	headers.Set("X-Fern-SDK-Version", "v5.5.0")
-	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/v5.5.0")
+	headers.Set("X-Fern-SDK-Version", "v5.6.0")
+	headers.Set("User-Agent", "github.com/anduril/lattice-sdk-go/v5.6.0")
 	return headers
 }
 

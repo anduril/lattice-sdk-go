@@ -129,6 +129,7 @@ func (r *RawClient) UploadObject(
 		r.options.ToHeader(),
 		options.ToHeader(),
 	)
+	headers.Add("Content-Type", "application/octet-stream")
 	errorCodes := internal.ErrorCodes{
 		400: func(apiError *core.APIError) error {
 			return &Lattice.BadRequestError{

@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.6.0] - 2026-11-14
+### Added
+- **`Video.QueryIngressStreams`** — new endpoint that returns ingress streams matching a filter, newest first, with `PageSize` and `PageToken` pagination through `QueryIngressStreamsRequest` and `QueryIngressStreamsResponse`.
+- **`IngressStreamFilter`** — new filter type that matches streams by `Creator`, `IngressID`, `Title`, and `Statuses`, with the supporting `CreatorFilter`, `StringFilter` (exact, prefix, or contains matching), and `IngressStreamFilterStatusesItem` enum types.
+
+### Changed
+- **OAuth token requests** — the client no longer sends its Bearer token when it calls the OAuth token endpoint.
+- **`Objects.UploadObject`** — requests now send a `Content-Type: application/octet-stream` header.
+- **`IngressStream.CreatedAt`** — documentation now explains that for streams discovered on the mesh, this is when Video Manager first saw the stream, and that this time can reset if Video Manager restarts.
+
 ## [v5.5.0] - 2026-11-09
 ### Added
 - **`CameraConfiguration`** — new type that reports a camera sensor's zoom state through an optional `ZoomPercentage` (0-100), with `GetZoomPercentage()` and `SetZoomPercentage()` accessors.
