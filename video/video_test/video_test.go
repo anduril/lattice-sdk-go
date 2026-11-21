@@ -225,6 +225,30 @@ func TestVideoCreateIngressStreamWithWireMock(
 	VerifyRequestCount(t, "TestVideoCreateIngressStreamWithWireMock", "POST", "/api/v1/video/ingress_streams", nil, 1)
 }
 
+func TestVideoQueryIngressStreamsWithWireMock(
+	t *testing.T,
+) {
+	WireMockBaseURL := os.Getenv("WIREMOCK_URL")
+	if WireMockBaseURL == "" {
+		WireMockBaseURL = "http://localhost:8080"
+	}
+	client := client.NewClient(
+		option.WithBaseURL(WireMockBaseURL),
+		option.WithClientCredentials("test_client_id", "test_client_secret"),
+	)
+	request := &Lattice.QueryIngressStreamsRequest{}
+	_, invocationErr := client.Video.QueryIngressStreams(
+		context.TODO(),
+		request,
+		option.WithHTTPHeader(
+			http.Header{"X-Test-Id": []string{"TestVideoQueryIngressStreamsWithWireMock"}},
+		),
+	)
+
+	require.NoError(t, invocationErr, "Client method call should succeed")
+	VerifyRequestCount(t, "TestVideoQueryIngressStreamsWithWireMock", "POST", "/api/v1/video/ingress_streams/query", nil, 1)
+}
+
 func TestVideoGetIngressStreamWithWireMock(
 	t *testing.T,
 ) {

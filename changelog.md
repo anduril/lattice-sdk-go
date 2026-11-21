@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.6.0] - 2026-11-21
+### Added
+- **`Video.QueryIngressStreams`** — new endpoint that returns ingress streams matching a filter, newest first, with `PageSize` and `PageToken` pagination via `QueryIngressStreamsRequest` and `QueryIngressStreamsResponse`.
+- **`IngressStreamFilter`**, **`CreatorFilter`**, and **`StringFilter`** — new filter types that match streams by creator ownership, ingress ID, title (exact, prefix, or contains), and status through the new `IngressStreamFilterStatusesItem` enum.
+- **`TaskCreation.SuppressDelivery`** — new optional field, with a `SetSuppressDelivery()` setter, that records a task without delivering it, which is useful for reporting a task that the assignee already holds.
+- **`RequestOptions.ToHeaderWithoutToken`** — new helper that builds request headers without the Bearer token.
+
+### Changed
+- **`OAuth.GetToken`** — the token request no longer sends the client's Bearer token, including one fetched via OAuth, and **`Objects.UploadObject`** now sends `Content-Type: application/octet-stream`.
+
 ## [v5.5.0] - 2026-11-09
 ### Added
 - **`CameraConfiguration`** — new type that reports a camera sensor's zoom state through an optional `ZoomPercentage` (0-100), with `GetZoomPercentage()` and `SetZoomPercentage()` accessors.
