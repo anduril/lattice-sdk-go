@@ -646,6 +646,27 @@ func TestMergeHeaders(t *testing.T) {
 		assert.Equal(t, []string{"0.0.1", "0.0.2"}, merged.Values("X-API-Versions"))
 	})
 
+	t.Run("empty value override", func(t *testing.T) {
+		left := make(http.Header)
+		left.Set("X-API-Tenancy", "test")
+
+		right := make(http.Header)
+		right.Set("X-API-Tenancy", "")
+
+		merged := MergeHeaders(left, right)
+		assert.Equal(t, []string{""}, merged.Values("X-API-Tenancy"))
+	})
+
+	t.Run("empty value with empty left", func(t *testing.T) {
+		left := make(http.Header)
+
+		right := make(http.Header)
+		right.Set("X-API-Tenancy", "")
+
+		merged := MergeHeaders(left, right)
+		assert.Equal(t, []string{""}, merged.Values("X-API-Tenancy"))
+	})
+
 	t.Run("disjoint merge", func(t *testing.T) {
 		left := make(http.Header)
 		left.Set("X-API-Tenancy", "test")

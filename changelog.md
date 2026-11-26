@@ -1,5 +1,15 @@
 # Changelog
 
+## [v5.6.0] - 2026-11-26
+### Added
+- **`TaskCreation.SuppressDelivery`** — new optional field, with a `SetSuppressDelivery()` setter, that stores a task with `STATUS_SENT` without delivering it, which is useful for reporting a task the assignee already holds (requires an assignee and cannot be combined with `isExecutedElsewhere`).
+- **`RequestOptions.ToHeaderWithoutToken`** — new method that builds request headers without the Bearer token, including one fetched through OAuth.
+
+### Changed
+- **OAuth `GetToken`** — the token request no longer sends an existing Bearer token in its headers.
+- **`Objects.UploadObject`** — uploads now send a `Content-Type: application/octet-stream` header.
+- **Header merging** — a single-value header in per-request options now overrides the client-level value even when it is empty, instead of being ignored.
+
 ## [v5.5.0] - 2026-11-09
 ### Added
 - **`CameraConfiguration`** — new type that reports a camera sensor's zoom state through an optional `ZoomPercentage` (0-100), with `GetZoomPercentage()` and `SetZoomPercentage()` accessors.
