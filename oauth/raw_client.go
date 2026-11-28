@@ -45,7 +45,7 @@ func (r *RawClient) GetToken(
 	)
 	endpointURL := baseURL + "/api/v1/oauth/token"
 	headers := internal.MergeHeaders(
-		r.options.ToHeader(),
+		r.options.ToHeaderWithoutToken(),
 		options.ToHeader(),
 	)
 	headers.Add("Content-Type", "application/x-www-form-urlencoded")
